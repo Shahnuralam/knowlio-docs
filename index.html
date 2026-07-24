@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MiniDocs — WordPress Knowledge Base &amp; Documentation Plugin</title>
+<meta name="description" content="A self-contained WordPress knowledge base &amp; documentation plugin. Manage docs in wp-admin, publish a professional docs site with the [minidocs] shortcode.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MiniDocs — WordPress Knowledge Base Plugin">
+<meta property="og:description" content="Manage documentation in wp-admin and publish a professional docs site with one shortcode. Rich-text editor, layout presets, auto table of contents.">
+<meta property="og:url" content="https://shahnuralam.github.io/minidocs/">
+<meta name="theme-color" content="#6366f1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%236366f1'/%3E%3Cpath d='M28 26h34a10 10 0 0 1 10 10v38H38a10 10 0 0 0-10 10z' fill='none' stroke='white' stroke-width='6' stroke-linejoin='round'/%3E%3Cpath d='M40 42h20M40 54h20' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --accent:#6366f1; --accent2:#8b5cf6; --accent-ink:#4338ca;
+    --bg:#ffffff; --bg-soft:#f8fafc; --bg-card:#ffffff;
+    --text:#0f172a; --muted:#64748b; --border:#e6e8ef; --code-bg:#0f172a; --code-ink:#e2e8f0;
+    --shadow:0 1px 2px rgba(15,23,42,.06),0 12px 32px -12px rgba(15,23,42,.18);
+    --radius:16px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0b1020; --bg-soft:#0e1428; --bg-card:#121a33;
+      --text:#e7ecf6; --muted:#9aa6c2; --border:#1f2a48; --shadow:0 1px 2px rgba(0,0,0,.4),0 18px 40px -18px rgba(0,0,0,.6);
+      --code-bg:#0a0f1f;
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:15px;padding:12px 20px;border-radius:12px;border:1px solid transparent;transition:transform .12s ease,box-shadow .12s ease,background .12s ease}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 8px 20px -8px rgba(99,102,241,.7)}
+  .btn-primary:hover{box-shadow:0 12px 26px -8px rgba(99,102,241,.85)}
+  .btn-ghost{background:var(--bg-card);color:var(--text);border-color:var(--border)}
+  .btn-ghost:hover{border-color:var(--accent)}
+  svg{flex:none}
+
+  /* Nav */
+  header.nav{position:sticky;top:0;z-index:20;backdrop-filter:saturate(1.2) blur(10px);background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--border)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;font-size:18px}
+  .brand .mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#fff}
+  .nav-links{display:flex;align-items:center;gap:22px;font-size:15px;color:var(--muted);font-weight:500}
+  .nav-links a:hover{color:var(--text)}
+  .nav-links .btn{padding:9px 16px;font-size:14px}
+  @media(max-width:720px){.nav-links a.hide-sm{display:none}}
+
+  /* Hero */
+  .hero{position:relative;overflow:hidden;padding:84px 0 72px;text-align:center}
+  .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 60% at 50% 0%,rgba(139,92,246,.18),transparent 70%);pointer-events:none}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--accent-ink);background:color-mix(in srgb,var(--accent) 12%,var(--bg));border:1px solid color-mix(in srgb,var(--accent) 26%,transparent);padding:6px 13px;border-radius:999px;margin-bottom:22px}
+  @media (prefers-color-scheme:dark){.eyebrow{color:#c7d0ff}}
+  h1{font-size:clamp(34px,6vw,56px);line-height:1.05;letter-spacing:-.035em;margin:0 0 18px;font-weight:800}
+  h1 .grad{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{font-size:clamp(17px,2.4vw,20px);color:var(--muted);max-width:640px;margin:0 auto 30px}
+  .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .badges{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+  .badge{font-size:13px;font-weight:600;color:var(--muted);background:var(--bg-card);border:1px solid var(--border);padding:7px 13px;border-radius:999px}
+  .badge b{color:var(--text)}
+
+  /* Product mock */
+  .mock{margin:52px auto 0;max-width:900px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-card);box-shadow:var(--shadow);overflow:hidden}
+  .mock .bar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg-soft)}
+  .dot{width:11px;height:11px;border-radius:50%}
+  .mock .url{margin-left:12px;font-size:12.5px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .doc{display:grid;grid-template-columns:170px 1fr 150px;gap:0;text-align:left;min-height:280px}
+  .doc .side{border-right:1px solid var(--border);padding:18px 16px;font-size:13px}
+  .doc .side .cat{color:var(--muted);text-transform:uppercase;font-size:11px;letter-spacing:.08em;margin:14px 0 8px;font-weight:700}
+  .doc .side a{display:block;padding:6px 8px;border-radius:8px;color:var(--muted)}
+  .doc .side a.on{background:color-mix(in srgb,var(--accent) 14%,var(--bg));color:var(--accent-ink);font-weight:600}
+  @media (prefers-color-scheme:dark){.doc .side a.on{color:#c7d0ff}}
+  .doc .main{padding:22px 24px}
+  .doc .main h4{margin:0 0 6px;font-size:19px;letter-spacing:-.02em}
+  .doc .main .meta{color:var(--muted);font-size:12.5px;margin-bottom:16px}
+  .doc .main .line{height:9px;border-radius:6px;background:var(--border);margin:9px 0}
+  .doc .main .line.s{width:70%}
+  .doc .toc{border-left:1px solid var(--border);padding:18px 16px;font-size:12.5px;color:var(--muted)}
+  .doc .toc .t{font-weight:700;color:var(--text);margin-bottom:10px;font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+  .doc .toc a{display:block;padding:4px 0}
+  .doc .toc a.on{color:var(--accent-ink);font-weight:600}
+  @media (prefers-color-scheme:dark){.doc .toc a.on{color:#c7d0ff}}
+  @media(max-width:720px){.doc{grid-template-columns:1fr}.doc .side,.doc .toc{display:none}}
+
+  /* Sections */
+  section{padding:76px 0}
+  .sec-head{text-align:center;max-width:620px;margin:0 auto 46px}
+  .sec-head h2{font-size:clamp(26px,4vw,36px);letter-spacing:-.03em;margin:0 0 12px;font-weight:800}
+  .sec-head p{color:var(--muted);font-size:17px;margin:0}
+  .alt{background:var(--bg-soft);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  @media(max-width:860px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:26px 24px;transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+  .card:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--accent) 40%,var(--border));box-shadow:var(--shadow)}
+  .card .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));margin-bottom:16px}
+  .card h3{margin:0 0 8px;font-size:17.5px;letter-spacing:-.01em}
+  .card p{margin:0;color:var(--muted);font-size:14.5px}
+
+  /* Steps */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;counter-reset:step}
+  @media(max-width:760px){.steps{grid-template-columns:1fr}}
+  .step{position:relative;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:28px 24px}
+  .step::before{counter-increment:step;content:counter(step);position:absolute;top:-16px;left:24px;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:800;display:grid;place-items:center;box-shadow:0 8px 18px -8px rgba(99,102,241,.8)}
+  .step h3{margin:10px 0 8px;font-size:17px}
+  .step p{margin:0;color:var(--muted);font-size:14.5px}
+  .step code{background:color-mix(in srgb,var(--accent) 12%,var(--bg));color:var(--accent-ink);padding:2px 7px;border-radius:6px;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  @media (prefers-color-scheme:dark){.step code{color:#c7d0ff}}
+
+  /* Code block */
+  .codeblock{max-width:640px;margin:36px auto 0;background:var(--code-bg);color:var(--code-ink);border-radius:14px;padding:22px 24px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;box-shadow:var(--shadow);overflow-x:auto}
+  .codeblock .c{color:#8b93b8}
+  .codeblock .tag{color:#c4b5fd}
+
+  /* Presets */
+  .presets{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  @media(max-width:760px){.presets{grid-template-columns:repeat(2,1fr)}}
+  .preset{border:1px solid var(--border);border-radius:12px;padding:16px;background:var(--bg-card);text-align:center}
+  .preset .pv{height:70px;border-radius:8px;background:var(--bg-soft);border:1px solid var(--border);margin-bottom:12px;display:flex;gap:4px;padding:8px}
+  .preset .pv span{background:color-mix(in srgb,var(--accent) 30%,var(--border));border-radius:4px}
+  .preset b{font-size:14px}
+  .preset small{color:var(--muted);font-size:12.5px;display:block;margin-top:2px}
+
+  /* CTA band */
+  .band{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:22px;padding:52px 32px;text-align:center;box-shadow:0 24px 60px -24px rgba(99,102,241,.8)}
+  .band h2{font-size:clamp(24px,3.6vw,32px);margin:0 0 12px;letter-spacing:-.02em}
+  .band p{opacity:.92;margin:0 0 26px;font-size:17px}
+  .band .btn-primary{background:#fff;color:var(--accent-ink)}
+  .band .btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.45)}
+  .band .btn-ghost:hover{border-color:#fff}
+
+  footer{border-top:1px solid var(--border);padding:40px 0;color:var(--muted);font-size:14px}
+  .foot-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+  .foot-inner a:hover{color:var(--text)}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top">
+      <span class="mark" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 4h9a3 3 0 0 1 3 3v13H9a3 3 0 0 0-3 3z"/><path d="M9 9h6M9 13h6" stroke-linecap="round"/></svg>
+      </span>
+      MiniDocs
+    </a>
+    <nav class="nav-links">
+      <a class="hide-sm" href="#features">Features</a>
+      <a class="hide-sm" href="#how">How it works</a>
+      <a class="hide-sm" href="#install">Install</a>
+      <a class="btn btn-ghost" href="https://github.com/Shahnuralam/minidocs" target="_blank" rel="noopener">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12a11.5 11.5 0 0 0 7.9 10.9c.6.1.8-.2.8-.5v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.4-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5A11.5 11.5 0 0 0 23.5 12C23.5 5.7 18.3.5 12 .5Z"/></svg>
+        GitHub
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="wrap">
+      <span class="eyebrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5z"/></svg>
+        Self-contained · Zero dependencies · GPLv3
+      </span>
+      <h1>A WordPress <span class="grad">knowledge base</span><br>your readers actually enjoy</h1>
+      <p class="lede">Write and organise documentation in a clean, full-screen admin — then publish a fast, professional docs site on the front end with a single shortcode.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="https://github.com/Shahnuralam/minidocs" target="_blank" rel="noopener">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12a11.5 11.5 0 0 0 7.9 10.9c.6.1.8-.2.8-.5v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.4-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5A11.5 11.5 0 0 0 23.5 12C23.5 5.7 18.3.5 12 .5Z"/></svg>
+          View on GitHub
+        </a>
+        <a class="btn btn-ghost" href="#install">Get started →</a>
+      </div>
+      <div class="badges">
+        <span class="badge">WordPress <b>5.8+</b></span>
+        <span class="badge">PHP <b>7.4+</b></span>
+        <span class="badge">One shortcode: <b>[minidocs]</b></span>
+        <span class="badge"><b>4</b> layout presets</span>
+      </div>
+
+      <!-- Product mock -->
+      <div class="mock" aria-hidden="true">
+        <div class="bar">
+          <span class="dot" style="background:#ff5f57"></span>
+          <span class="dot" style="background:#febc2e"></span>
+          <span class="dot" style="background:#28c840"></span>
+          <span class="url">yoursite.com/docs/getting-started</span>
+        </div>
+        <div class="doc">
+          <div class="side">
+            <div class="cat">Getting started</div>
+            <a class="on">Installation</a>
+            <a>Quick start</a>
+            <a>Configuration</a>
+            <div class="cat">Guides</div>
+            <a>Layout presets</a>
+            <a>Importing content</a>
+          </div>
+          <div class="main">
+            <h4>Installation</h4>
+            <div class="meta">Getting started · 2 min read</div>
+            <div class="line"></div><div class="line"></div><div class="line s"></div>
+            <div class="line" style="margin-top:22px"></div><div class="line"></div><div class="line s"></div>
+          </div>
+          <div class="toc">
+            <div class="t">On this page</div>
+            <a class="on">Requirements</a>
+            <a>Upload &amp; activate</a>
+            <a>Add the shortcode</a>
+            <a>Pick a layout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Everything a docs site needs</h2>
+        <p>No page builder, no external service, no dependency on another plugin.</p>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg></div>
+          <h3>Full-screen admin</h3>
+          <p>A distraction-free authoring workspace that takes over wp-admin so you focus only on writing.</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div>
+          <h3>Rich-text editor + media</h3>
+          <p>The full WordPress TinyMCE editor with media-library image upload — headings, lists, links, images.</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></div>
+          <h3>Paste from Word &amp; Docs</h3>
+          <p>Paste straight from Microsoft Word or Google Docs — formatting is kept, unsafe markup is stripped.</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 6-6 6 6 6"/><path d="m16 6 6 6-6 6"/></svg></div>
+          <h3>One shortcode front end</h3>
+          <p><code style="font-family:ui-monospace,monospace">[minidocs]</code> renders the whole site — landing page, categories, articles and search.</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M15 4v16"/></svg></div>
+          <h3>Layout presets</h3>
+          <p>Switch the whole front end between sidebar, wide, boxed and magazine layouts — no theme edits.</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/></svg></div>
+          <h3>Auto table of contents</h3>
+          <p>A table of contents is built automatically from each article's headings, with scroll highlighting.</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg></div>
+          <h3>Responsive images</h3>
+          <p>Adds <code style="font-family:ui-monospace,monospace">srcset</code>, <code style="font-family:ui-monospace,monospace">sizes</code> and lazy loading, so readers never download a full-res file to view it small.</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg></div>
+          <h3>Built to WP standards</h3>
+          <p>Escaped output, sanitised input, a nonce &amp; capability check on every write, and prepared SQL.</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+          <h3>Search &amp; reading time</h3>
+          <p>Built-in article search, view counts, estimated reading time and copy buttons on code blocks.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" class="alt">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Live in three steps</h2>
+        <p>From activation to a published knowledge base in a few minutes.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <h3>Write your docs</h3>
+          <p>Open the <b>MiniDocs</b> menu, create categories, then write articles in the rich-text editor.</p>
+        </div>
+        <div class="step">
+          <h3>Drop the shortcode</h3>
+          <p>Create a page and add <code>[minidocs]</code>. It renders every state from the page URL.</p>
+        </div>
+        <div class="step">
+          <h3>Pick a layout</h3>
+          <p>In <b>MiniDocs → Settings</b>, choose your knowledge base page and a layout preset.</p>
+        </div>
+      </div>
+      <div class="codeblock">
+        <span class="c">// On any WordPress page:</span><br>
+        <span class="tag">[minidocs]</span><br><br>
+        <span class="c">// That single shortcode renders the landing page,</span><br>
+        <span class="c">// category pages, single articles and search.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRESETS -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Four layouts, one click</h2>
+        <p>Set the width and column structure of the whole front end from the settings screen.</p>
+      </div>
+      <div class="presets">
+        <div class="preset">
+          <div class="pv"><span style="width:26%"></span><span style="flex:1"></span></div>
+          <b>Sidebar</b><small>Nav + content + TOC</small>
+        </div>
+        <div class="preset">
+          <div class="pv"><span style="flex:1"></span></div>
+          <b>Wide</b><small>Full-bleed reading</small>
+        </div>
+        <div class="preset">
+          <div class="pv" style="justify-content:center"><span style="width:64%"></span></div>
+          <b>Boxed</b><small>Centered, focused</small>
+        </div>
+        <div class="preset">
+          <div class="pv"><span style="flex:1"></span><span style="flex:1"></span><span style="flex:1"></span></div>
+          <b>Magazine</b><small>Card grid landing</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTALL / CTA -->
+  <section id="install" class="alt">
+    <div class="wrap">
+      <div class="band">
+        <h2>Ready to document?</h2>
+        <p>Clone the repository, drop it in <code style="font-family:ui-monospace,monospace">wp-content/plugins</code>, and activate.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="https://github.com/Shahnuralam/minidocs" target="_blank" rel="noopener">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12a11.5 11.5 0 0 0 7.9 10.9c.6.1.8-.2.8-.5v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.4-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5A11.5 11.5 0 0 0 23.5 12C23.5 5.7 18.3.5 12 .5Z"/></svg>
+            Get MiniDocs
+          </a>
+          <a class="btn btn-ghost" href="https://github.com/Shahnuralam/minidocs/blob/main/readme.txt" target="_blank" rel="noopener">Read the docs</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-inner">
+    <div class="brand" style="font-size:16px">
+      <span class="mark" aria-hidden="true" style="width:26px;height:26px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 4h9a3 3 0 0 1 3 3v13H9a3 3 0 0 0-3 3z"/><path d="M9 9h6M9 13h6" stroke-linecap="round"/></svg>
+      </span>
+      MiniDocs
+    </div>
+    <div>Released under <a href="https://github.com/Shahnuralam/minidocs/blob/main/LICENSE" target="_blank" rel="noopener"><b>GPLv3</b></a> · © Shahnur Alam · <a href="https://github.com/Shahnuralam/minidocs" target="_blank" rel="noopener">GitHub</a></div>
+  </div>
+</footer>
+
+</body>
+</html>
