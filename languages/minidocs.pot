@@ -1,38 +1,70 @@
-# Copyright (C) 2026 MiniDocs
-# This file is distributed under the GPLv3.
+# Copyright (C) 2026 Shahnur Alam
+# This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: MiniDocs 1.0.0\n"
+"Project-Id-Version: Knowlio Docs 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/minidocs\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-24T14:47:50+00:00\n"
+"POT-Creation-Date: 2026-08-06T02:53:38+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: minidocs\n"
 
 #. Plugin Name of the plugin
-#. Author of the plugin
-#: minidocs.php
-msgid "MiniDocs"
+#: knowlio-docs.php
+msgid "Knowlio Docs"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: minidocs.php
-msgid "#"
+#: knowlio-docs.php
+msgid "https://github.com/Shahnuralam/knowlio-docs"
 msgstr ""
 
 #. Description of the plugin
-#: minidocs.php
-msgid "A self-contained knowledge base and documentation plugin. Manage documentation articles and categories in wp-admin with a full rich-text editor, then publish a fast, professional docs site on the front end via the [minidocs] shortcode."
+#: knowlio-docs.php
+msgid "A self-contained knowledge base and documentation plugin. Manage documentation articles and categories in wp-admin with a full rich-text editor, then publish a fast, professional docs site on the front end via the [knowlio] shortcode."
+msgstr ""
+
+#. Author of the plugin
+#: knowlio-docs.php
+msgid "Shahnur Alam"
 msgstr ""
 
 #. Author URI of the plugin
-#: minidocs.php
-msgid "https://example.com"
+#: knowlio-docs.php
+msgid "https://shahnuralam.github.io/"
+msgstr ""
+
+#: knowlio-docs.php:409
+msgid "Are you sure you want to delete this record?"
+msgstr ""
+
+#: knowlio-docs.php:410
+msgid "Saving..."
+msgstr ""
+
+#: knowlio-docs.php:411
+msgid "Something went wrong. Please try again."
+msgstr ""
+
+#: knowlio-docs.php:412
+#: knowlio-docs.php:450
+msgid "Copied"
+msgstr ""
+
+#: knowlio-docs.php:413
+msgid "Replace the current content with this template?"
+msgstr ""
+
+#: knowlio-docs.php:451
+#: lib/views/dashboard/index.php:145
+#: lib/views/dashboard/index.php:152
+#: lib/views/dashboard/index.php:157
+msgid "Copy"
 msgstr ""
 
 #: lib/controllers/articles_controller.php:25
@@ -43,8 +75,8 @@ msgstr ""
 
 #: lib/controllers/articles_controller.php:27
 #: lib/helpers/menu_helper.php:38
-#: lib/views/articles/index.php:26
-#: lib/views/categories/index.php:55
+#: lib/views/articles/index.php:27
+#: lib/views/categories/index.php:56
 msgid "Articles"
 msgstr ""
 
@@ -54,31 +86,27 @@ msgid "Article not found."
 msgstr ""
 
 #: lib/controllers/articles_controller.php:92
-#: lib/models/article_model.php:359
+#: lib/models/article_model.php:383
 msgid "Uncategorised"
 msgstr ""
 
 #: lib/controllers/articles_controller.php:121
-#: lib/controllers/categories_controller.php:116
-#: lib/helpers/router_helper.php:207
-#: lib/helpers/router_helper.php:211
+#: lib/controllers/categories_controller.php:120
+#: lib/helpers/router_helper.php:187
+#: lib/helpers/router_helper.php:191
 msgid "Not Authorized"
 msgstr ""
 
 #. translators: %s: article title.
-#. translators: %s: category name.
 #: lib/controllers/articles_controller.php:167
-#: lib/controllers/categories_controller.php:140
 #, php-format
-msgid "\"%s\" created"
+msgid "Article \"%s\" created"
 msgstr ""
 
 #. translators: %s: article title.
-#. translators: %s: category name.
 #: lib/controllers/articles_controller.php:169
-#: lib/controllers/categories_controller.php:142
 #, php-format
-msgid "\"%s\" updated"
+msgid "Article \"%s\" updated"
 msgstr ""
 
 #: lib/controllers/articles_controller.php:190
@@ -93,91 +121,103 @@ msgstr ""
 msgid "Article deleted"
 msgstr ""
 
-#: lib/controllers/articles_controller.php:279
+#: lib/controllers/articles_controller.php:283
 msgid "CSV export is disabled."
 msgstr ""
 
-#: lib/controllers/articles_controller.php:286
-#: lib/views/articles/index.php:62
+#: lib/controllers/articles_controller.php:290
+#: lib/views/articles/index.php:63
 msgid "ID"
 msgstr ""
 
-#: lib/controllers/articles_controller.php:287
+#: lib/controllers/articles_controller.php:291
 #: lib/models/article_model.php:119
-#: lib/views/articles/index.php:63
-#: lib/views/articles/quick_edit.php:71
+#: lib/views/articles/index.php:64
+#: lib/views/articles/quick_edit.php:73
 msgid "Title"
 msgstr ""
 
-#: lib/controllers/articles_controller.php:288
+#: lib/controllers/articles_controller.php:292
 #: lib/models/article_model.php:120
-#: lib/models/category_model.php:85
-#: lib/views/articles/quick_edit.php:168
-#: lib/views/categories/index.php:54
-#: lib/views/categories/quick_edit.php:112
+#: lib/models/category_model.php:92
+#: lib/views/articles/quick_edit.php:185
+#: lib/views/categories/index.php:55
+#: lib/views/categories/quick_edit.php:123
 msgid "Slug"
 msgstr ""
 
-#: lib/controllers/articles_controller.php:289
+#: lib/controllers/articles_controller.php:293
 #: lib/models/article_model.php:123
-#: lib/views/articles/index.php:64
-#: lib/views/articles/quick_edit.php:82
-#: lib/views/categories/index.php:53
+#: lib/views/articles/index.php:65
+#: lib/views/articles/quick_edit.php:87
+#: lib/views/categories/index.php:54
 msgid "Category"
 msgstr ""
 
-#: lib/controllers/articles_controller.php:290
+#: lib/controllers/articles_controller.php:294
 #: lib/models/article_model.php:124
-#: lib/views/articles/index.php:65
-#: lib/views/articles/quick_edit.php:92
+#: lib/views/articles/index.php:66
+#: lib/views/articles/quick_edit.php:100
 msgid "Status"
 msgstr ""
 
-#: lib/controllers/articles_controller.php:291
-#: lib/views/articles/index.php:66
+#: lib/controllers/articles_controller.php:295
+#: lib/views/articles/index.php:67
 msgid "Views"
 msgstr ""
 
-#: lib/controllers/articles_controller.php:292
-#: lib/views/articles/index.php:67
+#: lib/controllers/articles_controller.php:296
+#: lib/views/articles/index.php:68
 msgid "Updated"
 msgstr ""
 
 #: lib/controllers/categories_controller.php:25
 #: lib/controllers/categories_controller.php:27
 #: lib/helpers/menu_helper.php:45
-#: lib/views/categories/index.php:24
+#: lib/views/categories/index.php:25
 #: lib/views/dashboard/index.php:32
 #: lib/views/dashboard/index.php:102
 msgid "Categories"
 msgstr ""
 
-#: lib/controllers/categories_controller.php:83
-#: lib/controllers/categories_controller.php:125
+#: lib/controllers/categories_controller.php:87
+#: lib/controllers/categories_controller.php:129
 msgid "Category not found."
 msgstr ""
 
-#: lib/controllers/categories_controller.php:163
+#. translators: %s: category name.
+#: lib/controllers/categories_controller.php:144
+#, php-format
+msgid "Category \"%s\" created"
+msgstr ""
+
+#. translators: %s: category name.
+#: lib/controllers/categories_controller.php:146
+#, php-format
+msgid "Category \"%s\" updated"
+msgstr ""
+
+#: lib/controllers/categories_controller.php:167
 msgid "Invalid category."
 msgstr ""
 
-#: lib/controllers/categories_controller.php:171
+#: lib/controllers/categories_controller.php:175
 msgid "Error deleting category."
 msgstr ""
 
-#: lib/controllers/categories_controller.php:178
+#: lib/controllers/categories_controller.php:182
 msgid "Category deleted. Its articles were moved to Uncategorised."
 msgstr ""
 
-#: lib/controllers/controller.php:161
+#: lib/controllers/controller.php:156
 msgid "Invalid request. Please reload the page and try again."
 msgstr ""
 
-#: lib/controllers/controller.php:166
+#: lib/controllers/controller.php:161
 msgid "Invalid request."
 msgstr ""
 
-#: lib/controllers/controller.php:297
+#: lib/controllers/controller.php:301
 msgid "Invalid layout"
 msgstr ""
 
@@ -186,24 +226,25 @@ msgstr ""
 msgid "Dashboard"
 msgstr ""
 
-#: lib/controllers/settings_controller.php:42
-#: lib/controllers/settings_controller.php:44
-#: lib/helpers/categories_helper.php:30
+#: lib/controllers/settings_controller.php:43
+#: lib/controllers/settings_controller.php:45
+#: lib/helpers/articles_helper.php:240
+#: lib/helpers/categories_helper.php:94
 #: lib/helpers/menu_helper.php:54
 msgid "Settings"
 msgstr ""
 
-#: lib/controllers/settings_controller.php:55
-#: lib/helpers/shortcodes_helper.php:173
+#: lib/controllers/settings_controller.php:56
+#: lib/helpers/shortcodes_helper.php:176
 msgid "How can we help?"
 msgstr ""
 
-#: lib/controllers/settings_controller.php:56
-#: lib/helpers/shortcodes_helper.php:174
+#: lib/controllers/settings_controller.php:57
+#: lib/helpers/shortcodes_helper.php:177
 msgid "Search the documentation, or browse by topic below."
 msgstr ""
 
-#: lib/controllers/settings_controller.php:114
+#: lib/controllers/settings_controller.php:116
 msgid "Settings saved"
 msgstr ""
 
@@ -212,218 +253,695 @@ msgid "Draft"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:25
-#: lib/views/categories/index.php:56
+#: lib/views/categories/index.php:57
 #: lib/views/dashboard/index.php:22
 msgid "Published"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:184
-msgid "Feature guide"
+msgid "Getting started"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:185
-msgid "A one-paragraph summary of what this feature does and who it is for."
+msgid "One sentence on what this product does, and what the reader will have working by the end of this page."
 msgstr ""
 
 #: lib/helpers/articles_helper.php:186
-msgid "Overview"
-msgstr ""
-
-#: lib/helpers/articles_helper.php:187
-msgid "Explain the feature in a few sentences."
+msgid "What you need"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:188
-msgid "How it works"
+msgid "Requirement one"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:189
-msgid "Describe the behaviour step by step."
-msgstr ""
-
-#: lib/helpers/articles_helper.php:190
-msgid "Setup"
+msgid "Requirement two"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:191
-msgid "First step"
-msgstr ""
-
-#: lib/helpers/articles_helper.php:191
-msgid "Second step"
-msgstr ""
-
-#: lib/helpers/articles_helper.php:192
-msgid "Options"
+msgid "Install"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:193
-msgid "Option name"
+msgid "Download or install the package."
 msgstr ""
 
 #: lib/helpers/articles_helper.php:194
-msgid "What it does and the default value."
-msgstr ""
-
-#: lib/helpers/articles_helper.php:195
-msgid "Frequently asked questions"
+msgid "Activate it."
 msgstr ""
 
 #: lib/helpers/articles_helper.php:196
-msgid "A common question?"
+msgid "Set it up"
 msgstr ""
 
-#: lib/helpers/articles_helper.php:197
-msgid "The answer."
+#: lib/helpers/articles_helper.php:198
+msgid "Open the settings screen."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:199
+msgid "Fill in the required fields."
 msgstr ""
 
 #: lib/helpers/articles_helper.php:200
-msgid "How-to (steps)"
-msgstr ""
-
-#: lib/helpers/articles_helper.php:201
-msgid "What the reader will achieve by the end, and anything they need first."
+msgid "Save."
 msgstr ""
 
 #: lib/helpers/articles_helper.php:202
-msgid "Before you start"
+msgid "Check that it works"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:203
-msgid "Prerequisite one"
-msgstr ""
-
-#: lib/helpers/articles_helper.php:203
-msgid "Prerequisite two"
+msgid "How the reader confirms the setup succeeded."
 msgstr ""
 
 #: lib/helpers/articles_helper.php:204
-msgid "Steps"
+msgid "Where to go next"
 msgstr ""
 
-#: lib/helpers/articles_helper.php:206
-msgid "Do the first thing."
-msgstr ""
-
-#: lib/helpers/articles_helper.php:207
-msgid "Do the second thing."
+#: lib/helpers/articles_helper.php:205
+msgid "Link to the next article."
 msgstr ""
 
 #: lib/helpers/articles_helper.php:208
-msgid "Do the third thing."
+msgid "Feature guide"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:209
+msgid "A one-paragraph summary of what this feature does and who it is for."
 msgstr ""
 
 #: lib/helpers/articles_helper.php:210
-msgid "Next steps"
+msgid "Overview"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:211
-msgid "Where to go from here."
+msgid "Explain the feature in a few sentences."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:212
+msgid "How it works"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:213
+msgid "Describe the behaviour step by step."
 msgstr ""
 
 #: lib/helpers/articles_helper.php:214
-msgid "FAQ"
+msgid "Setup"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:215
-msgid "Question one?"
+msgid "First step"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:215
+msgid "Second step"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:216
-msgid "Answer one."
+msgid "Options"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:217
-msgid "Question two?"
+msgid "Option name"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:218
-msgid "Answer two."
+msgid "What it does and the default value."
 msgstr ""
 
 #: lib/helpers/articles_helper.php:219
-msgid "Question three?"
+msgid "Frequently asked questions"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:220
-msgid "Answer three."
+msgid "A common question?"
 msgstr ""
 
-#: lib/helpers/articles_helper.php:223
-msgid "Release notes"
+#: lib/helpers/articles_helper.php:221
+msgid "The answer."
 msgstr ""
 
 #: lib/helpers/articles_helper.php:224
-msgid "Version 1.0.0"
+msgid "How-to (steps)"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:225
-msgid "Added"
+msgid "What the reader will achieve by the end, and anything they need first."
 msgstr ""
 
 #: lib/helpers/articles_helper.php:226
-msgid "New capability."
+msgid "Before you start"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:227
-msgid "Changed"
+msgid "Prerequisite one"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:227
+msgid "Prerequisite two"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:228
-msgid "Adjusted behaviour."
-msgstr ""
-
-#: lib/helpers/articles_helper.php:229
-msgid "Fixed"
+msgid "Steps"
 msgstr ""
 
 #: lib/helpers/articles_helper.php:230
-msgid "Resolved issue."
+msgid "Do the first thing."
 msgstr ""
 
-#: lib/helpers/categories_helper.php:27
-msgid "Document"
+#: lib/helpers/articles_helper.php:231
+msgid "Do the second thing."
 msgstr ""
 
-#: lib/helpers/categories_helper.php:28
-msgid "Book"
+#: lib/helpers/articles_helper.php:232
+msgid "Do the third thing."
 msgstr ""
 
-#: lib/helpers/categories_helper.php:29
-#: lib/helpers/database_helper.php:129
-msgid "Getting Started"
+#: lib/helpers/articles_helper.php:234
+msgid "Next steps"
 msgstr ""
 
-#: lib/helpers/categories_helper.php:31
-msgid "Integrations"
+#: lib/helpers/articles_helper.php:235
+msgid "Where to go from here."
 msgstr ""
 
-#: lib/helpers/categories_helper.php:32
-msgid "API"
+#: lib/helpers/articles_helper.php:238
+msgid "Settings reference"
 msgstr ""
 
-#: lib/helpers/categories_helper.php:33
+#: lib/helpers/articles_helper.php:239
+msgid "Every setting on this screen, what it changes, and the value it ships with."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:243
+msgid "Setting"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:244
+msgid "Default"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:245
+msgid "What it does"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:248
+msgid "First setting"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:248
+msgid "Off"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:248
+msgid "Describe the effect of turning it on."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:249
+msgid "Second setting"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:249
+msgid "20"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:249
+msgid "Describe what the number controls."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:252
+msgid "Notes"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:253
+msgid "Anything that only applies in certain conditions."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:256
+msgid "API endpoint"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:257
+msgid "What this endpoint returns and when to call it."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:258
+msgid "Request"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:260
+msgid "Parameters"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:263
+#: lib/views/categories/quick_edit.php:58
+msgid "Name"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:264
+msgid "Type"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:265
+msgid "Required"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:266
+#: lib/views/categories/quick_edit.php:70
+msgid "Description"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:269
+#: lib/helpers/articles_helper.php:270
+msgid "integer"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:269
+msgid "Yes"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:269
+msgid "Which record to return."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:270
+msgid "No"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:270
+msgid "How many results per page."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:273
+msgid "Example response"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:275
+msgid "Errors"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:277
+msgid "Code"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:277
+msgid "Meaning"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:279
+msgid "Not authenticated."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:280
+msgid "No record with that id."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:285
+msgid "Integration guide"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:286
+msgid "What connecting these two services lets the reader do."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:287
+msgid "Before you connect"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:289
+msgid "An account on the other service."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:290
+msgid "Permission to create API credentials there."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:292
+msgid "Step 1: create the credentials"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:293
+msgid "Where to find them in the other service."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:294
+msgid "Step 2: add them here"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:295
+msgid "Which screen to paste them into, and what to save."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:296
+msgid "Step 3: test the connection"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:297
+msgid "How the reader confirms data is flowing."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:298
+msgid "What gets synced"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:299
+msgid "List each thing that moves between the two, and in which direction."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:300
+msgid "If it stops working"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:301
+msgid "The first two things to check."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:304
+#: lib/helpers/categories_helper.php:97
 #: lib/helpers/database_helper.php:141
 msgid "Troubleshooting"
 msgstr ""
 
-#: lib/helpers/categories_helper.php:34
+#: lib/helpers/articles_helper.php:305
+msgid "Describe the problem in the words a reader would use when searching for it."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:306
+msgid "Check these first"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:309
+msgid "What you see"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:310
+msgid "Usual cause"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:311
+msgid "Fix"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:314
+msgid "The first symptom"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:314
+#: lib/helpers/articles_helper.php:315
+msgid "Why it happens"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:314
+#: lib/helpers/articles_helper.php:315
+msgid "What to change"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:315
+msgid "The second symptom"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:318
+msgid "Still not working"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:320
+msgid "Turn off other plugins and test again."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:321
+msgid "Switch to a default theme and test again."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:323
+msgid "What to send us"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:324
+msgid "The exact error message, and what you did just before it appeared."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:327
+msgid "FAQ"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:328
+msgid "Question one?"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:329
+msgid "Answer one."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:330
+msgid "Question two?"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:331
+msgid "Answer two."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:332
+msgid "Question three?"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:333
+msgid "Answer three."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:336
+msgid "Comparison"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:337
+msgid "The question this page settles, in one sentence."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:338
+msgid "Side by side"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:341
+msgid "What matters"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:342
+msgid "Option A"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:343
+msgid "Option B"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:346
+msgid "First difference"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:346
+#: lib/helpers/articles_helper.php:347
+msgid "How A behaves"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:346
+#: lib/helpers/articles_helper.php:347
+msgid "How B behaves"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:347
+msgid "Second difference"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:350
+msgid "Choose A when"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:351
+msgid "The situation that favours A."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:352
+msgid "Choose B when"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:353
+msgid "The situation that favours B."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:354
+msgid "Our recommendation"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:355
+msgid "What most people should pick, and why."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:358
+msgid "Migration / upgrade"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:359
+msgid "What is moving, and roughly how long it takes."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:360
+msgid "Back up your database before you start. This cannot be undone from inside the plugin."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:361
+msgid "What changes"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:364
+msgid "Before"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:365
+msgid "After"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:366
+msgid "Action needed"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:369
+msgid "The old behaviour"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:369
+msgid "The new behaviour"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:369
+msgid "None, or what to update"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:372
+msgid "Upgrade steps"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:374
+msgid "Take a backup."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:375
+msgid "Update the package."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:376
+msgid "Run the migration and wait for it to finish."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:377
+msgid "Check the pages listed below."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:379
+msgid "If something goes wrong"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:380
+msgid "How to restore the backup and get back to a working state."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:383
+msgid "Glossary"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:384
+msgid "The terms used across this documentation, in plain language."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:385
+msgid "First term"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:386
+msgid "What it means here, which is not always what it means elsewhere."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:387
+msgid "Second term"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:388
+#: lib/helpers/articles_helper.php:390
+msgid "A one or two sentence definition."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:389
+msgid "Third term"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:393
+msgid "Release notes"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:394
+msgid "Version 1.0.0"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:395
+msgid "Added"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:396
+msgid "New capability."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:397
+msgid "Changed"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:398
+msgid "Adjusted behaviour."
+msgstr ""
+
+#: lib/helpers/articles_helper.php:399
+msgid "Fixed"
+msgstr ""
+
+#: lib/helpers/articles_helper.php:400
+msgid "Resolved issue."
+msgstr ""
+
+#: lib/helpers/categories_helper.php:91
+msgid "Document"
+msgstr ""
+
+#: lib/helpers/categories_helper.php:92
+msgid "Book"
+msgstr ""
+
+#: lib/helpers/categories_helper.php:93
+#: lib/helpers/database_helper.php:129
+msgid "Getting Started"
+msgstr ""
+
+#: lib/helpers/categories_helper.php:95
+msgid "Integrations"
+msgstr ""
+
+#: lib/helpers/categories_helper.php:96
+msgid "API"
+msgstr ""
+
+#: lib/helpers/categories_helper.php:98
 msgid "Billing"
 msgstr ""
 
-#: lib/helpers/categories_helper.php:35
+#: lib/helpers/categories_helper.php:99
 msgid "Accounts"
 msgstr ""
 
-#: lib/helpers/categories_helper.php:36
+#: lib/helpers/categories_helper.php:100
 msgid "Security"
 msgstr ""
 
-#: lib/helpers/categories_helper.php:37
+#: lib/helpers/categories_helper.php:101
 msgid "Performance"
 msgstr ""
 
-#: lib/helpers/categories_helper.php:38
+#: lib/helpers/categories_helper.php:102
 msgid "Developers"
 msgstr ""
 
@@ -484,7 +1002,7 @@ msgid "Mapping the plugin capabilities onto your WordPress roles."
 msgstr ""
 
 #: lib/helpers/menu_helper.php:35
-#: lib/views/settings/index.php:25
+#: lib/views/settings/index.php:26
 msgid "Knowledge Base"
 msgstr ""
 
@@ -493,7 +1011,7 @@ msgid "Configuration"
 msgstr ""
 
 #: lib/helpers/roles_helper.php:111
-#: lib/views/articles/quick_edit.php:57
+#: lib/views/articles/quick_edit.php:58
 msgid "View"
 msgstr ""
 
@@ -512,86 +1030,90 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: lib/helpers/router_helper.php:187
-#: lib/helpers/router_helper.php:191
+#: lib/helpers/router_helper.php:167
+#: lib/helpers/router_helper.php:171
 msgid "Page Not Found"
 msgstr ""
 
-#: lib/helpers/settings_helper.php:186
+#: lib/helpers/settings_helper.php:201
 msgid "Sidebar — left navigation, article, right table of contents"
 msgstr ""
 
-#: lib/helpers/settings_helper.php:187
+#: lib/helpers/settings_helper.php:202
 msgid "Wide — the sidebar layout with a wider reading column"
 msgstr ""
 
-#: lib/helpers/settings_helper.php:188
+#: lib/helpers/settings_helper.php:203
 msgid "Boxed — a centred single column, no left navigation"
 msgstr ""
 
-#: lib/helpers/settings_helper.php:189
+#: lib/helpers/settings_helper.php:204
 msgid "Magazine — bold landing hero and larger topic cards"
 msgstr ""
 
-#: lib/helpers/settings_helper.php:220
+#: lib/helpers/settings_helper.php:235
 msgid "(no title)"
 msgstr ""
 
 #: lib/models/article_model.php:121
-#: lib/views/articles/quick_edit.php:104
+#: lib/views/articles/quick_edit.php:115
 msgid "Excerpt"
 msgstr ""
 
 #: lib/models/article_model.php:122
-#: lib/views/articles/quick_edit.php:127
+#: lib/views/articles/quick_edit.php:140
 msgid "Content"
 msgstr ""
 
 #: lib/models/article_model.php:125
-#: lib/models/category_model.php:87
-#: lib/views/articles/quick_edit.php:156
-#: lib/views/categories/index.php:52
-#: lib/views/categories/quick_edit.php:100
+#: lib/models/category_model.php:94
+#: lib/views/articles/quick_edit.php:170
+#: lib/views/categories/index.php:53
+#: lib/views/categories/quick_edit.php:108
 msgid "Order"
 msgstr ""
 
-#: lib/models/category_model.php:84
+#: lib/models/category_model.php:91
 msgid "Category Name"
 msgstr ""
 
-#: lib/models/category_model.php:86
-#: lib/views/categories/quick_edit.php:75
+#: lib/models/category_model.php:93
+#: lib/views/categories/quick_edit.php:82
 msgid "Icon"
 msgstr ""
 
 #. translators: %s: field name.
-#: lib/models/model.php:1140
+#: lib/models/model.php:1160
 #, php-format
 msgid "%s can not be blank"
 msgstr ""
 
 #. translators: %s: field name.
-#: lib/models/model.php:1158
+#: lib/models/model.php:1178
 #, php-format
 msgid "%s is not a valid email"
 msgstr ""
 
 #. translators: %s: field name.
-#: lib/models/model.php:1176
+#: lib/models/model.php:1196
 #, php-format
 msgid "%s must be a number"
 msgstr ""
 
 #. translators: %s: field name.
-#: lib/models/model.php:1215
+#: lib/models/model.php:1235
 #, php-format
 msgid "%s has to be unique"
 msgstr ""
 
 #. translators: %s: field name.
-#: lib/models/model.php:1236
+#: lib/models/model.php:1256
 #, php-format
 msgid "%s has an unsupported value"
+msgstr ""
+
+#: lib/models/model.php:1296
+msgid "The record could not be saved. Please try again."
 msgstr ""
 
 #: lib/models/setting_model.php:53
@@ -603,118 +1125,118 @@ msgid "Setting Value"
 msgstr ""
 
 #. translators: 1: first row number, 2: last row number, 3: total rows.
-#: lib/views/articles/index.php:31
-#: lib/views/articles/index.php:127
-#: lib/views/categories/index.php:29
-#: lib/views/categories/index.php:88
+#: lib/views/articles/index.php:32
+#: lib/views/articles/index.php:137
+#: lib/views/categories/index.php:30
+#: lib/views/categories/index.php:92
 #, php-format
 msgid "Showing %1$s-%2$s of %3$s"
 msgstr ""
 
-#: lib/views/articles/index.php:45
+#: lib/views/articles/index.php:46
 msgid "Export .csv"
 msgstr ""
 
-#: lib/views/articles/index.php:52
-#: lib/views/articles/quick_edit.php:25
+#: lib/views/articles/index.php:53
+#: lib/views/articles/quick_edit.php:26
 #: lib/views/partials/_top_bar.php:69
 msgid "New Article"
 msgstr ""
 
-#: lib/views/articles/index.php:80
+#: lib/views/articles/index.php:82
 msgid "Search by title..."
 msgstr ""
 
-#: lib/views/articles/index.php:94
+#: lib/views/articles/index.php:99
 msgid "All categories"
 msgstr ""
 
-#: lib/views/articles/index.php:108
+#: lib/views/articles/index.php:116
 msgid "Any status"
 msgstr ""
 
-#: lib/views/articles/index.php:135
-#: lib/views/categories/index.php:96
+#: lib/views/articles/index.php:145
+#: lib/views/categories/index.php:100
 msgid "Page:"
 msgstr ""
 
-#: lib/views/articles/quick_edit.php:25
+#: lib/views/articles/quick_edit.php:26
 msgid "Edit Article"
 msgstr ""
 
-#: lib/views/articles/quick_edit.php:26
-#: lib/views/categories/quick_edit.php:26
+#: lib/views/articles/quick_edit.php:27
+#: lib/views/categories/quick_edit.php:27
 msgid "Close"
 msgstr ""
 
-#: lib/views/articles/quick_edit.php:35
-#: lib/views/categories/quick_edit.php:35
+#: lib/views/articles/quick_edit.php:36
+#: lib/views/categories/quick_edit.php:36
 msgid "ID:"
 msgstr ""
 
 #. translators: %s: view count.
-#: lib/views/articles/quick_edit.php:42
+#: lib/views/articles/quick_edit.php:43
 #: lib/views/front/kb.php:90
 #, php-format
 msgid "%s views"
 msgstr ""
 
-#: lib/views/articles/quick_edit.php:73
+#: lib/views/articles/quick_edit.php:75
 msgid "e.g. How to reset your password"
 msgstr ""
 
-#: lib/views/articles/quick_edit.php:95
+#: lib/views/articles/quick_edit.php:103
 msgid "Drafts are hidden from readers."
 msgstr ""
 
-#: lib/views/articles/quick_edit.php:108
+#: lib/views/articles/quick_edit.php:119
 msgid "Shown in listings and search results. Generated from the body when left blank."
 msgstr ""
 
-#: lib/views/articles/quick_edit.php:114
+#: lib/views/articles/quick_edit.php:127
 msgid "Start from a template"
 msgstr ""
 
-#: lib/views/articles/quick_edit.php:117
+#: lib/views/articles/quick_edit.php:130
 msgid "Blank article"
 msgstr ""
 
-#: lib/views/articles/quick_edit.php:123
+#: lib/views/articles/quick_edit.php:136
 msgid "Drops a professional structure into the editor for you to fill in."
 msgstr ""
 
-#: lib/views/articles/quick_edit.php:143
+#: lib/views/articles/quick_edit.php:156
 msgid "Paste straight from a Word or Google document — formatting is cleaned up automatically. Every H2 and H3 becomes an entry in the reader-facing table of contents."
 msgstr ""
 
-#: lib/views/articles/quick_edit.php:148
+#: lib/views/articles/quick_edit.php:161
 msgid "Placement"
 msgstr ""
 
-#: lib/views/articles/quick_edit.php:160
+#: lib/views/articles/quick_edit.php:174
 msgid "Lower numbers come first within the category."
 msgstr ""
 
-#: lib/views/articles/quick_edit.php:170
+#: lib/views/articles/quick_edit.php:187
 msgid "Derived from the title when blank."
 msgstr ""
 
-#: lib/views/articles/quick_edit.php:179
+#: lib/views/articles/quick_edit.php:199
 msgid "Feature on the knowledge base landing page"
 msgstr ""
 
-#: lib/views/articles/quick_edit.php:199
-#: lib/views/categories/quick_edit.php:128
+#: lib/views/articles/quick_edit.php:221
+#: lib/views/categories/quick_edit.php:141
 #: lib/views/partials/_notifications.php:20
 msgid "Cancel"
 msgstr ""
 
-#: lib/views/articles/quick_edit.php:201
+#: lib/views/articles/quick_edit.php:223
 msgid "Create Article"
 msgstr ""
 
-#: lib/views/articles/quick_edit.php:201
-#: lib/views/categories/quick_edit.php:130
+#: lib/views/articles/quick_edit.php:223
+#: lib/views/categories/quick_edit.php:143
 msgid "Save Changes"
 msgstr ""
 
@@ -730,21 +1252,21 @@ msgstr ""
 msgid "Featured"
 msgstr ""
 
-#: lib/views/categories/index.php:42
-#: lib/views/categories/quick_edit.php:25
+#: lib/views/categories/index.php:43
+#: lib/views/categories/quick_edit.php:26
 msgid "New Category"
 msgstr ""
 
-#: lib/views/categories/index.php:69
+#: lib/views/categories/index.php:71
 msgid "Search by name..."
 msgstr ""
 
-#: lib/views/categories/quick_edit.php:25
+#: lib/views/categories/quick_edit.php:26
 msgid "Edit Category"
 msgstr ""
 
 #. translators: %d: number of articles.
-#: lib/views/categories/quick_edit.php:42
+#: lib/views/categories/quick_edit.php:43
 #: lib/views/front/categories_grid.php:33
 #: lib/views/front/kb.php:47
 #, php-format
@@ -753,35 +1275,27 @@ msgid_plural "%d articles"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/views/categories/quick_edit.php:56
-msgid "Name"
-msgstr ""
-
-#: lib/views/categories/quick_edit.php:58
+#: lib/views/categories/quick_edit.php:60
 msgid "e.g. Getting Started"
 msgstr ""
 
-#: lib/views/categories/quick_edit.php:65
-msgid "Description"
-msgstr ""
-
-#: lib/views/categories/quick_edit.php:69
+#: lib/views/categories/quick_edit.php:74
 msgid "Shown under the name on the category card."
 msgstr ""
 
-#: lib/views/categories/quick_edit.php:104
+#: lib/views/categories/quick_edit.php:112
 msgid "Lower numbers come first."
 msgstr ""
 
-#: lib/views/categories/quick_edit.php:114
+#: lib/views/categories/quick_edit.php:125
 msgid "Derived from the name when blank."
 msgstr ""
 
-#: lib/views/categories/quick_edit.php:122
+#: lib/views/categories/quick_edit.php:135
 msgid "Deleting this category will not delete its articles. They are moved to Uncategorised and stay published."
 msgstr ""
 
-#: lib/views/categories/quick_edit.php:130
+#: lib/views/categories/quick_edit.php:143
 msgid "Create Category"
 msgstr ""
 
@@ -861,14 +1375,6 @@ msgstr ""
 msgid "Add this shortcode to any page. It renders the landing screen, every category and every article from that one page."
 msgstr ""
 
-#: lib/views/dashboard/index.php:145
-#: lib/views/dashboard/index.php:152
-#: lib/views/dashboard/index.php:157
-#: minidocs.php:384
-#: minidocs.php:424
-msgid "Copy"
-msgstr ""
-
 #: lib/views/dashboard/index.php:148
 msgid "Optional building blocks for other pages:"
 msgstr ""
@@ -881,7 +1387,7 @@ msgstr ""
 
 #. translators: %d: minutes.
 #: lib/views/front/article.php:72
-#: lib/views/front/category.php:50
+#: lib/views/front/_article_list.php:61
 #, php-format
 msgid "%d min read"
 msgid_plural "%d min read"
@@ -906,11 +1412,11 @@ msgstr ""
 msgid "On this page"
 msgstr ""
 
-#: lib/views/front/category.php:36
+#: lib/views/front/category.php:38
 msgid "No published articles in this category yet."
 msgstr ""
 
-#: lib/views/front/category.php:63
+#: lib/views/front/category.php:50
 msgid "Other topics"
 msgstr ""
 
@@ -958,6 +1464,18 @@ msgstr ""
 msgid "Nothing matched that search. Try a different word, or browse the topics below."
 msgstr ""
 
+#: lib/views/front/_article_list.php:31
+msgid "Choose how articles are displayed"
+msgstr ""
+
+#: lib/views/front/_article_list.php:34
+msgid "Grid"
+msgstr ""
+
+#: lib/views/front/_article_list.php:38
+msgid "List"
+msgstr ""
+
 #: lib/views/front/_hero.php:49
 msgid "Search the documentation..."
 msgstr ""
@@ -994,96 +1512,78 @@ msgstr ""
 msgid "Set your docs page"
 msgstr ""
 
-#: lib/views/settings/index.php:31
+#: lib/views/settings/index.php:33
 msgid "Hero Heading"
 msgstr ""
 
-#: lib/views/settings/index.php:33
+#: lib/views/settings/index.php:35
 msgid "The large heading above the search box on the frontend."
 msgstr ""
 
-#: lib/views/settings/index.php:40
+#: lib/views/settings/index.php:45
 msgid "Hero Sub-heading"
 msgstr ""
 
-#: lib/views/settings/index.php:48
+#: lib/views/settings/index.php:56
 msgid "Knowledge Base Page"
 msgstr ""
 
-#: lib/views/settings/index.php:52
+#: lib/views/settings/index.php:60
 msgid "Not set"
 msgstr ""
 
-#: lib/views/settings/index.php:53
-msgid "The page containing the [minidocs] shortcode. Used for the \"View\" links in the editor."
+#: lib/views/settings/index.php:61
+msgid "The page containing the [knowlio] shortcode. Used for the \"View\" links in the editor."
 msgstr ""
 
-#: lib/views/settings/index.php:59
+#: lib/views/settings/index.php:69
 msgid "Frontend Layout"
 msgstr ""
 
-#: lib/views/settings/index.php:87
+#: lib/views/settings/index.php:97
 msgid "How every documentation page is arranged on the frontend. A page can still override this with the width and max attributes on the shortcode."
 msgstr ""
 
-#: lib/views/settings/index.php:95
+#: lib/views/settings/index.php:105
 msgid "Admin"
 msgstr ""
 
-#: lib/views/settings/index.php:103
+#: lib/views/settings/index.php:114
 msgid "Brand Name"
 msgstr ""
 
-#: lib/views/settings/index.php:105
+#: lib/views/settings/index.php:116
 msgid "Shown in the WordPress menu and the side menu."
 msgstr ""
 
-#: lib/views/settings/index.php:113
+#: lib/views/settings/index.php:127
 msgid "Rows Per Page"
 msgstr ""
 
-#: lib/views/settings/index.php:125
+#: lib/views/settings/index.php:142
 msgid "Disable CSV export"
 msgstr ""
 
-#: lib/views/settings/index.php:135
+#: lib/views/settings/index.php:154
+msgid "Delete all data when the plugin is uninstalled"
+msgstr ""
+
+#: lib/views/settings/index.php:158
+msgid "Off by default. When off, deleting the plugin leaves your articles and categories in the database, so uninstalling to troubleshoot never costs you your documentation."
+msgstr ""
+
+#: lib/views/settings/index.php:169
 msgid "Roles & Permissions"
 msgstr ""
 
-#: lib/views/settings/index.php:136
+#: lib/views/settings/index.php:170
 msgid "Administrators always have full access."
 msgstr ""
 
-#: lib/views/settings/index.php:140
+#: lib/views/settings/index.php:174
 msgid "No additional roles found on this site."
 msgstr ""
 
-#: lib/views/settings/index.php:173
+#: lib/views/settings/index.php:210
 msgid "Save Settings"
-msgstr ""
-
-#: minidocs.php:380
-msgid "Are you sure you want to delete this record?"
-msgstr ""
-
-#: minidocs.php:381
-msgid "Saving..."
-msgstr ""
-
-#: minidocs.php:382
-msgid "Something went wrong. Please try again."
-msgstr ""
-
-#: minidocs.php:383
-#: minidocs.php:423
-msgid "Copied"
-msgstr ""
-
-#: minidocs.php:385
-#: minidocs.php:425
-msgid "No matching pages"
-msgstr ""
-
-#: minidocs.php:386
-msgid "Replace the current content with this template?"
 msgstr ""

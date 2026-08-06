@@ -2,7 +2,7 @@
 /**
  * Schema installation and versioned migrations.
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class MdDatabaseHelper
+ * Class KnowlioDatabaseHelper
  */
-class MdDatabaseHelper {
+class KnowlioDatabaseHelper {
 
 	/**
 	 * Re-run the install when the stored schema version is behind.
@@ -21,9 +21,9 @@ class MdDatabaseHelper {
 	 * request. Once the versions match it costs one option read.
 	 */
 	public static function check_db_version() {
-		$installed = MdSettingsHelper::get_db_version();
+		$installed = KnowlioSettingsHelper::get_db_version();
 
-		if ( ! $installed || version_compare( $installed, MINIDOCS_DB_VERSION, '<' ) ) {
+		if ( ! $installed || version_compare( $installed, KNOWLIO_DB_VERSION, '<' ) ) {
 			self::install_database();
 		}
 	}
@@ -44,7 +44,7 @@ class MdDatabaseHelper {
 
 		$sqls = array();
 
-		$sqls[] = 'CREATE TABLE ' . MINIDOCS_TABLE_CATEGORIES . " (
+		$sqls[] = 'CREATE TABLE ' . KNOWLIO_TABLE_CATEGORIES . " (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			name varchar(255) NOT NULL,
 			slug varchar(191) NOT NULL DEFAULT '',
@@ -58,7 +58,7 @@ class MdDatabaseHelper {
 			KEY order_index (order_number)
 		) $charset_collate;";
 
-		$sqls[] = 'CREATE TABLE ' . MINIDOCS_TABLE_ARTICLES . " (
+		$sqls[] = 'CREATE TABLE ' . KNOWLIO_TABLE_ARTICLES . " (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			title varchar(255) NOT NULL,
 			slug varchar(191) NOT NULL DEFAULT '',
@@ -78,7 +78,7 @@ class MdDatabaseHelper {
 			KEY featured_index (is_featured)
 		) $charset_collate;";
 
-		$sqls[] = 'CREATE TABLE ' . MINIDOCS_TABLE_SETTINGS . " (
+		$sqls[] = 'CREATE TABLE ' . KNOWLIO_TABLE_SETTINGS . " (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			name varchar(191) NOT NULL,
 			value longtext,
@@ -95,13 +95,13 @@ class MdDatabaseHelper {
 	public static function install_database() {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		$is_fresh_install = ! MdSettingsHelper::get_db_version();
+		$is_fresh_install = ! KnowlioSettingsHelper::get_db_version();
 
 		foreach ( self::get_table_queries() as $sql ) {
 			dbDelta( $sql );
 		}
 
-		update_option( 'minidocs_db_version', MINIDOCS_DB_VERSION );
+		update_option( 'knowlio_db_version', KNOWLIO_DB_VERSION );
 
 		if ( $is_fresh_install ) {
 			self::seed_starter_content();
@@ -111,16 +111,16 @@ class MdDatabaseHelper {
 		 * Fires after the schema is installed or upgraded.
 		 *
 		 * @since 1.0.0
-		 * @hook minidocs_database_installed
+		 * @hook knowlio_database_installed
 		 */
-		do_action( 'minidocs_database_installed' );
+		do_action( 'knowlio_database_installed' );
 	}
 
 	/**
 	 * Create a small starter knowledge base so the first screen is not empty.
 	 */
 	public static function seed_starter_content() {
-		if ( MdSettingsHelper::is_on( 'is_database_seeded' ) ) {
+		if ( KnowlioSettingsHelper::is_on( 'is_database_seeded' ) ) {
 			return;
 		}
 
@@ -148,7 +148,7 @@ class MdDatabaseHelper {
 		$category_ids = array();
 
 		foreach ( $categories as $data ) {
-			$category = new MdCategoryModel();
+			$category = new KnowlioCategoryModel();
 			$category->set_data( $data );
 
 			if ( $category->save() ) {
@@ -160,7 +160,7 @@ class MdDatabaseHelper {
 			array(
 				'title'        => __( 'Welcome to your knowledge base', 'minidocs' ),
 				'category_id'  => $category_ids[0] ?? 0,
-				'status'       => MINIDOCS_ARTICLE_STATUS_PUBLISHED,
+				'status'       => KNOWLIO_ARTICLE_STATUS_PUBLISHED,
 				'is_featured'  => 1,
 				'order_number' => 1,
 				'excerpt'      => __( 'What this plugin does, and the three things to do first.', 'minidocs' ),
@@ -170,12 +170,12 @@ class MdDatabaseHelper {
 					<h2>Organise with categories</h2>
 					<p>Categories are the cards readers see on the knowledge base landing page. Each one has an icon, a description and a sort position, all editable under <strong>Categories</strong>.</p>
 					<h2>Put it on your site</h2>
-					<p>Create a page and add the shortcode <code>[minidocs]</code>. That single shortcode renders the landing page, the category pages and the individual articles.</p>',
+					<p>Create a page and add the shortcode <code>[knowlio]</code>. That single shortcode renders the landing page, the category pages and the individual articles.</p>',
 			),
 			array(
 				'title'        => __( 'Writing and formatting articles', 'minidocs' ),
 				'category_id'  => $category_ids[1] ?? 0,
-				'status'       => MINIDOCS_ARTICLE_STATUS_PUBLISHED,
+				'status'       => KNOWLIO_ARTICLE_STATUS_PUBLISHED,
 				'is_featured'  => 1,
 				'order_number' => 1,
 				'excerpt'      => __( 'Headings, lists, code and links, and how the table of contents is built.', 'minidocs' ),
@@ -195,7 +195,7 @@ class MdDatabaseHelper {
 			array(
 				'title'        => __( 'Organising categories', 'minidocs' ),
 				'category_id'  => $category_ids[1] ?? 0,
-				'status'       => MINIDOCS_ARTICLE_STATUS_PUBLISHED,
+				'status'       => KNOWLIO_ARTICLE_STATUS_PUBLISHED,
 				'order_number' => 2,
 				'excerpt'      => __( 'Ordering, icons, and what happens when you delete a category.', 'minidocs' ),
 				'content'      => '<p>Categories group articles and give the knowledge base its shape.</p>
@@ -207,21 +207,21 @@ class MdDatabaseHelper {
 			array(
 				'title'        => __( 'My articles are not showing on the site', 'minidocs' ),
 				'category_id'  => $category_ids[2] ?? 0,
-				'status'       => MINIDOCS_ARTICLE_STATUS_PUBLISHED,
+				'status'       => KNOWLIO_ARTICLE_STATUS_PUBLISHED,
 				'order_number' => 1,
 				'excerpt'      => __( 'The three usual causes, in the order worth checking them.', 'minidocs' ),
 				'content'      => '<p>If a page shows an empty knowledge base, work through these in order.</p>
 					<h2>1. Check the status</h2>
 					<p>Only articles set to <strong>Published</strong> appear on the frontend. Filter the article list by status to see what is still in draft.</p>
 					<h2>2. Check the shortcode</h2>
-					<p>The page needs the <code>[minidocs]</code> shortcode. If you pasted it into a code block, WordPress renders it as text instead of running it.</p>
+					<p>The page needs the <code>[knowlio]</code> shortcode. If you pasted it into a code block, WordPress renders it as text instead of running it.</p>
 					<h2>3. Check the category</h2>
 					<p>The landing page only shows categories that contain at least one published article. An empty category is hidden rather than shown as a dead end.</p>',
 			),
 			array(
 				'title'        => __( 'Controlling who can edit documentation', 'minidocs' ),
 				'category_id'  => $category_ids[0] ?? 0,
-				'status'       => MINIDOCS_ARTICLE_STATUS_DRAFT,
+				'status'       => KNOWLIO_ARTICLE_STATUS_DRAFT,
 				'order_number' => 2,
 				'excerpt'      => __( 'Mapping the plugin capabilities onto your WordPress roles.', 'minidocs' ),
 				'content'      => '<p>This article is a draft, so it does not appear on the frontend. That makes it a live demonstration of the status field.</p>
@@ -231,25 +231,12 @@ class MdDatabaseHelper {
 		);
 
 		foreach ( $articles as $data ) {
-			$article = new MdArticleModel();
+			$article = new KnowlioArticleModel();
 			$article->set_data( $data );
 			$article->save();
 		}
 
-		MdSettingsHelper::save_setting( 'is_database_seeded', 'on' );
+		KnowlioSettingsHelper::save_setting( 'is_database_seeded', 'on' );
 	}
 
-	/**
-	 * Drop every plugin table. Called from uninstall.php only.
-	 */
-	public static function drop_tables() {
-		global $wpdb;
-
-		$tables = array( MINIDOCS_TABLE_ARTICLES, MINIDOCS_TABLE_CATEGORIES, MINIDOCS_TABLE_SETTINGS );
-
-		foreach ( $tables as $table ) {
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$wpdb->query( 'DROP TABLE IF EXISTS ' . $table );
-		}
-	}
 }

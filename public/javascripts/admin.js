@@ -1,5 +1,5 @@
 /**
- * MiniDocs admin bundle.
+ * Knowlio Docs admin bundle.
  *
  * One ajax function and a set of delegated handlers. Markup declares intent
  * through data attributes; there is no per-feature JavaScript.
@@ -7,13 +7,17 @@
 ( function () {
 	'use strict';
 
-	var helper = window.minidocs_helper || {};
+	var helper = window.knowlio_helper || {};
 	var i18n   = helper.i18n || {};
 
 	/* ------------------------------------------------------------------ Ajax */
 
 	/**
-	 * Call a MiniDocs route.
+	 * Call a Knowlio Docs route.
+	 *
+	 * Params are posted as ordinary form fields rather than packed into one
+	 * serialized string, so PHP parses the `article[title]` style names itself
+	 * and the server never has to unpack a payload of its own.
 	 *
 	 * @param {Object}   options        Call options.
 	 * @param {string}   options.route  Route name, `controller__action`.
@@ -21,19 +25,15 @@
 	 * @param {Function} options.onDone Called with the parsed JSON response.
 	 * @param {Function} options.onFail Called on transport failure.
 	 */
-	function minidocsCall( options ) {
-		var params = options.params || '';
+	function knowlioCall( options ) {
+		var body = new URLSearchParams( options.params || '' );
 
-		if ( typeof params === 'object' ) {
-			params = new URLSearchParams( params ).toString();
-		}
-
-		var body = new URLSearchParams();
-		body.append( 'action', helper.route_action );
-		body.append( 'route_name', options.route );
-		body.append( 'return_format', 'json' );
-		body.append( 'layout', 'none' );
-		body.append( 'params', params );
+		// set(), not append(): these four are the envelope and must never be
+		// duplicated by a form field that happens to share the name.
+		body.set( 'action', helper.route_action );
+		body.set( 'route_name', options.route );
+		body.set( 'return_format', 'json' );
+		body.set( 'layout', 'none' );
 
 		return fetch( helper.ajaxurl, {
 			method: 'POST',
@@ -59,7 +59,7 @@
 			} );
 	}
 
-	window.minidocsCall = minidocsCall;
+	window.knowlioCall = knowlioCall;
 
 	/* --------------------------------------------------------- Notifications */
 
@@ -70,14 +70,14 @@
 	 * @param {string}       status  `success` or `error`.
 	 */
 	function notify( message, status ) {
-		var stack = document.querySelector( '.md-notifications-w' );
+		var stack = document.querySelector( '.knowlio-notifications-w' );
 
 		if ( ! stack ) {
 			return;
 		}
 
 		var node = document.createElement( 'div' );
-		node.className = 'md-notification md-notification-' + ( status || 'success' );
+		node.className = 'knowlio-notification knowlio-notification-' + ( status || 'success' );
 
 		if ( Array.isArray( message ) ) {
 			var list = document.createElement( 'ul' );
@@ -102,18 +102,18 @@
 		}, 4200 );
 	}
 
-	window.minidocsNotify = notify;
+	window.knowlioNotify = notify;
 
 	/* ------------------------------------------------------------ Side panel */
 
 	function openSidePanel( html ) {
-		var wrap = document.querySelector( '.md-side-panel-w' );
+		var wrap = document.querySelector( '.knowlio-side-panel-w' );
 
 		if ( ! wrap ) {
 			return null;
 		}
 
-		var body = wrap.querySelector( '.md-side-panel-body' );
+		var body = wrap.querySelector( '.knowlio-side-panel-body' );
 		body.innerHTML = html;
 		wrap.hidden = false;
 		document.body.style.overflow = 'hidden';
@@ -127,7 +127,7 @@
 	}
 
 	function closeSidePanel() {
-		var wrap = document.querySelector( '.md-side-panel-w' );
+		var wrap = document.querySelector( '.knowlio-side-panel-w' );
 
 		if ( ! wrap ) {
 			return;
@@ -139,20 +139,20 @@
 		destroyArticleEditor();
 
 		wrap.hidden = true;
-		wrap.querySelector( '.md-side-panel-body' ).innerHTML = '';
+		wrap.querySelector( '.knowlio-side-panel-body' ).innerHTML = '';
 		document.body.style.overflow = '';
 	}
 
-	window.minidocsCloseSidePanel = closeSidePanel;
+	window.knowlioCloseSidePanel = closeSidePanel;
 
 	function openLightbox( html ) {
-		var wrap = document.querySelector( '.md-lightbox-w' );
+		var wrap = document.querySelector( '.knowlio-lightbox-w' );
 
 		if ( ! wrap ) {
 			return null;
 		}
 
-		var body = wrap.querySelector( '.md-lightbox-body' );
+		var body = wrap.querySelector( '.knowlio-lightbox-body' );
 		body.innerHTML = html;
 		wrap.hidden = false;
 
@@ -160,11 +160,11 @@
 	}
 
 	function closeLightbox() {
-		var wrap = document.querySelector( '.md-lightbox-w' );
+		var wrap = document.querySelector( '.knowlio-lightbox-w' );
 
 		if ( wrap ) {
 			wrap.hidden = true;
-			wrap.querySelector( '.md-lightbox-body' ).innerHTML = '';
+			wrap.querySelector( '.knowlio-lightbox-body' ).innerHTML = '';
 		}
 	}
 
@@ -172,11 +172,11 @@
 
 	document.addEventListener( 'click', function ( event ) {
 		// Ignore clicks that landed on a nested control with its own behaviour.
-		if ( event.target.closest( '[data-md-delete], .md-row-delete, a[href]:not([data-md-action])' ) ) {
+		if ( event.target.closest( '[data-knowlio-delete], .knowlio-row-delete, a[href]:not([data-knowlio-action])' ) ) {
 			return;
 		}
 
-		var trigger = event.target.closest( '[data-md-action]' );
+		var trigger = event.target.closest( '[data-knowlio-action]' );
 
 		if ( ! trigger ) {
 			return;
@@ -184,11 +184,11 @@
 
 		event.preventDefault();
 
-		var target = trigger.dataset.mdTarget || 'side-panel';
+		var target = trigger.dataset.knowlioTarget || 'side-panel';
 
-		minidocsCall( {
-			route: trigger.dataset.mdAction,
-			params: trigger.dataset.mdParams || '',
+		knowlioCall( {
+			route: trigger.dataset.knowlioAction,
+			params: trigger.dataset.knowlioParams || '',
 			onDone: function ( response ) {
 				if ( response.status === 'error' ) {
 					notify( response.message, 'error' );
@@ -208,7 +208,7 @@
 					}
 				}
 
-				var callback = trigger.dataset.mdAfterCall;
+				var callback = trigger.dataset.knowlioAfterCall;
 
 				if ( callback && typeof window[ callback ] === 'function' ) {
 					window[ callback ]( container, response );
@@ -220,12 +220,12 @@
 	/* ------------------------------------------------------- Panel dismissal */
 
 	document.addEventListener( 'click', function ( event ) {
-		if ( event.target.closest( '[data-md-close-panel]' ) ) {
+		if ( event.target.closest( '[data-knowlio-close-panel]' ) ) {
 			event.preventDefault();
 			closeSidePanel();
 		}
 
-		if ( event.target.closest( '[data-md-close-lightbox]' ) ) {
+		if ( event.target.closest( '[data-knowlio-close-lightbox]' ) ) {
 			event.preventDefault();
 			closeLightbox();
 		}
@@ -274,7 +274,7 @@
 			window.tinymce.triggerSave();
 		}
 
-		minidocsCall( {
+		knowlioCall( {
 			route: form.dataset.routeName,
 			params: new URLSearchParams( new FormData( form ) ).toString(),
 			onDone: function ( response ) {
@@ -291,7 +291,7 @@
 
 				notify( response.message, 'success' );
 
-				if ( form.closest( '.md-side-panel' ) ) {
+				if ( form.closest( '.knowlio-side-panel' ) ) {
 					closeSidePanel();
 				}
 
@@ -310,16 +310,16 @@
 	} );
 
 	function clearFormMessages( form ) {
-		form.querySelectorAll( '.md-form-message' ).forEach( function ( node ) {
+		form.querySelectorAll( '.knowlio-form-message' ).forEach( function ( node ) {
 			node.remove();
 		} );
 	}
 
 	function showFormMessage( form, message, status ) {
-		var content = form.querySelector( '.md-form-content' ) || form;
+		var content = form.querySelector( '.knowlio-form-content' ) || form;
 		var node    = document.createElement( 'div' );
 
-		node.className = 'md-form-message md-form-message-' + status;
+		node.className = 'knowlio-form-message knowlio-form-message-' + status;
 
 		if ( Array.isArray( message ) ) {
 			var list = document.createElement( 'ul' );
@@ -347,7 +347,7 @@
 	 * @param {number} pageNumber Optional page to load.
 	 */
 	function refreshTable( pageNumber ) {
-		var table = document.querySelector( '[data-md-table-route]' );
+		var table = document.querySelector( '[data-knowlio-table-route]' );
 
 		if ( ! table ) {
 			return;
@@ -355,29 +355,29 @@
 
 		var params = new URLSearchParams();
 
-		table.querySelectorAll( '.md-table-filter' ).forEach( function ( input ) {
+		table.querySelectorAll( '.knowlio-table-filter' ).forEach( function ( input ) {
 			if ( input.name && input.value !== '' ) {
 				params.append( input.name, input.value );
 			}
 		} );
 
-		var picker = table.querySelector( '.md-page-picker' );
+		var picker = table.querySelector( '.knowlio-page-picker' );
 		params.append( 'page_number', pageNumber || ( picker ? picker.value : 1 ) );
 
-		table.classList.add( 'md-is-loading' );
+		table.classList.add( 'knowlio-is-loading' );
 
-		minidocsCall( {
-			route: table.dataset.mdTableRoute,
+		knowlioCall( {
+			route: table.dataset.knowlioTableRoute,
 			params: params.toString(),
 			onDone: function ( response ) {
-				table.classList.remove( 'md-is-loading' );
+				table.classList.remove( 'knowlio-is-loading' );
 
 				if ( response.status === 'error' ) {
 					notify( response.message, 'error' );
 					return;
 				}
 
-				var body = table.querySelector( '.md-table-body' );
+				var body = table.querySelector( '.knowlio-table-body' );
 
 				if ( body ) {
 					body.innerHTML = response.message;
@@ -386,18 +386,18 @@
 				updatePaginationLabels( table, response );
 			},
 			onFail: function () {
-				table.classList.remove( 'md-is-loading' );
+				table.classList.remove( 'knowlio-is-loading' );
 			}
 		} );
 	}
 
-	window.minidocsRefreshTable = refreshTable;
+	window.knowlioRefreshTable = refreshTable;
 
 	function updatePaginationLabels( table, response ) {
 		var map = {
-			'.md-pagination-from': response.showing_from,
-			'.md-pagination-to': response.showing_to,
-			'.md-pagination-total': response.total_records
+			'.knowlio-pagination-from': response.showing_from,
+			'.knowlio-pagination-to': response.showing_to,
+			'.knowlio-pagination-total': response.total_records
 		};
 
 		Object.keys( map ).forEach( function ( selector ) {
@@ -409,7 +409,7 @@
 			} );
 		} );
 
-		var picker = table.querySelector( '.md-page-picker' );
+		var picker = table.querySelector( '.knowlio-page-picker' );
 
 		if ( picker && response.total_pages ) {
 			var current = picker.value;
@@ -427,7 +427,7 @@
 	}
 
 	document.addEventListener( 'input', function ( event ) {
-		if ( ! event.target.classList.contains( 'md-table-filter' ) ) {
+		if ( ! event.target.classList.contains( 'knowlio-table-filter' ) ) {
 			return;
 		}
 
@@ -438,12 +438,12 @@
 	} );
 
 	document.addEventListener( 'change', function ( event ) {
-		if ( event.target.classList.contains( 'md-table-filter' ) ) {
+		if ( event.target.classList.contains( 'knowlio-table-filter' ) ) {
 			clearTimeout( filterTimer );
 			refreshTable( 1 );
 		}
 
-		if ( event.target.classList.contains( 'md-page-picker' ) ) {
+		if ( event.target.classList.contains( 'knowlio-page-picker' ) ) {
 			refreshTable( event.target.value );
 		}
 	} );
@@ -453,18 +453,18 @@
 	var pendingDelete = null;
 
 	function showConfirm( message ) {
-		var wrap = document.querySelector( '.md-confirm-w' );
+		var wrap = document.querySelector( '.knowlio-confirm-w' );
 
 		if ( ! wrap ) {
 			return;
 		}
 
-		wrap.querySelector( '.md-confirm-message' ).textContent = message;
+		wrap.querySelector( '.knowlio-confirm-message' ).textContent = message;
 		wrap.hidden = false;
 	}
 
 	function hideConfirm() {
-		var wrap = document.querySelector( '.md-confirm-w' );
+		var wrap = document.querySelector( '.knowlio-confirm-w' );
 
 		if ( wrap ) {
 			wrap.hidden = true;
@@ -474,35 +474,35 @@
 	}
 
 	document.addEventListener( 'click', function ( event ) {
-		var trigger = event.target.closest( '[data-md-delete]' );
+		var trigger = event.target.closest( '[data-knowlio-delete]' );
 
 		if ( trigger ) {
 			event.preventDefault();
 			event.stopPropagation();
 
 			pendingDelete = {
-				route: trigger.dataset.mdDelete,
-				id: trigger.dataset.mdId,
-				nonce: trigger.dataset.mdNonce
+				route: trigger.dataset.knowlioDelete,
+				id: trigger.dataset.knowlioId,
+				nonce: trigger.dataset.knowlioNonce
 			};
 
 			showConfirm( i18n.confirm_delete || 'Are you sure?' );
 			return;
 		}
 
-		if ( event.target.closest( '[data-md-confirm-cancel]' ) ) {
+		if ( event.target.closest( '[data-knowlio-confirm-cancel]' ) ) {
 			event.preventDefault();
 			hideConfirm();
 			return;
 		}
 
-		if ( event.target.closest( '[data-md-confirm-ok]' ) && pendingDelete ) {
+		if ( event.target.closest( '[data-knowlio-confirm-ok]' ) && pendingDelete ) {
 			event.preventDefault();
 
 			var job = pendingDelete;
 			hideConfirm();
 
-			minidocsCall( {
+			knowlioCall( {
 				route: job.route,
 				params: { id: job.id, _wpnonce: job.nonce },
 				onDone: function ( response ) {
@@ -519,7 +519,7 @@
 	/* ------------------------------------------------------------ Copy buttons */
 
 	document.addEventListener( 'click', function ( event ) {
-		var button = event.target.closest( '[data-md-copy], [data-md-copy-text]' );
+		var button = event.target.closest( '[data-knowlio-copy], [data-knowlio-copy-text]' );
 
 		if ( ! button ) {
 			return;
@@ -527,10 +527,10 @@
 
 		event.preventDefault();
 
-		var text = button.dataset.mdCopyText;
+		var text = button.dataset.knowlioCopyText;
 
 		if ( typeof text === 'undefined' ) {
-			var block = button.closest( '.md-code-block' );
+			var block = button.closest( '.knowlio-code-block' );
 			var code  = block ? block.querySelector( 'code' ) : null;
 			text = code ? code.textContent : '';
 		}
@@ -572,138 +572,15 @@
 		area.remove();
 	}
 
-	/* -------------------------------------------------------- Docs nav filter */
-
-	document.addEventListener( 'input', function ( event ) {
-		if ( ! event.target.classList.contains( 'md-docs-search' ) ) {
-			return;
-		}
-
-		var query = event.target.value.trim().toLowerCase();
-		var scope = event.target.closest( '.md-docs-nav, .md-front-docs-nav' );
-
-		if ( ! scope ) {
-			return;
-		}
-
-		var visible = 0;
-
-		scope.querySelectorAll( '[data-md-search-text]' ).forEach( function ( item ) {
-			var matches = ! query || item.dataset.mdSearchText.indexOf( query ) !== -1;
-			item.hidden = ! matches;
-
-			if ( matches ) {
-				visible++;
-			}
-		} );
-
-		scope.querySelectorAll( '.md-docs-chapter' ).forEach( function ( chapter ) {
-			var shown = chapter.querySelectorAll( '[data-md-search-text]:not([hidden])' ).length;
-			chapter.hidden = query && ! shown;
-		} );
-
-		var empty = scope.querySelector( '.md-docs-no-results' );
-
-		if ( empty ) {
-			empty.hidden = ! ( query && ! visible );
-		}
-	} );
-
-	/* --------------------------------------------------- Top bar docs search */
-
-	document.addEventListener( 'DOMContentLoaded', function () {
-		var input = document.getElementById( 'mpDocsQuickSearch' );
-
-		if ( ! input ) {
-			return;
-		}
-
-		var results = input.parentNode.querySelector( '.md-top-search-results' );
-		var index   = buildDocsIndex();
-
-		input.addEventListener( 'input', function () {
-			var query = input.value.trim().toLowerCase();
-
-			if ( ! query ) {
-				results.hidden = true;
-				return;
-			}
-
-			var matches = index.filter( function ( entry ) {
-				return entry.search.indexOf( query ) !== -1;
-			} ).slice( 0, 8 );
-
-			results.innerHTML = '';
-
-			if ( ! matches.length ) {
-				var empty = document.createElement( 'div' );
-				empty.className = 'md-search-empty';
-				empty.textContent = i18n.no_results || 'No matching pages';
-				results.appendChild( empty );
-			} else {
-				matches.forEach( function ( entry ) {
-					var link = document.createElement( 'a' );
-					link.href = entry.href;
-					link.textContent = entry.title;
-
-					var chapter = document.createElement( 'small' );
-					chapter.textContent = entry.chapter;
-					link.appendChild( chapter );
-
-					results.appendChild( link );
-				} );
-			}
-
-			results.hidden = false;
-		} );
-
-		document.addEventListener( 'click', function ( event ) {
-			if ( ! event.target.closest( '.md-top-search-w' ) ) {
-				results.hidden = true;
-			}
-		} );
-	} );
-
-	/**
-	 * Build the quick-search index from the docs nav when it is on the page.
-	 *
-	 * @return {Array} Index entries.
-	 */
-	function buildDocsIndex() {
-		var index = [];
-
-		document.querySelectorAll( '.md-docs-nav .md-docs-chapter' ).forEach( function ( chapter ) {
-			var titleNode = chapter.querySelector( '.md-docs-chapter-title span' );
-			var chapterTitle = titleNode ? titleNode.textContent : '';
-
-			chapter.querySelectorAll( '.md-docs-page-list li' ).forEach( function ( item ) {
-				var link = item.querySelector( 'a' );
-
-				if ( ! link ) {
-					return;
-				}
-
-				index.push( {
-					title: link.textContent.trim(),
-					chapter: chapterTitle,
-					href: link.href,
-					search: ( item.dataset.mdSearchText || link.textContent ).toLowerCase()
-				} );
-			} );
-		} );
-
-		return index;
-	}
-
 	/* -------------------------------------------------------- Mobile menu */
 
 	document.addEventListener( 'click', function ( event ) {
-		if ( event.target.closest( '.md-mobile-menu-trigger, .md-menu-fold-trigger' ) ) {
+		if ( event.target.closest( '.knowlio-mobile-menu-trigger, .knowlio-menu-fold-trigger' ) ) {
 			event.preventDefault();
-			var wrapper = document.querySelector( '.minidocs-all-wrapper' );
+			var wrapper = document.querySelector( '.knowlio-all-wrapper' );
 
 			if ( wrapper ) {
-				wrapper.classList.toggle( 'md-menu-open' );
+				wrapper.classList.toggle( 'knowlio-menu-open' );
 			}
 		}
 	} );
@@ -712,7 +589,7 @@
 
 	// The id of the textarea the WordPress editor is attached to. It is fixed,
 	// because only one article editor is ever open at a time.
-	var ARTICLE_EDITOR_ID = 'md-article-content';
+	var ARTICLE_EDITOR_ID = 'knowlio-article-content';
 
 	/**
 	 * Toolbar configuration passed to wp.editor.initialize().
@@ -840,12 +717,12 @@
 	}
 
 	document.addEventListener( 'change', function ( event ) {
-		if ( 'md-article-template' !== event.target.id ) {
+		if ( 'knowlio-article-template' !== event.target.id ) {
 			return;
 		}
 
 		var slug = event.target.value;
-		var templates = ( window.minidocs_helper && window.minidocs_helper.templates ) || {};
+		var templates = ( window.knowlio_helper && window.knowlio_helper.templates ) || {};
 
 		if ( ! slug || ! templates[ slug ] ) {
 			return;
@@ -866,7 +743,7 @@
 	 *
 	 * @param {HTMLElement} container Injected markup root.
 	 */
-	window.minidocsInitArticleForm = function ( container ) {
+	window.knowlioInitArticleForm = function ( container ) {
 		if ( ! container ) {
 			return;
 		}
@@ -874,7 +751,7 @@
 		initArticleEditor();
 
 		document.dispatchEvent(
-			new CustomEvent( 'minidocs:article-form-ready', { detail: { container: container } } )
+			new CustomEvent( 'knowlio:article-form-ready', { detail: { container: container } } )
 		);
 	};
 } )();

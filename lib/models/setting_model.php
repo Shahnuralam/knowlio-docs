@@ -4,9 +4,9 @@
  *
  * Included mostly to show that the same base class serves a trivial two-column
  * table as well as it serves a full entity. Reads and writes normally go
- * through MdSettingsHelper, which caches.
+ * through KnowlioSettingsHelper, which caches.
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,9 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class MdSettingModel
+ * Class KnowlioSettingModel
  */
-class MdSettingModel extends MdModel {
+class KnowlioSettingModel extends KnowlioModel {
 
 	/**
 	 * Primary key.
@@ -47,7 +47,7 @@ class MdSettingModel extends MdModel {
 	public function __construct( $id = false ) {
 		parent::__construct();
 
-		$this->table_name = MINIDOCS_TABLE_SETTINGS;
+		$this->table_name = KNOWLIO_TABLE_SETTINGS;
 
 		$this->nice_names = array(
 			'name'  => __( 'Setting Name', 'minidocs' ),

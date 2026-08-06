@@ -9,7 +9,7 @@
  * restrictive capability, so forgetting to register a new controller locks it
  * down rather than opening it up.
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,11 +17,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 return array(
-	'MdDashboardController'  => array(
+	'KnowlioDashboardController'  => array(
 		'default' => array( 'article__view' ),
 	),
 
-	'MdArticlesController'   => array(
+	'KnowlioArticlesController'   => array(
 		'default'    => array( 'article__edit' ),
 		'per_action' => array(
 			'index'      => array( 'article__view' ),
@@ -32,7 +32,7 @@ return array(
 		),
 	),
 
-	'MdCategoriesController' => array(
+	'KnowlioCategoriesController' => array(
 		'default'    => array( 'category__edit' ),
 		'per_action' => array(
 			'index'      => array( 'category__view' ),
@@ -43,7 +43,7 @@ return array(
 		),
 	),
 
-	'MdSettingsController'   => array(
+	'KnowlioSettingsController'   => array(
 		'default' => array( 'settings__edit' ),
 	),
 );

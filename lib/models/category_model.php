@@ -2,7 +2,7 @@
 /**
  * Knowledge base category.
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class MdCategoryModel
+ * Class KnowlioCategoryModel
  */
-class MdCategoryModel extends MdModel {
+class KnowlioCategoryModel extends KnowlioModel {
 
 	/**
 	 * Primary key.
@@ -71,6 +71,13 @@ class MdCategoryModel extends MdModel {
 	public $updated_at;
 
 	/**
+	 * Articles already fetched for this instance, keyed by scope and limit.
+	 *
+	 * @var array
+	 */
+	private $articles_cache = array();
+
+	/**
 	 * Constructor.
 	 *
 	 * @param int|false $id Optional record id.
@@ -78,7 +85,7 @@ class MdCategoryModel extends MdModel {
 	public function __construct( $id = false ) {
 		parent::__construct();
 
-		$this->table_name = MINIDOCS_TABLE_CATEGORIES;
+		$this->table_name = KNOWLIO_TABLE_CATEGORIES;
 
 		$this->nice_names = array(
 			'name'         => __( 'Category Name', 'minidocs' ),
@@ -146,7 +153,7 @@ class MdCategoryModel extends MdModel {
 	 */
 	protected function set_defaults() {
 		if ( empty( $this->slug ) && ! empty( $this->name ) ) {
-			$this->slug = MdUtilHelper::slugify( $this->name );
+			$this->slug = KnowlioUtilHelper::slugify( $this->name );
 		}
 
 		if ( empty( $this->icon ) ) {
@@ -163,7 +170,7 @@ class MdCategoryModel extends MdModel {
 	 * CSS class even though it is printed into a class attribute.
 	 */
 	protected function before_save() {
-		if ( ! array_key_exists( (string) $this->icon, MdCategoriesHelper::get_icons_list() ) ) {
+		if ( ! array_key_exists( (string) $this->icon, KnowlioCategoriesHelper::get_icons_list() ) ) {
 			$this->icon = 'dashicons-media-document';
 		}
 	}
@@ -185,7 +192,7 @@ class MdCategoryModel extends MdModel {
 		// Orphaned articles stay readable rather than disappearing with the category.
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		$this->db->update(
-			MINIDOCS_TABLE_ARTICLES,
+			KNOWLIO_TABLE_ARTICLES,
 			array( 'category_id' => 0 ),
 			array( 'category_id' => $id ),
 			array( '%d' ),
@@ -203,7 +210,7 @@ class MdCategoryModel extends MdModel {
 	 * @return static|null
 	 */
 	public function load_by_slug( string $slug ) {
-		return $this->where( array( 'slug' => $slug ) )->set_limit( 1 )->get_results_as_models();
+		return $this->where( array( 'slug' => $slug ) )->get_first();
 	}
 
 	/**
@@ -214,14 +221,9 @@ class MdCategoryModel extends MdModel {
 	 * @return int
 	 */
 	public function get_articles_count( bool $published_only = false ): int {
-		$articles = new MdArticleModel();
-		$articles->where( array( 'category_id' => (int) $this->id ) );
+		$counts = KnowlioCategoriesHelper::get_article_counts( $published_only );
 
-		if ( $published_only ) {
-			$articles->should_be_published();
-		}
-
-		return $articles->count();
+		return (int) ( $counts[ (int) $this->id ] ?? 0 );
 	}
 
 	/**
@@ -230,10 +232,16 @@ class MdCategoryModel extends MdModel {
 	 * @param bool $published_only Restrict to published articles.
 	 * @param int  $limit          Optional row limit.
 	 *
-	 * @return MdArticleModel[]
+	 * @return KnowlioArticleModel[]
 	 */
 	public function get_articles( bool $published_only = true, int $limit = 0 ): array {
-		$articles = new MdArticleModel();
+		$cache_key = ( $published_only ? 'p' : 'a' ) . ':' . $limit;
+
+		if ( isset( $this->articles_cache[ $cache_key ] ) ) {
+			return $this->articles_cache[ $cache_key ];
+		}
+
+		$articles = new KnowlioArticleModel();
 		$articles->where( array( 'category_id' => (int) $this->id ) );
 
 		if ( $published_only ) {
@@ -246,7 +254,9 @@ class MdCategoryModel extends MdModel {
 			$articles->set_limit( $limit );
 		}
 
-		return (array) $articles->get_results_as_models();
+		$this->articles_cache[ $cache_key ] = (array) $articles->get_results_as_models();
+
+		return $this->articles_cache[ $cache_key ];
 	}
 
 	/**
@@ -255,7 +265,7 @@ class MdCategoryModel extends MdModel {
 	 * @return string
 	 */
 	public function get_icon_class(): string {
-		$icons = MdCategoriesHelper::get_icons_list();
+		$icons = KnowlioCategoriesHelper::get_icons_list();
 
 		return array_key_exists( (string) $this->icon, $icons ) ? (string) $this->icon : 'dashicons-media-document';
 	}

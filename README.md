@@ -1,4 +1,4 @@
-# MiniDocs
+# Knowlio Docs
 
 A self-contained **knowledge base / documentation** plugin for WordPress. Write and organise documentation in a clean, full-screen admin, then publish a fast, professional docs site on the front end with a single shortcode.
 
@@ -14,7 +14,7 @@ No page builder, no external service, and no dependency on any other plugin.
 - Draft / published states, manual ordering, and featured articles pinned to the landing page.
 
 **Front end**
-- One shortcode — `[minidocs]` — renders the whole knowledge base: landing page, category pages, single articles, and search.
+- One shortcode — `[knowlio]` — renders the whole knowledge base: landing page, category pages, single articles, and search.
 - Selectable **layout presets**: sidebar, wide, boxed, magazine.
 - Automatic **table of contents** built from article headings, with scroll highlighting.
 - Estimated reading time, view counts, and copy-to-clipboard buttons on code blocks.
@@ -32,31 +32,31 @@ No page builder, no external service, and no dependency on any other plugin.
 
 ## Installation
 
-1. Copy the `minidocs` folder into `wp-content/plugins/` (or upload a zip via **Plugins → Add New**).
-2. Activate **MiniDocs** from the *Plugins* screen.
-3. Under the **MiniDocs** menu, add one or more categories and articles.
-4. Create a WordPress page (e.g. "Docs") and add the `[minidocs]` shortcode.
-5. In **MiniDocs → Settings**, select that page as the knowledge base page and pick a layout preset.
+1. Copy the `knowlio-docs` folder into `wp-content/plugins/` (or upload a zip via **Plugins → Add New**).
+2. Activate **Knowlio Docs** from the *Plugins* screen.
+3. Under the **Knowlio Docs** menu, add one or more categories and articles.
+4. Create a WordPress page (e.g. "Docs") and add the `[knowlio]` shortcode.
+5. In **Knowlio Docs → Settings**, select that page as the knowledge base page and pick a layout preset.
 
 ## Usage
 
 Put the shortcode on any page:
 
 ```
-[minidocs]
+[knowlio]
 ```
 
-The single shortcode renders every state — landing page, category listing, single article, and search — based on the URL query (`md_cat`, `md_article`, `md_s`).
+The single shortcode renders every state — landing page, category listing, single article, and search — based on the URL query (`knowlio_cat`, `knowlio_article`, `knowlio_s`).
 
 ## Architecture
 
-MiniDocs uses a small self-contained MVC framework inside the plugin (modelled on the LatePoint architecture):
+Knowlio Docs uses a small self-contained MVC framework inside the plugin:
 
-- **String router** — `controller__action` resolves to `Md{Name}Controller`, reached via `admin.php?page=minidocs`, `admin-ajax`, and `admin-post`.
-- **Active-Record ORM** (`MdModel`) over `$wpdb` — chainable `where/join/order_by`, prepared values, mass-assignment and persistence whitelists, declarative validations, lifecycle callbacks.
+- **String router** — `controller__action` resolves to `Knowlio{Name}Controller`, reached via `admin.php?page=knowlio-docs` and `admin-ajax`/`admin-post` (authenticated only).
+- **Active-Record ORM** (`KnowlioModel`) over `$wpdb` — chainable `where/join/order_by`, prepared values, mass-assignment and persistence whitelists, declarative validations, lifecycle callbacks.
 - **View/layout renderer** with dual HTML/JSON output.
-- Custom tables created via `dbDelta`, versioned by `MINIDOCS_DB_VERSION`.
+- Custom tables created via `dbDelta`, versioned by `KNOWLIO_DB_VERSION`.
 
 ## License
 
-[GPLv3](LICENSE) © Shahnur Alam
+[GPLv3 or later](LICENSE) © Shahnur Alam

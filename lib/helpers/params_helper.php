@@ -5,7 +5,7 @@
  * Every controller reads request data through this helper instead of touching
  * the superglobals, which gives one place to unslash and whitelist input.
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -13,9 +13,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class MdParamsHelper
+ * Class KnowlioParamsHelper
  */
-class MdParamsHelper {
+class KnowlioParamsHelper {
 
 	/**
 	 * Cached params for the current request.
@@ -25,46 +25,52 @@ class MdParamsHelper {
 	private static $params = null;
 
 	/**
-	 * Load params from the request.
+	 * Collect and sanitize the request.
 	 *
-	 * The JS layer posts a url-encoded `params` string (the serialized form), so
-	 * that is parsed first, then merged with plain POST and GET data.
+	 * Everything is unslashed and sanitized here, as soon as it is read, rather
+	 * than later on at the point of use: `sanitize_textarea_field()` is applied
+	 * to every value of both superglobals, so nothing reaches a controller,
+	 * a hook or the query builder in its raw form.
+	 *
+	 * The article body is the one exception. It is HTML by design, and the
+	 * plain-text sanitizer would strip every tag out of it, so it takes
+	 * `wp_kses_post()` instead -- the correct sanitizer for that content, and
+	 * the same one the model applies again before the value is persisted.
+	 *
+	 * GET is merged last so that it wins, which is what the admin screens
+	 * expect: the page URL decides the route, a form post decides the payload.
 	 */
 	private static function load_params() {
-		$post_params = array();
+		/*
+		 * Nonce verification belongs to the action that acts on these params,
+		 * not to the code that reads them: see KnowlioController::check_nonce(),
+		 * which every write action calls before it touches the database.
+		 */
+		// phpcs:disable WordPress.Security.NonceVerification
 
-		// phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
-		if ( isset( $_POST['params'] ) ) {
-			if ( is_string( $_POST['params'] ) ) {
-				parse_str( wp_unslash( $_POST['params'] ), $post_params );
-			} elseif ( is_array( $_POST['params'] ) ) {
-				$post_params = wp_unslash( $_POST['params'] );
-			}
+		$post = map_deep( wp_unslash( $_POST ), 'sanitize_textarea_field' );
+		$get  = map_deep( wp_unslash( $_GET ), 'sanitize_textarea_field' );
+
+		if ( isset( $_POST['article']['content'] ) && is_string( $_POST['article']['content'] ) ) {
+			$post['article']['content'] = wp_kses_post( wp_unslash( $_POST['article']['content'] ) );
 		}
 
-		$params = array_merge(
-			(array) $post_params,
-			wp_unslash( (array) $_POST ),
-			wp_unslash( (array) $_GET )
-		);
 		// phpcs:enable
 
-		unset( $params['params'] );
-
-		self::$params = self::deep_clean( $params );
+		self::$params = self::deep_trim( array_merge( $post, $get ) );
 	}
 
 	/**
-	 * Recursively trim and strip control characters. Field-level sanitization
-	 * still happens in the model, this is only a first pass.
+	 * Recursively trim surrounding whitespace. Sanitization has already
+	 * happened in load_params(); this only tidies the values.
 	 *
-	 * @param mixed $value Raw value.
+	 * @param mixed $value Sanitized value.
 	 *
 	 * @return mixed
 	 */
-	private static function deep_clean( $value ) {
+	private static function deep_trim( $value ) {
 		if ( is_array( $value ) ) {
-			return array_map( array( __CLASS__, 'deep_clean' ), $value );
+			return array_map( array( __CLASS__, 'deep_trim' ), $value );
 		}
 
 		if ( is_string( $value ) ) {
@@ -102,15 +108,6 @@ class MdParamsHelper {
 	}
 
 	/**
-	 * Uploaded files for the current request.
-	 *
-	 * @return array
-	 */
-	public static function get_files(): array {
-		return isset( $_FILES ) ? (array) $_FILES : array();
-	}
-
-	/**
 	 * Keep only the whitelisted keys of an array. Used before mass assignment.
 	 *
 	 * @param array $params       Incoming params.
@@ -131,6 +128,16 @@ class MdParamsHelper {
 	 * @return mixed
 	 */
 	public static function sanitize_param( $value, string $rule ) {
+		/*
+		 * Every rule below produces a scalar. A crafted payload can post an
+		 * array where a field is expected (`article[title][]=x`), and casting
+		 * that to string would yield the literal "Array" plus a PHP warning,
+		 * so it is rejected outright instead.
+		 */
+		if ( is_array( $value ) || is_object( $value ) ) {
+			$value = '';
+		}
+
 		switch ( $rule ) {
 			case 'text':
 				return sanitize_text_field( (string) $value );

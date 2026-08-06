@@ -1,10 +1,10 @@
 <?php
 /**
- * Standalone article list, rendered by [minidocs_articles].
+ * Standalone article list, rendered by [knowlio_articles].
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  *
- * @var MdArticleModel[] $articles
+ * @var KnowlioArticleModel[] $articles
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,14 +15,14 @@ if ( empty( $articles ) ) {
 	return;
 }
 ?>
-<div class="md-front md-front-article-list">
-	<ul class="md-article-list">
-		<?php foreach ( $articles as $md_article ) { ?>
+<div class="knowlio-front knowlio-front-article-list">
+	<ul class="knowlio-article-list">
+		<?php foreach ( $articles as $knowlio_article ) { ?>
 			<li>
-				<a href="<?php echo esc_url( MdShortcodesHelper::article_url( $md_article->slug ) ); ?>">
-					<span class="md-article-list-title"><?php echo esc_html( $md_article->title ); ?></span>
-					<?php if ( $md_article->get_summary( 18 ) ) { ?>
-						<span class="md-article-list-desc"><?php echo esc_html( $md_article->get_summary( 18 ) ); ?></span>
+				<a href="<?php echo esc_url( KnowlioShortcodesHelper::article_url( $knowlio_article->slug ) ); ?>">
+					<span class="knowlio-article-list-title"><?php echo esc_html( $knowlio_article->title ); ?></span>
+					<?php if ( $knowlio_article->get_summary( 18 ) ) { ?>
+						<span class="knowlio-article-list-desc"><?php echo esc_html( $knowlio_article->get_summary( 18 ) ); ?></span>
 					<?php } ?>
 				</a>
 			</li>

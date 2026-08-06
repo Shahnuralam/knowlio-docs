@@ -1,18 +1,18 @@
-=== MiniDocs ===
-Contributors: shahnuralam
+=== Knowlio Docs ===
+Contributors: shahnuralam025
 Tags: documentation, knowledge base, docs, help center, faq
 Requires at least: 5.8
-Tested up to: 6.7
+Tested up to: 7.0
 Requires PHP: 7.4
 Stable tag: 1.0.0
-License: GPLv3
+License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-A self-contained knowledge base and documentation plugin: manage docs in wp-admin and publish a professional docs site with the [minidocs] shortcode.
+A self-contained knowledge base and documentation plugin: manage docs in wp-admin and publish a professional docs site with the [knowlio] shortcode.
 
 == Description ==
 
-MiniDocs turns WordPress into a complete knowledge base / documentation site. You write and organise articles inside a clean, full-screen admin, and readers browse a fast, professional documentation front end published with a single shortcode.
+Knowlio Docs turns WordPress into a complete knowledge base / documentation site. You write and organise articles inside a clean, full-screen admin, and readers browse a fast, professional documentation front end published with a single shortcode.
 
 It is fully self-contained: no page builder, no external service, and no dependency on any other plugin.
 
@@ -26,47 +26,57 @@ It is fully self-contained: no page builder, no external service, and no depende
 
 **Front end**
 
-* One shortcode — `[minidocs]` — renders the whole knowledge base: landing page, category pages, single articles, and search.
+* One shortcode — `[knowlio]` — renders the whole knowledge base: landing page, category pages, single articles, and search.
 * Selectable layout presets: sidebar, wide, boxed, and magazine.
 * Automatic table of contents built from the article's headings, with scroll highlighting.
 * Estimated reading time, view counts, and copy-to-clipboard buttons on code blocks.
-* Responsive images: MiniDocs adds `srcset`, `sizes`, and lazy loading so a reader never downloads a full-resolution file just to see it scaled down in the reading column.
+* Responsive images: Knowlio Docs adds `srcset`, `sizes`, and lazy loading so a reader never downloads a full-resolution file just to see it scaled down in the reading column.
 
 **Built to WordPress standards**
 
 * Output is escaped, input is sanitised and unslashed, and every write action is protected by a nonce and a capability check.
 * All database access uses prepared statements against the plugin's own tables.
-* Fully translatable (text domain `minidocs`).
+* No anonymous request handlers: every route requires a logged-in user with the right capability.
+* Your WordPress admin bar stays exactly where it is, so you are never trapped inside the plugin.
+* Fully translatable (text domain `minidocs`), including right-to-left and non-Latin scripts.
 
 == Installation ==
 
-1. Upload the `minidocs` folder to the `/wp-content/plugins/` directory, or install the plugin through the Plugins screen in WordPress.
+1. Upload the `knowlio-docs` folder to the `/wp-content/plugins/` directory, or install the plugin through the Plugins screen in WordPress.
 2. Activate the plugin through the *Plugins* screen.
-3. Open the **MiniDocs** menu, then add one or more categories and articles.
-4. Create a WordPress page (e.g. "Docs") and add the `[minidocs]` shortcode to its content.
-5. In **MiniDocs → Settings**, select that page as the knowledge base page and choose a layout preset.
+3. Open the **Knowlio Docs** menu, then add one or more categories and articles.
+4. Create a WordPress page (e.g. "Docs") and add the `[knowlio]` shortcode to its content.
+5. In **Knowlio Docs → Settings**, select that page as the knowledge base page and choose a layout preset.
 
 == Frequently Asked Questions ==
 
 = How do I display the knowledge base on the front end? =
 
-Create a normal WordPress page and add the `[minidocs]` shortcode to it. The single shortcode renders every state — the landing page, category listings, individual articles, and search results — based on the URL.
+Create a normal WordPress page and add the `[knowlio]` shortcode to it. The single shortcode renders every state — the landing page, category listings, individual articles, and search results — based on the URL.
 
 = Can I paste content from Word or Google Docs? =
 
 Yes. Copy from your document and paste into the article editor. Headings, lists, links, and images are kept; scripts, inline event handlers, and other unsafe markup are removed automatically.
 
-= Does MiniDocs create custom database tables? =
+= Does Knowlio Docs create custom database tables? =
 
-Yes. It creates three tables (articles, categories, and settings) using the WordPress table prefix. They are removed on uninstall only if you enable that option in the plugin settings.
+Yes. It creates three tables (articles, categories, and settings) using the WordPress table prefix.
+
+= What happens to my articles if I delete the plugin? =
+
+Nothing, by default. Deleting Knowlio Docs leaves your articles and categories in the database, so uninstalling to troubleshoot a problem never costs you your documentation. If you do want a clean removal, switch on **Delete all data when the plugin is uninstalled** in **Knowlio Docs &rarr; Settings** before you delete the plugin.
+
+= Does it work on multisite? =
+
+Yes. Each site in the network gets its own tables and its own documentation, and uninstalling cleans up every site.
 
 = Can I change how the documentation looks? =
 
-Yes. In **MiniDocs → Settings** you can pick from four layout presets (sidebar, wide, boxed, magazine). The presets set the width and column structure of the front end without any theme changes.
+Yes. In **Knowlio Docs → Settings** you can pick from four layout presets (sidebar, wide, boxed, magazine). The presets set the width and column structure of the front end without any theme changes.
 
 = Do I need any other plugin? =
 
-No. MiniDocs is self-contained and works with any standard WordPress theme.
+No. Knowlio Docs is self-contained and works with any standard WordPress theme.
 
 == Screenshots ==
 
@@ -78,7 +88,10 @@ No. MiniDocs is self-contained and works with any standard WordPress theme.
 == Changelog ==
 
 = 1.0.0 =
-* Initial release: articles and categories, rich-text editor with media upload and paste-from-Word support, `[minidocs]` shortcode front end, four layout presets, content starter templates, automatic table of contents, responsive images, search, reading time, and view counts.
+* Initial release: articles and categories, rich-text editor with media upload and paste-from-Word support, `[knowlio]` shortcode front end, four layout presets, content starter templates, automatic table of contents, responsive images, search, reading time, and view counts.
+* Roles and permissions mapping Knowlio Docs capabilities onto WordPress roles.
+* Optional data removal on uninstall, off by default.
+* Multisite aware: per-site tables, per-site content, network-wide cleanup on uninstall.
 
 == Upgrade Notice ==
 

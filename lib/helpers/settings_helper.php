@@ -2,7 +2,7 @@
 /**
  * Settings storage, backed by a dedicated key/value table.
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class MdSettingsHelper
+ * Class KnowlioSettingsHelper
  */
-class MdSettingsHelper {
+class KnowlioSettingsHelper {
 
 	/**
 	 * In-request cache of every setting.
@@ -20,6 +20,17 @@ class MdSettingsHelper {
 	 * @var array|null
 	 */
 	private static $cache = null;
+
+	/**
+	 * Settings mirrored into wp_options as `knowlio_{name}`.
+	 *
+	 * `uninstall.php` runs with the plugin's classes unloaded and is the code
+	 * that decides whether to drop the very table these settings live in, so
+	 * anything it needs has to be readable without them.
+	 *
+	 * @var array
+	 */
+	private static $mirrored_to_options = array( 'remove_data_on_uninstall' );
 
 	/**
 	 * Load all settings once per request.
@@ -35,8 +46,8 @@ class MdSettingsHelper {
 
 		self::$cache = array();
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$rows = $wpdb->get_results( 'SELECT name, value FROM ' . MINIDOCS_TABLE_SETTINGS, ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL -- Plugin-owned table, no user input, read once per request into self::$cache.
+		$rows = $wpdb->get_results( 'SELECT name, value FROM ' . KNOWLIO_TABLE_SETTINGS, ARRAY_A );
 
 		if ( $rows ) {
 			foreach ( $rows as $row ) {
@@ -68,12 +79,12 @@ class MdSettingsHelper {
 		 * Filters a setting value as it is read.
 		 *
 		 * @since 1.0.0
-		 * @hook minidocs_setting_value
+		 * @hook knowlio_setting_value
 		 *
 		 * @param mixed  $value Stored value.
 		 * @param string $name  Setting name.
 		 */
-		return apply_filters( 'minidocs_setting_value', $value, $name );
+		return apply_filters( 'knowlio_setting_value', $value, $name );
 	}
 
 	/**
@@ -94,16 +105,20 @@ class MdSettingsHelper {
 
 		$value = is_array( $value ) ? wp_json_encode( $value ) : (string) $value;
 
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		if ( in_array( $name, self::$mirrored_to_options, true ) ) {
+			update_option( 'knowlio_' . $name, $value );
+		}
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
 		$exists = $wpdb->get_var(
-			$wpdb->prepare( 'SELECT id FROM ' . MINIDOCS_TABLE_SETTINGS . ' WHERE name = %s LIMIT 1', $name )
+			$wpdb->prepare( 'SELECT id FROM ' . KNOWLIO_TABLE_SETTINGS . ' WHERE name = %s LIMIT 1', $name )
 		);
 
 		if ( $exists ) {
-			$result = $wpdb->update( MINIDOCS_TABLE_SETTINGS, array( 'value' => $value ), array( 'id' => $exists ) );
+			$result = $wpdb->update( KNOWLIO_TABLE_SETTINGS, array( 'value' => $value ), array( 'id' => $exists ) );
 		} else {
 			$result = $wpdb->insert(
-				MINIDOCS_TABLE_SETTINGS,
+				KNOWLIO_TABLE_SETTINGS,
 				array(
 					'name'  => $name,
 					'value' => $value,
@@ -134,17 +149,17 @@ class MdSettingsHelper {
 	 * @return string
 	 */
 	public static function get_brand_name(): string {
-		$name = (string) self::get_setting( 'brand_name', MINIDOCS_BRAND_NAME );
+		$name = (string) self::get_setting( 'brand_name', KNOWLIO_BRAND_NAME );
 
 		/**
 		 * Filters the brand name, for white-labelling.
 		 *
 		 * @since 1.0.0
-		 * @hook minidocs_brand_name
+		 * @hook knowlio_brand_name
 		 *
 		 * @param string $name Brand name.
 		 */
-		return apply_filters( 'minidocs_brand_name', $name );
+		return apply_filters( 'knowlio_brand_name', $name );
 	}
 
 	/**
@@ -153,9 +168,9 @@ class MdSettingsHelper {
 	 * @return int
 	 */
 	public static function get_per_page(): int {
-		$per_page = (int) self::get_setting( 'records_per_page', MINIDOCS_DEFAULT_PER_PAGE );
+		$per_page = (int) self::get_setting( 'records_per_page', KNOWLIO_DEFAULT_PER_PAGE );
 
-		return $per_page > 0 ? min( $per_page, 200 ) : MINIDOCS_DEFAULT_PER_PAGE;
+		return $per_page > 0 ? min( $per_page, 200 ) : KNOWLIO_DEFAULT_PER_PAGE;
 	}
 
 	/**
@@ -173,7 +188,7 @@ class MdSettingsHelper {
 	 * @return string
 	 */
 	public static function get_db_version() {
-		return get_option( 'minidocs_db_version', '' );
+		return get_option( 'knowlio_db_version', '' );
 	}
 
 	/**
@@ -243,6 +258,6 @@ class MdSettingsHelper {
 			return '';
 		}
 
-		return add_query_arg( 'md_article', $slug, $permalink ) . '#minidocs';
+		return add_query_arg( 'knowlio_article', $slug, $permalink ) . '#knowlio-docs';
 	}
 }

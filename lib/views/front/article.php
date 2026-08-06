@@ -2,51 +2,51 @@
 /**
  * Single article: sidebar navigation, body, table of contents.
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  *
- * @var MdArticleModel   $article
- * @var MdCategoryModel  $category
+ * @var KnowlioArticleModel   $article
+ * @var KnowlioCategoryModel  $category
  * @var string           $body_html
  * @var array            $toc
- * @var MdCategoryModel[] $categories
- * @var MdArticleModel[] $siblings
+ * @var KnowlioCategoryModel[] $categories
+ * @var KnowlioArticleModel[] $siblings
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
-<div class="md-front md-front-article <?php echo esc_attr( $layout_class ?? '' ); ?>" id="minidocs">
-	<div class="md-front-inner" style="<?php echo esc_attr( $inner_style ?? '' ); ?>">
+<div class="knowlio-front knowlio-front-article <?php echo esc_attr( $layout_class ?? '' ); ?>" id="knowlio-docs">
+	<div class="knowlio-front-inner" style="<?php echo esc_attr( $inner_style ?? '' ); ?>">
 
-	<nav class="md-crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'minidocs' ); ?>">
-		<a href="<?php echo esc_url( MdShortcodesHelper::base_url() ); ?>#minidocs"><?php esc_html_e( 'Documentation', 'minidocs' ); ?></a>
+	<nav class="knowlio-crumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'minidocs' ); ?>">
+		<a href="<?php echo esc_url( KnowlioShortcodesHelper::base_url() ); ?>#knowlio-docs"><?php esc_html_e( 'Documentation', 'minidocs' ); ?></a>
 
 		<?php if ( ! $category->is_new_record() ) { ?>
-			<span class="md-crumbs-sep">/</span>
-			<a href="<?php echo esc_url( MdShortcodesHelper::category_url( $category->slug ) ); ?>"><?php echo esc_html( $category->name ); ?></a>
+			<span class="knowlio-crumbs-sep">/</span>
+			<a href="<?php echo esc_url( KnowlioShortcodesHelper::category_url( $category->slug ) ); ?>"><?php echo esc_html( $category->name ); ?></a>
 		<?php } ?>
 
-		<span class="md-crumbs-sep">/</span>
-		<span class="md-crumbs-current"><?php echo esc_html( $article->title ); ?></span>
+		<span class="knowlio-crumbs-sep">/</span>
+		<span class="knowlio-crumbs-current"><?php echo esc_html( $article->title ); ?></span>
 	</nav>
 
-	<div class="md-doc-layout">
+	<div class="knowlio-doc-layout">
 
-		<aside class="md-doc-nav">
-			<div class="md-doc-nav-scroll">
-				<?php foreach ( $categories as $md_category ) { ?>
-					<div class="md-doc-nav-group">
-						<div class="md-doc-nav-group-title">
-							<i class="dashicons <?php echo esc_attr( $md_category->get_icon_class() ); ?>"></i>
-							<a href="<?php echo esc_url( MdShortcodesHelper::category_url( $md_category->slug ) ); ?>"><?php echo esc_html( $md_category->name ); ?></a>
+		<aside class="knowlio-doc-nav">
+			<div class="knowlio-doc-nav-scroll">
+				<?php foreach ( $categories as $knowlio_category ) { ?>
+					<div class="knowlio-doc-nav-group">
+						<div class="knowlio-doc-nav-group-title">
+							<i class="dashicons <?php echo esc_attr( $knowlio_category->get_icon_class() ); ?>"></i>
+							<a href="<?php echo esc_url( KnowlioShortcodesHelper::category_url( $knowlio_category->slug ) ); ?>"><?php echo esc_html( $knowlio_category->name ); ?></a>
 						</div>
 
-						<ul class="md-doc-nav-list">
-							<?php foreach ( $md_category->get_articles( true ) as $md_sibling ) { ?>
-								<li class="<?php echo ( (int) $md_sibling->id === (int) $article->id ) ? 'md-doc-nav-active' : ''; ?>">
-									<a href="<?php echo esc_url( MdShortcodesHelper::article_url( $md_sibling->slug ) ); ?>">
-										<?php echo esc_html( $md_sibling->title ); ?>
+						<ul class="knowlio-doc-nav-list">
+							<?php foreach ( $knowlio_category->get_articles( true ) as $knowlio_sibling ) { ?>
+								<li class="<?php echo ( (int) $knowlio_sibling->id === (int) $article->id ) ? 'knowlio-doc-nav-active' : ''; ?>">
+									<a href="<?php echo esc_url( KnowlioShortcodesHelper::article_url( $knowlio_sibling->slug ) ); ?>">
+										<?php echo esc_html( $knowlio_sibling->title ); ?>
 									</a>
 								</li>
 							<?php } ?>
@@ -56,15 +56,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</div>
 		</aside>
 
-		<main class="md-doc-main">
-			<article class="md-doc-article">
+		<main class="knowlio-doc-main">
+			<article class="knowlio-doc-article">
 				<?php if ( ! $category->is_new_record() ) { ?>
-					<div class="md-doc-eyebrow"><?php echo esc_html( $category->name ); ?></div>
+					<div class="knowlio-doc-eyebrow"><?php echo esc_html( $category->name ); ?></div>
 				<?php } ?>
 
-				<h1 class="md-doc-title"><?php echo esc_html( $article->title ); ?></h1>
+				<h1 class="knowlio-doc-title"><?php echo esc_html( $article->title ); ?></h1>
 
-				<div class="md-doc-meta">
+				<div class="knowlio-doc-meta">
 					<span>
 						<?php
 						printf(
@@ -74,7 +74,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						);
 						?>
 					</span>
-					<span class="md-doc-meta-sep">&middot;</span>
+					<span class="knowlio-doc-meta-sep">&middot;</span>
 					<span>
 						<?php
 						printf(
@@ -86,8 +86,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</span>
 				</div>
 
-				<div class="md-doc-body">
-					<?php echo $body_html; // phpcs:ignore WordPress.Security.EscapingOutput.OutputNotEscaped -- Passed through wp_kses_post on save and again on render. ?>
+				<div class="knowlio-doc-body">
+					<?php echo $body_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Passed through wp_kses_post on save and again on render. ?>
 				</div>
 
 				<?php
@@ -95,44 +95,44 @@ if ( ! defined( 'ABSPATH' ) ) {
 				 * Fires at the end of an article body on the frontend.
 				 *
 				 * @since 1.0.0
-				 * @hook minidocs_after_article_content
+				 * @hook knowlio_after_article_content
 				 *
-				 * @param MdArticleModel $article Article being displayed.
+				 * @param KnowlioArticleModel $article Article being displayed.
 				 */
-				do_action( 'minidocs_after_article_content', $article );
+				do_action( 'knowlio_after_article_content', $article );
 				?>
 
 				<?php
 				// Previous / next within the same category.
-				$md_prev = null;
-				$md_next = null;
+				$knowlio_prev = null;
+				$knowlio_next = null;
 
-				foreach ( array_values( $siblings ) as $md_index => $md_sibling ) {
-					if ( (int) $md_sibling->id !== (int) $article->id ) {
+				foreach ( array_values( $siblings ) as $knowlio_index => $knowlio_sibling ) {
+					if ( (int) $knowlio_sibling->id !== (int) $article->id ) {
 						continue;
 					}
 
-					$md_prev = $siblings[ $md_index - 1 ] ?? null;
-					$md_next = $siblings[ $md_index + 1 ] ?? null;
+					$knowlio_prev = $siblings[ $knowlio_index - 1 ] ?? null;
+					$knowlio_next = $siblings[ $knowlio_index + 1 ] ?? null;
 					break;
 				}
 				?>
 
-				<?php if ( $md_prev || $md_next ) { ?>
-					<nav class="md-doc-pager">
-						<?php if ( $md_prev ) { ?>
-							<a class="md-doc-pager-link md-doc-pager-prev" href="<?php echo esc_url( MdShortcodesHelper::article_url( $md_prev->slug ) ); ?>">
-								<span class="md-doc-pager-label"><?php esc_html_e( 'Previous', 'minidocs' ); ?></span>
-								<span class="md-doc-pager-title"><?php echo esc_html( $md_prev->title ); ?></span>
+				<?php if ( $knowlio_prev || $knowlio_next ) { ?>
+					<nav class="knowlio-doc-pager">
+						<?php if ( $knowlio_prev ) { ?>
+							<a class="knowlio-doc-pager-link knowlio-doc-pager-prev" href="<?php echo esc_url( KnowlioShortcodesHelper::article_url( $knowlio_prev->slug ) ); ?>">
+								<span class="knowlio-doc-pager-label"><?php esc_html_e( 'Previous', 'minidocs' ); ?></span>
+								<span class="knowlio-doc-pager-title"><?php echo esc_html( $knowlio_prev->title ); ?></span>
 							</a>
 						<?php } else { ?>
 							<span></span>
 						<?php } ?>
 
-						<?php if ( $md_next ) { ?>
-							<a class="md-doc-pager-link md-doc-pager-next" href="<?php echo esc_url( MdShortcodesHelper::article_url( $md_next->slug ) ); ?>">
-								<span class="md-doc-pager-label"><?php esc_html_e( 'Next', 'minidocs' ); ?></span>
-								<span class="md-doc-pager-title"><?php echo esc_html( $md_next->title ); ?></span>
+						<?php if ( $knowlio_next ) { ?>
+							<a class="knowlio-doc-pager-link knowlio-doc-pager-next" href="<?php echo esc_url( KnowlioShortcodesHelper::article_url( $knowlio_next->slug ) ); ?>">
+								<span class="knowlio-doc-pager-label"><?php esc_html_e( 'Next', 'minidocs' ); ?></span>
+								<span class="knowlio-doc-pager-title"><?php echo esc_html( $knowlio_next->title ); ?></span>
 							</a>
 						<?php } ?>
 					</nav>
@@ -141,12 +141,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</main>
 
 		<?php if ( ! empty( $toc ) ) { ?>
-			<aside class="md-doc-toc">
-				<div class="md-doc-toc-title"><?php esc_html_e( 'On this page', 'minidocs' ); ?></div>
-				<ul class="md-doc-toc-list">
-					<?php foreach ( $toc as $md_entry ) { ?>
-						<li class="md-toc-level-<?php echo esc_attr( $md_entry['level'] ); ?>">
-							<a href="#<?php echo esc_attr( $md_entry['anchor'] ); ?>"><?php echo esc_html( $md_entry['text'] ); ?></a>
+			<aside class="knowlio-doc-toc">
+				<div class="knowlio-doc-toc-title"><?php esc_html_e( 'On this page', 'minidocs' ); ?></div>
+				<ul class="knowlio-doc-toc-list">
+					<?php foreach ( $toc as $knowlio_entry ) { ?>
+						<li class="knowlio-toc-level-<?php echo esc_attr( $knowlio_entry['level'] ); ?>">
+							<a href="#<?php echo esc_attr( $knowlio_entry['anchor'] ); ?>"><?php echo esc_html( $knowlio_entry['text'] ); ?></a>
 						</li>
 					<?php } ?>
 				</ul>

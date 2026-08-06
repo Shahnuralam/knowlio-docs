@@ -6,7 +6,7 @@
  * capability each action needs in `lib/config/capabilities_for_controllers.php`,
  * and this helper maps those plugin capabilities onto WordPress roles.
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,9 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class MdRolesHelper
+ * Class KnowlioRolesHelper
  */
-class MdRolesHelper {
+class KnowlioRolesHelper {
 
 	/**
 	 * Cached capability map.
@@ -32,17 +32,17 @@ class MdRolesHelper {
 	 */
 	public static function get_capabilities_for_all_controllers(): array {
 		if ( is_null( self::$map ) ) {
-			$map = require MINIDOCS_LIB_ABSPATH . 'config/capabilities_for_controllers.php';
+			$map = require KNOWLIO_LIB_ABSPATH . 'config/capabilities_for_controllers.php';
 
 			/**
 			 * Filters the controller capability map.
 			 *
 			 * @since 1.0.0
-			 * @hook minidocs_capabilities_for_controllers
+			 * @hook knowlio_capabilities_for_controllers
 			 *
 			 * @param array $map Controller class => capability config.
 			 */
-			self::$map = apply_filters( 'minidocs_capabilities_for_controllers', (array) $map );
+			self::$map = apply_filters( 'knowlio_capabilities_for_controllers', (array) $map );
 		}
 
 		return self::$map;
@@ -89,11 +89,11 @@ class MdRolesHelper {
 		 * Filters the list of known capabilities.
 		 *
 		 * @since 1.0.0
-		 * @hook minidocs_all_capabilities
+		 * @hook knowlio_all_capabilities
 		 *
 		 * @param array $capabilities Group => capability names.
 		 */
-		return apply_filters( 'minidocs_all_capabilities', $capabilities );
+		return apply_filters( 'knowlio_all_capabilities', $capabilities );
 	}
 
 	/**
@@ -170,12 +170,12 @@ class MdRolesHelper {
 		 * Filters the capabilities granted to the current user.
 		 *
 		 * @since 1.0.0
-		 * @hook minidocs_granted_capabilities
+		 * @hook knowlio_granted_capabilities
 		 *
 		 * @param array   $granted Capability names.
 		 * @param WP_User $user    Current user.
 		 */
-		return array_values( array_unique( apply_filters( 'minidocs_granted_capabilities', $granted, $user ) ) );
+		return array_values( array_unique( apply_filters( 'knowlio_granted_capabilities', $granted, $user ) ) );
 	}
 
 	/**
@@ -184,7 +184,7 @@ class MdRolesHelper {
 	 * @return array
 	 */
 	public static function get_role_capability_map(): array {
-		$stored = get_option( 'minidocs_role_capabilities', null );
+		$stored = get_option( 'knowlio_role_capabilities', null );
 
 		if ( is_array( $stored ) ) {
 			return $stored;
@@ -232,7 +232,7 @@ class MdRolesHelper {
 			$clean[ $role ] = array_values( array_intersect( (array) $capabilities, $all_capabilities ) );
 		}
 
-		return (bool) update_option( 'minidocs_role_capabilities', $clean );
+		return (bool) update_option( 'knowlio_role_capabilities', $clean );
 	}
 
 	/**

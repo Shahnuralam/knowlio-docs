@@ -2,7 +2,7 @@
 /**
  * Misc utilities.
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,12 +10,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class MdUtilHelper
+ * Class KnowlioUtilHelper
  */
-class MdUtilHelper {
+class KnowlioUtilHelper {
 
 	/**
-	 * Build the `data-md-*` attribute string that turns any element into an
+	 * Build the `data-knowlio-*` attribute string that turns any element into an
 	 * ajax trigger handled by the generic JS delegator.
 	 *
 	 * @param string $route      Route name (`controller__action`).
@@ -26,12 +26,12 @@ class MdUtilHelper {
 	 * @return string Escaped attribute string ready to be printed inside a tag.
 	 */
 	public static function build_action_atts( string $route, array $params = array(), string $target = 'side-panel', string $after_call = '' ): string {
-		$atts = ' data-md-action="' . esc_attr( $route ) . '"';
-		$atts .= ' data-md-params="' . esc_attr( http_build_query( $params ) ) . '"';
-		$atts .= ' data-md-target="' . esc_attr( $target ) . '"';
+		$atts = ' data-knowlio-action="' . esc_attr( $route ) . '"';
+		$atts .= ' data-knowlio-params="' . esc_attr( http_build_query( $params ) ) . '"';
+		$atts .= ' data-knowlio-target="' . esc_attr( $target ) . '"';
 
 		if ( $after_call ) {
-			$atts .= ' data-md-after-call="' . esc_attr( $after_call ) . '"';
+			$atts .= ' data-knowlio-after-call="' . esc_attr( $after_call ) . '"';
 		}
 
 		return $atts;
@@ -43,7 +43,7 @@ class MdUtilHelper {
 	 * @return string
 	 */
 	public static function now_db_datetime(): string {
-		return gmdate( MINIDOCS_DATETIME_DB_FORMAT );
+		return gmdate( KNOWLIO_DATETIME_DB_FORMAT );
 	}
 
 	/**
@@ -98,13 +98,52 @@ class MdUtilHelper {
 	public static function array_to_csv( array $rows, string $filename = 'export' ) {
 		nocache_headers();
 		header( 'Content-Type: text/csv; charset=utf-8' );
-		header( 'Content-Disposition: attachment; filename=' . $filename . '.csv' );
+		header( 'Content-Disposition: attachment; filename=' . sanitize_file_name( $filename ) . '.csv' );
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Writing to the response body, not to the filesystem; WP_Filesystem has no equivalent.
 		$output = fopen( 'php://output', 'w' );
-		foreach ( $rows as $row ) {
-			fputcsv( $output, (array) $row );
+
+		if ( false === $output ) {
+			return;
 		}
+
+		foreach ( $rows as $row ) {
+			$cells = array_map( array( __CLASS__, 'neutralize_csv_formula' ), (array) $row );
+
+			// The explicit empty escape character disables PHP's proprietary
+			// backslash escaping, which corrupts values containing a quote and is
+			// deprecated as of PHP 8.4.
+			fputcsv( $output, $cells, ',', '"', '' );
+		}
+
 		fclose( $output ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
+	}
+
+	/**
+	 * Stop a spreadsheet from treating an exported cell as a formula.
+	 *
+	 * An article titled `=HYPERLINK(...)` is data, but Excel, LibreOffice and
+	 * Google Sheets will all execute it on open. Prefixing with an apostrophe is
+	 * the standard defence: the cell displays unchanged and stays inert.
+	 *
+	 * @param mixed $value Cell value.
+	 *
+	 * @return string
+	 */
+	public static function neutralize_csv_formula( $value ): string {
+		$value = (string) $value;
+
+		if ( '' === $value ) {
+			return $value;
+		}
+
+		$triggers = array( '=', '+', '-', '@', "\t", "\r" );
+
+		if ( in_array( $value[0], $triggers, true ) ) {
+			return "'" . $value;
+		}
+
+		return $value;
 	}
 
 	/**

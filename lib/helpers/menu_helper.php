@@ -5,7 +5,7 @@
  * The plugin registers exactly one WordPress menu page; everything else lives
  * in this in-app side menu.
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -13,9 +13,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class MdMenuHelper
+ * Class KnowlioMenuHelper
  */
-class MdMenuHelper {
+class KnowlioMenuHelper {
 
 	/**
 	 * Build the side menu.
@@ -27,7 +27,7 @@ class MdMenuHelper {
 
 		$items[] = array(
 			'label'        => __( 'Dashboard', 'minidocs' ),
-			'link'         => MdRouterHelper::build_link( array( 'dashboard', 'index' ) ),
+			'link'         => KnowlioRouterHelper::build_link( array( 'dashboard', 'index' ) ),
 			'icon'         => 'dashicons-chart-pie',
 			'capabilities' => array( 'article__view' ),
 		);
@@ -36,14 +36,14 @@ class MdMenuHelper {
 
 		$items[] = array(
 			'label'        => __( 'Articles', 'minidocs' ),
-			'link'         => MdRouterHelper::build_link( array( 'articles', 'index' ) ),
+			'link'         => KnowlioRouterHelper::build_link( array( 'articles', 'index' ) ),
 			'icon'         => 'dashicons-media-document',
 			'capabilities' => array( 'article__view' ),
 		);
 
 		$items[] = array(
 			'label'        => __( 'Categories', 'minidocs' ),
-			'link'         => MdRouterHelper::build_link( array( 'categories', 'index' ) ),
+			'link'         => KnowlioRouterHelper::build_link( array( 'categories', 'index' ) ),
 			'icon'         => 'dashicons-category',
 			'capabilities' => array( 'category__view' ),
 		);
@@ -52,7 +52,7 @@ class MdMenuHelper {
 
 		$items[] = array(
 			'label'        => __( 'Settings', 'minidocs' ),
-			'link'         => MdRouterHelper::build_link( array( 'settings', 'index' ) ),
+			'link'         => KnowlioRouterHelper::build_link( array( 'settings', 'index' ) ),
 			'icon'         => 'dashicons-admin-generic',
 			'capabilities' => array( 'settings__edit' ),
 		);
@@ -61,11 +61,11 @@ class MdMenuHelper {
 		 * Filters the side menu items.
 		 *
 		 * @since 1.0.0
-		 * @hook minidocs_side_menu_items
+		 * @hook knowlio_side_menu_items
 		 *
 		 * @param array $items Menu items.
 		 */
-		$items = (array) apply_filters( 'minidocs_side_menu_items', $items );
+		$items = (array) apply_filters( 'knowlio_side_menu_items', $items );
 
 		return self::filter_by_capabilities( $items );
 	}
@@ -86,7 +86,7 @@ class MdMenuHelper {
 				continue;
 			}
 
-			if ( ! empty( $item['capabilities'] ) && ! MdRolesHelper::current_user_can( (array) $item['capabilities'] ) ) {
+			if ( ! empty( $item['capabilities'] ) && ! KnowlioRolesHelper::current_user_can( (array) $item['capabilities'] ) ) {
 				continue;
 			}
 
@@ -126,7 +126,7 @@ class MdMenuHelper {
 			return false;
 		}
 
-		if ( MdRouterHelper::link_has_route( $route_name, $item['link'] ) ) {
+		if ( KnowlioRouterHelper::link_has_route( $route_name, $item['link'] ) ) {
 			return true;
 		}
 

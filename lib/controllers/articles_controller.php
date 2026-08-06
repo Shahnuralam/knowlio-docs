@@ -2,7 +2,7 @@
 /**
  * Article CRUD.
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class MdArticlesController
+ * Class KnowlioArticlesController
  */
-class MdArticlesController extends MdController {
+class KnowlioArticlesController extends KnowlioController {
 
 	/**
 	 * Constructor.
@@ -20,12 +20,12 @@ class MdArticlesController extends MdController {
 	public function __construct() {
 		parent::__construct();
 
-		$this->views_folder = MINIDOCS_VIEWS_ABSPATH . 'articles/';
+		$this->views_folder = KNOWLIO_VIEWS_ABSPATH . 'articles/';
 
 		$this->vars['page_header']   = __( 'Documentation', 'minidocs' );
 		$this->vars['breadcrumbs'][] = array(
 			'label' => __( 'Articles', 'minidocs' ),
-			'link'  => MdRouterHelper::build_link( array( 'articles', 'index' ) ),
+			'link'  => KnowlioRouterHelper::build_link( array( 'articles', 'index' ) ),
 		);
 	}
 
@@ -41,12 +41,12 @@ class MdArticlesController extends MdController {
 			return;
 		}
 
-		$counter = new MdArticleModel();
+		$counter = new KnowlioArticleModel();
 		$total   = $counter->where( $query_args )->count();
 
 		$pagination = $this->build_pagination( $total );
 
-		$articles = new MdArticleModel();
+		$articles = new KnowlioArticleModel();
 		$articles = $articles->where( $query_args )
 			->order_by( $this->get_order_by() )
 			->set_limit( $pagination['per_page'] )
@@ -57,8 +57,8 @@ class MdArticlesController extends MdController {
 
 		$this->vars['articles']   = $articles;
 		$this->vars['filter']     = (array) ( $this->params['filter'] ?? array() );
-		$this->vars['statuses']   = MdArticlesHelper::get_statuses_list();
-		$this->vars['categories'] = MdCategoriesHelper::get_options_for_select();
+		$this->vars['statuses']   = KnowlioArticlesHelper::get_statuses_list();
+		$this->vars['categories'] = KnowlioCategoriesHelper::get_options_for_select();
 
 		$this->format_render(
 			array(
@@ -80,16 +80,16 @@ class MdArticlesController extends MdController {
 	 */
 	public function quick_edit() {
 		$article_id = absint( $this->params['article_id'] ?? 0 );
-		$article    = new MdArticleModel( $article_id );
+		$article    = new KnowlioArticleModel( $article_id );
 
 		if ( $article_id && $article->is_new_record() ) {
-			$this->respond( MINIDOCS_STATUS_ERROR, __( 'Article not found.', 'minidocs' ) );
+			$this->respond( KNOWLIO_STATUS_ERROR, __( 'Article not found.', 'minidocs' ) );
 
 			return;
 		}
 
 		$this->vars['article']    = $article;
-		$this->vars['categories'] = MdCategoriesHelper::get_options_for_select( __( 'Uncategorised', 'minidocs' ) );
+		$this->vars['categories'] = KnowlioCategoriesHelper::get_options_for_select( __( 'Uncategorised', 'minidocs' ) );
 
 		$this->set_layout( 'none' );
 		$this->format_render( 'quick_edit' );
@@ -117,17 +117,17 @@ class MdArticlesController extends MdController {
 
 		// An id turns a create into an edit, so re-derive the capability from
 		// what the payload actually does rather than from the route called.
-		if ( $article_id && ! MdRolesHelper::current_user_can( array( 'article__edit' ) ) ) {
-			$this->respond( MINIDOCS_STATUS_ERROR, __( 'Not Authorized', 'minidocs' ) );
+		if ( $article_id && ! KnowlioRolesHelper::current_user_can( array( 'article__edit' ) ) ) {
+			$this->respond( KNOWLIO_STATUS_ERROR, __( 'Not Authorized', 'minidocs' ) );
 
 			return;
 		}
 
-		$article       = new MdArticleModel( $article_id );
+		$article       = new KnowlioArticleModel( $article_id );
 		$is_new_record = $article->is_new_record();
 
 		if ( $article_id && $is_new_record ) {
-			$this->respond( MINIDOCS_STATUS_ERROR, __( 'Article not found.', 'minidocs' ) );
+			$this->respond( KNOWLIO_STATUS_ERROR, __( 'Article not found.', 'minidocs' ) );
 
 			return;
 		}
@@ -135,7 +135,7 @@ class MdArticlesController extends MdController {
 		$article->set_data( $article_params );
 
 		if ( ! $article->save() ) {
-			$this->respond( MINIDOCS_STATUS_ERROR, $article->get_error_messages() );
+			$this->respond( KNOWLIO_STATUS_ERROR, $article->get_error_messages() );
 
 			return;
 		}
@@ -145,31 +145,31 @@ class MdArticlesController extends MdController {
 			 * Fires after an article is created.
 			 *
 			 * @since 1.0.0
-			 * @hook minidocs_article_created
+			 * @hook knowlio_article_created
 			 *
-			 * @param MdArticleModel $article Created article.
+			 * @param KnowlioArticleModel $article Created article.
 			 */
-			do_action( 'minidocs_article_created', $article );
+			do_action( 'knowlio_article_created', $article );
 		} else {
 			/**
 			 * Fires after an article is updated.
 			 *
 			 * @since 1.0.0
-			 * @hook minidocs_article_updated
+			 * @hook knowlio_article_updated
 			 *
-			 * @param MdArticleModel $article Updated article.
+			 * @param KnowlioArticleModel $article Updated article.
 			 */
-			do_action( 'minidocs_article_updated', $article );
+			do_action( 'knowlio_article_updated', $article );
 		}
 
 		$message = $is_new_record
 			/* translators: %s: article title. */
-			? sprintf( __( '"%s" created', 'minidocs' ), $article->title )
+			? sprintf( __( 'Article "%s" created', 'minidocs' ), $article->title )
 			/* translators: %s: article title. */
-			: sprintf( __( '"%s" updated', 'minidocs' ), $article->title );
+			: sprintf( __( 'Article "%s" updated', 'minidocs' ), $article->title );
 
 		$this->respond(
-			MINIDOCS_STATUS_SUCCESS,
+			KNOWLIO_STATUS_SUCCESS,
 			$message,
 			array(
 				'record_id' => $article->id,
@@ -187,21 +187,21 @@ class MdArticlesController extends MdController {
 		$this->check_nonce( 'destroy_article_' . $article_id );
 
 		if ( ! $article_id ) {
-			$this->respond( MINIDOCS_STATUS_ERROR, __( 'Invalid article.', 'minidocs' ) );
+			$this->respond( KNOWLIO_STATUS_ERROR, __( 'Invalid article.', 'minidocs' ) );
 
 			return;
 		}
 
-		$article = new MdArticleModel( $article_id );
+		$article = new KnowlioArticleModel( $article_id );
 
 		if ( $article->is_new_record() || ! $article->delete() ) {
-			$this->respond( MINIDOCS_STATUS_ERROR, __( 'Error deleting article.', 'minidocs' ) );
+			$this->respond( KNOWLIO_STATUS_ERROR, __( 'Error deleting article.', 'minidocs' ) );
 
 			return;
 		}
 
 		$this->respond(
-			MINIDOCS_STATUS_SUCCESS,
+			KNOWLIO_STATUS_SUCCESS,
 			__( 'Article deleted', 'minidocs' ),
 			array( 'reload' => true )
 		);
@@ -220,18 +220,22 @@ class MdArticlesController extends MdController {
 	 * @return array
 	 */
 	private function build_query_args_from_filters(): array {
+		global $wpdb;
+
 		$filter = (array) ( $this->params['filter'] ?? array() );
 		$args   = array();
 
 		if ( ! empty( $filter['title'] ) ) {
-			$args['title LIKE'] = '%' . sanitize_text_field( $filter['title'] ) . '%';
+			// esc_like() so that a title containing % or _ is searched for
+			// literally rather than acting as a wildcard.
+			$args['title LIKE'] = '%' . $wpdb->esc_like( sanitize_text_field( $filter['title'] ) ) . '%';
 		}
 
 		if ( ! empty( $filter['category_id'] ) ) {
 			$args['category_id'] = absint( $filter['category_id'] );
 		}
 
-		if ( ! empty( $filter['status'] ) && array_key_exists( $filter['status'], MdArticlesHelper::get_statuses_list() ) ) {
+		if ( ! empty( $filter['status'] ) && array_key_exists( $filter['status'], KnowlioArticlesHelper::get_statuses_list() ) ) {
 			$args['status'] = sanitize_key( $filter['status'] );
 		}
 
@@ -239,12 +243,12 @@ class MdArticlesController extends MdController {
 		 * Filters the ORM conditions built from the article table filters.
 		 *
 		 * @since 1.0.0
-		 * @hook minidocs_articles_query_args
+		 * @hook knowlio_articles_query_args
 		 *
 		 * @param array $args   Conditions.
 		 * @param array $filter Raw filter params.
 		 */
-		return (array) apply_filters( 'minidocs_articles_query_args', $args, $filter );
+		return (array) apply_filters( 'knowlio_articles_query_args', $args, $filter );
 	}
 
 	/**
@@ -275,7 +279,7 @@ class MdArticlesController extends MdController {
 	 * @param array $query_args ORM conditions.
 	 */
 	private function export_csv( array $query_args ) {
-		if ( ! MdSettingsHelper::can_download_csv() ) {
+		if ( ! KnowlioSettingsHelper::can_download_csv() ) {
 			wp_die( esc_html__( 'CSV export is disabled.', 'minidocs' ) );
 		}
 
@@ -293,7 +297,7 @@ class MdArticlesController extends MdController {
 			),
 		);
 
-		$articles = new MdArticleModel();
+		$articles = new KnowlioArticleModel();
 		$articles = $articles->where( $query_args )->order_by( 'id desc' )->get_results_as_models();
 
 		foreach ( (array) $articles as $article ) {
@@ -308,7 +312,7 @@ class MdArticlesController extends MdController {
 			);
 		}
 
-		MdUtilHelper::array_to_csv( $rows, 'articles_' . MdUtilHelper::random_text() );
+		KnowlioUtilHelper::array_to_csv( $rows, 'articles_' . KnowlioUtilHelper::random_text() );
 		exit;
 	}
 }

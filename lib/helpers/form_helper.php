@@ -7,9 +7,9 @@
  * a change to the field chrome is a one-file change.
  *
  * Field names use bracket notation (`book[title]`) so the controller receives a
- * ready-made array to hand to `MdModel::set_data()`.
+ * ready-made array to hand to `KnowlioModel::set_data()`.
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,9 +17,102 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class MdFormHelper
+ * Class KnowlioFormHelper
  */
-class MdFormHelper {
+class KnowlioFormHelper {
+
+	/**
+	 * The markup a field method is allowed to produce.
+	 *
+	 * Each method below already escapes every value it interpolates, but a view
+	 * echoes the finished string, and a static analyser cannot follow escaping
+	 * across a function boundary. Passing the result through `wp_kses()` with
+	 * this list closes that gap for real rather than silencing the warning: the
+	 * markup is checked at the point of output, and anything a field method was
+	 * never meant to emit is dropped.
+	 *
+	 * @return array Tag => allowed attributes, for wp_kses().
+	 */
+	public static function allowed_html(): array {
+		$common = array(
+			'id'    => true,
+			'class' => true,
+			'style' => true,
+			'title' => true,
+			'data-*' => true,
+			'aria-*' => true,
+			'role'  => true,
+		);
+
+		$control = array_merge(
+			$common,
+			array(
+				'name'         => true,
+				'value'        => true,
+				'disabled'     => true,
+				'readonly'     => true,
+				'required'     => true,
+				'autocomplete' => true,
+				'autofocus'    => true,
+				'tabindex'     => true,
+			)
+		);
+
+		$allowed = array(
+			'div'      => $common,
+			'span'     => $common,
+			'p'        => $common,
+			'label'    => array_merge( $common, array( 'for' => true ) ),
+			'fieldset' => $common,
+			'legend'   => $common,
+			'input'    => array_merge(
+				$control,
+				array(
+					'type'        => true,
+					'placeholder' => true,
+					'checked'     => true,
+					'min'         => true,
+					'max'         => true,
+					'step'        => true,
+					'maxlength'   => true,
+					'pattern'     => true,
+					'multiple'    => true,
+					'accept'      => true,
+				)
+			),
+			'textarea' => array_merge(
+				$control,
+				array(
+					'rows'        => true,
+					'cols'        => true,
+					'placeholder' => true,
+					'maxlength'   => true,
+					'wrap'        => true,
+				)
+			),
+			'select'   => array_merge( $control, array( 'multiple' => true, 'size' => true ) ),
+			'option'   => array_merge( $common, array( 'value' => true, 'selected' => true, 'disabled' => true ) ),
+			'optgroup' => array_merge( $common, array( 'label' => true, 'disabled' => true ) ),
+			'button'   => array_merge( $control, array( 'type' => true ) ),
+			'small'    => $common,
+			'strong'   => $common,
+			'em'       => $common,
+			'br'       => array(),
+			'i'        => $common,
+		);
+
+		/**
+		 * Filters the markup a form field is allowed to output.
+		 *
+		 * Addons that add a field type with markup of its own extend the list here.
+		 *
+		 * @since 1.0.0
+		 * @hook knowlio_form_allowed_html
+		 *
+		 * @param array $allowed Tag => allowed attributes.
+		 */
+		return (array) apply_filters( 'knowlio_form_allowed_html', $allowed );
+	}
 
 	/**
 	 * Derive a DOM id from a bracketed field name: `book[title]` => `book-title`.
@@ -47,7 +140,7 @@ class MdFormHelper {
 	 * @return string
 	 */
 	public static function atts_string_from_array( array $atts = array() ): string {
-		return MdUtilHelper::atts_string_from_array( $atts );
+		return KnowlioUtilHelper::atts_string_from_array( $atts );
 	}
 
 	/**
@@ -61,7 +154,7 @@ class MdFormHelper {
 	 * @return string
 	 */
 	private static function open_group( string $name, string $label, array $wrapper_atts = array(), string $extra_class = '' ): string {
-		$classes = trim( 'md-form-group ' . $extra_class . ' ' . ( $wrapper_atts['class'] ?? '' ) );
+		$classes = trim( 'knowlio-form-group ' . $extra_class . ' ' . ( $wrapper_atts['class'] ?? '' ) );
 		unset( $wrapper_atts['class'] );
 
 		$html = '<div class="' . esc_attr( $classes ) . '" ' . self::atts_string_from_array( $wrapper_atts ) . '>';
@@ -84,7 +177,7 @@ class MdFormHelper {
 		$html = '';
 
 		if ( '' !== $description ) {
-			$html .= '<div class="md-form-description">' . esc_html( $description ) . '</div>';
+			$html .= '<div class="knowlio-form-description">' . esc_html( $description ) . '</div>';
 		}
 
 		return $html . '</div>';
@@ -111,7 +204,7 @@ class MdFormHelper {
 				'id'    => self::name_to_id( $name, $atts ),
 				'name'  => $name,
 				'value' => (string) $value,
-				'class' => trim( 'md-input ' . ( $atts['class'] ?? '' ) ),
+				'class' => trim( 'knowlio-input ' . ( $atts['class'] ?? '' ) ),
 			),
 			array_diff_key( $atts, array_flip( array( 'class' ) ) )
 		);
@@ -184,7 +277,7 @@ class MdFormHelper {
 				'id'    => self::name_to_id( $name, $atts ),
 				'name'  => $name,
 				'rows'  => 4,
-				'class' => trim( 'md-input md-textarea ' . ( $atts['class'] ?? '' ) ),
+				'class' => trim( 'knowlio-input knowlio-textarea ' . ( $atts['class'] ?? '' ) ),
 			),
 			array_diff_key( $atts, array_flip( array( 'class' ) ) )
 		);
@@ -215,7 +308,7 @@ class MdFormHelper {
 			array(
 				'id'    => self::name_to_id( $name, $atts ),
 				'name'  => $name,
-				'class' => trim( 'md-input md-select ' . ( $atts['class'] ?? '' ) ),
+				'class' => trim( 'knowlio-input knowlio-select ' . ( $atts['class'] ?? '' ) ),
 			),
 			array_diff_key( $atts, array_flip( array( 'class' ) ) )
 		);
@@ -261,7 +354,7 @@ class MdFormHelper {
 				'id'       => self::name_to_id( $name, $atts ),
 				'name'     => $name . '[]',
 				'multiple' => true,
-				'class'    => trim( 'md-input md-select md-multi-select ' . ( $atts['class'] ?? '' ) ),
+				'class'    => trim( 'knowlio-input knowlio-select knowlio-multi-select ' . ( $atts['class'] ?? '' ) ),
 			),
 			array_diff_key( $atts, array_flip( array( 'class' ) ) )
 		);
@@ -306,7 +399,7 @@ class MdFormHelper {
 				'id'    => $id,
 				'name'  => $name,
 				'value' => $value,
-				'class' => 'md-toggle-input',
+				'class' => 'knowlio-toggle-input',
 			),
 			$atts
 		);
@@ -315,12 +408,12 @@ class MdFormHelper {
 			$input_atts['checked'] = true;
 		}
 
-		$html = '<div class="md-form-group md-form-group-toggle ' . esc_attr( $wrapper_atts['class'] ?? '' ) . '">';
+		$html = '<div class="knowlio-form-group knowlio-form-group-toggle ' . esc_attr( $wrapper_atts['class'] ?? '' ) . '">';
 		$html .= '<input type="hidden" name="' . esc_attr( $name ) . '" value="off" />';
-		$html .= '<label class="md-toggle" for="' . esc_attr( $id ) . '">';
+		$html .= '<label class="knowlio-toggle" for="' . esc_attr( $id ) . '">';
 		$html .= '<input ' . self::atts_string_from_array( $input_atts ) . ' />';
-		$html .= '<span class="md-toggle-track"><span class="md-toggle-thumb"></span></span>';
-		$html .= '<span class="md-toggle-label">' . esc_html( $label ) . '</span>';
+		$html .= '<span class="knowlio-toggle-track"><span class="knowlio-toggle-thumb"></span></span>';
+		$html .= '<span class="knowlio-toggle-label">' . esc_html( $label ) . '</span>';
 		$html .= '</label>';
 
 		return $html . self::close_group( $description );
@@ -340,15 +433,15 @@ class MdFormHelper {
 	public static function multi_checkbox_field( string $name, string $label = '', array $options = array(), array $selected_values = array(), array $wrapper_atts = array() ): string {
 		$selected_values = array_map( 'strval', $selected_values );
 
-		$html = self::open_group( $name, $label, $wrapper_atts, 'md-form-group-checkboxes' );
+		$html = self::open_group( $name, $label, $wrapper_atts, 'knowlio-form-group-checkboxes' );
 		$html .= '<input type="hidden" name="' . esc_attr( $name ) . '[]" value="" />';
-		$html .= '<div class="md-checkbox-grid">';
+		$html .= '<div class="knowlio-checkbox-grid">';
 
 		foreach ( self::normalize_options( $options ) as $option ) {
 			$id          = self::name_to_id( $name . '-' . $option['value'] );
 			$is_selected = in_array( (string) $option['value'], $selected_values, true );
 
-			$html .= '<label class="md-checkbox" for="' . esc_attr( $id ) . '">'
+			$html .= '<label class="knowlio-checkbox" for="' . esc_attr( $id ) . '">'
 				. '<input type="checkbox" id="' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '[]" value="' . esc_attr( $option['value'] ) . '" ' . checked( $is_selected, true, false ) . ' />'
 				. '<span>' . esc_html( $option['label'] ) . '</span>'
 				. '</label>';
@@ -398,7 +491,7 @@ class MdFormHelper {
 				'type'  => $type,
 				'name'  => $name,
 				'id'    => self::name_to_id( $name, $atts ),
-				'class' => trim( 'md-btn ' . ( $atts['class'] ?? '' ) ),
+				'class' => trim( 'knowlio-btn ' . ( $atts['class'] ?? '' ) ),
 			),
 			array_diff_key( $atts, array_flip( array( 'class' ) ) )
 		);

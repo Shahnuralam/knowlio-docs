@@ -2,7 +2,7 @@
 /**
  * Category CRUD.
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class MdCategoriesController
+ * Class KnowlioCategoriesController
  */
-class MdCategoriesController extends MdController {
+class KnowlioCategoriesController extends KnowlioController {
 
 	/**
 	 * Constructor.
@@ -20,12 +20,12 @@ class MdCategoriesController extends MdController {
 	public function __construct() {
 		parent::__construct();
 
-		$this->views_folder = MINIDOCS_VIEWS_ABSPATH . 'categories/';
+		$this->views_folder = KNOWLIO_VIEWS_ABSPATH . 'categories/';
 
 		$this->vars['page_header']   = __( 'Categories', 'minidocs' );
 		$this->vars['breadcrumbs'][] = array(
 			'label' => __( 'Categories', 'minidocs' ),
-			'link'  => MdRouterHelper::build_link( array( 'categories', 'index' ) ),
+			'link'  => KnowlioRouterHelper::build_link( array( 'categories', 'index' ) ),
 		);
 	}
 
@@ -33,19 +33,23 @@ class MdCategoriesController extends MdController {
 	 * Listing screen.
 	 */
 	public function index() {
+		global $wpdb;
+
 		$query_args = array();
 		$filter     = (array) ( $this->params['filter'] ?? array() );
 
 		if ( ! empty( $filter['name'] ) ) {
-			$query_args['name LIKE'] = '%' . sanitize_text_field( $filter['name'] ) . '%';
+			// esc_like() so that a name containing % or _ is searched for
+			// literally rather than acting as a wildcard.
+			$query_args['name LIKE'] = '%' . $wpdb->esc_like( sanitize_text_field( $filter['name'] ) ) . '%';
 		}
 
-		$counter = new MdCategoryModel();
+		$counter = new KnowlioCategoryModel();
 		$total   = $counter->where( $query_args )->count();
 
 		$pagination = $this->build_pagination( $total );
 
-		$categories = new MdCategoryModel();
+		$categories = new KnowlioCategoryModel();
 		$categories = $categories->where( $query_args )
 			->order_by( 'order_number asc, name asc' )
 			->set_limit( $pagination['per_page'] )
@@ -77,16 +81,16 @@ class MdCategoriesController extends MdController {
 	 */
 	public function quick_edit() {
 		$category_id = absint( $this->params['category_id'] ?? 0 );
-		$category    = new MdCategoryModel( $category_id );
+		$category    = new KnowlioCategoryModel( $category_id );
 
 		if ( $category_id && $category->is_new_record() ) {
-			$this->respond( MINIDOCS_STATUS_ERROR, __( 'Category not found.', 'minidocs' ) );
+			$this->respond( KNOWLIO_STATUS_ERROR, __( 'Category not found.', 'minidocs' ) );
 
 			return;
 		}
 
 		$this->vars['category'] = $category;
-		$this->vars['icons']    = MdCategoriesHelper::get_icons_list();
+		$this->vars['icons']    = KnowlioCategoriesHelper::get_icons_list();
 
 		$this->set_layout( 'none' );
 		$this->format_render( 'quick_edit' );
@@ -112,17 +116,17 @@ class MdCategoriesController extends MdController {
 			$this->check_nonce( 'new_category' );
 		}
 
-		if ( $category_id && ! MdRolesHelper::current_user_can( array( 'category__edit' ) ) ) {
-			$this->respond( MINIDOCS_STATUS_ERROR, __( 'Not Authorized', 'minidocs' ) );
+		if ( $category_id && ! KnowlioRolesHelper::current_user_can( array( 'category__edit' ) ) ) {
+			$this->respond( KNOWLIO_STATUS_ERROR, __( 'Not Authorized', 'minidocs' ) );
 
 			return;
 		}
 
-		$category      = new MdCategoryModel( $category_id );
+		$category      = new KnowlioCategoryModel( $category_id );
 		$is_new_record = $category->is_new_record();
 
 		if ( $category_id && $is_new_record ) {
-			$this->respond( MINIDOCS_STATUS_ERROR, __( 'Category not found.', 'minidocs' ) );
+			$this->respond( KNOWLIO_STATUS_ERROR, __( 'Category not found.', 'minidocs' ) );
 
 			return;
 		}
@@ -130,19 +134,19 @@ class MdCategoriesController extends MdController {
 		$category->set_data( $category_params );
 
 		if ( ! $category->save() ) {
-			$this->respond( MINIDOCS_STATUS_ERROR, $category->get_error_messages() );
+			$this->respond( KNOWLIO_STATUS_ERROR, $category->get_error_messages() );
 
 			return;
 		}
 
 		$message = $is_new_record
 			/* translators: %s: category name. */
-			? sprintf( __( '"%s" created', 'minidocs' ), $category->name )
+			? sprintf( __( 'Category "%s" created', 'minidocs' ), $category->name )
 			/* translators: %s: category name. */
-			: sprintf( __( '"%s" updated', 'minidocs' ), $category->name );
+			: sprintf( __( 'Category "%s" updated', 'minidocs' ), $category->name );
 
 		$this->respond(
-			MINIDOCS_STATUS_SUCCESS,
+			KNOWLIO_STATUS_SUCCESS,
 			$message,
 			array(
 				'record_id' => $category->id,
@@ -160,21 +164,21 @@ class MdCategoriesController extends MdController {
 		$this->check_nonce( 'destroy_category_' . $category_id );
 
 		if ( ! $category_id ) {
-			$this->respond( MINIDOCS_STATUS_ERROR, __( 'Invalid category.', 'minidocs' ) );
+			$this->respond( KNOWLIO_STATUS_ERROR, __( 'Invalid category.', 'minidocs' ) );
 
 			return;
 		}
 
-		$category = new MdCategoryModel( $category_id );
+		$category = new KnowlioCategoryModel( $category_id );
 
 		if ( $category->is_new_record() || ! $category->delete() ) {
-			$this->respond( MINIDOCS_STATUS_ERROR, __( 'Error deleting category.', 'minidocs' ) );
+			$this->respond( KNOWLIO_STATUS_ERROR, __( 'Error deleting category.', 'minidocs' ) );
 
 			return;
 		}
 
 		$this->respond(
-			MINIDOCS_STATUS_SUCCESS,
+			KNOWLIO_STATUS_SUCCESS,
 			__( 'Category deleted. Its articles were moved to Uncategorised.', 'minidocs' ),
 			array( 'reload' => true )
 		);

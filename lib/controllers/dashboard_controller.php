@@ -2,7 +2,7 @@
 /**
  * Landing screen.
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class MdDashboardController
+ * Class KnowlioDashboardController
  */
-class MdDashboardController extends MdController {
+class KnowlioDashboardController extends KnowlioController {
 
 	/**
 	 * Constructor.
@@ -20,7 +20,7 @@ class MdDashboardController extends MdController {
 	public function __construct() {
 		parent::__construct();
 
-		$this->views_folder        = MINIDOCS_VIEWS_ABSPATH . 'dashboard/';
+		$this->views_folder        = KNOWLIO_VIEWS_ABSPATH . 'dashboard/';
 		$this->vars['page_header'] = __( 'Dashboard', 'minidocs' );
 	}
 
@@ -28,13 +28,13 @@ class MdDashboardController extends MdController {
 	 * Overview: counters, recent edits, most-read articles, empty categories.
 	 */
 	public function index() {
-		$recent = new MdArticleModel();
+		$recent = new KnowlioArticleModel();
 
-		$this->vars['stats']            = MdArticlesHelper::get_stats();
-		$this->vars['category_count']   = MdCategoriesHelper::count();
+		$this->vars['stats']            = KnowlioArticlesHelper::get_stats();
+		$this->vars['category_count']   = KnowlioCategoriesHelper::count();
 		$this->vars['recent_articles']  = $recent->order_by( 'updated_at desc, id desc' )->set_limit( 6 )->get_results_as_models();
-		$this->vars['popular_articles'] = MdArticlesHelper::get_popular( 5 );
-		$this->vars['categories']       = MdCategoriesHelper::get_all();
+		$this->vars['popular_articles'] = KnowlioArticlesHelper::get_popular( 5 );
+		$this->vars['categories']       = KnowlioCategoriesHelper::get_all();
 
 		$this->format_render( 'index' );
 	}

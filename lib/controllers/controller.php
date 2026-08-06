@@ -6,7 +6,7 @@
  * a view/layout renderer, and one method (`format_render`) that emits either a
  * full HTML page or a JSON envelope depending on how the route was called.
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,9 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class MdController
+ * Class KnowlioController
  */
-class MdController {
+class KnowlioController {
 
 	/**
 	 * Request params.
@@ -24,13 +24,6 @@ class MdController {
 	 * @var array
 	 */
 	protected $params = array();
-
-	/**
-	 * Uploaded files.
-	 *
-	 * @var array
-	 */
-	protected $files = array();
 
 	/**
 	 * Layout used for HTML responses.
@@ -44,7 +37,7 @@ class MdController {
 	 *
 	 * @var string
 	 */
-	protected $views_folder = MINIDOCS_VIEWS_ABSPATH;
+	protected $views_folder = KNOWLIO_VIEWS_ABSPATH;
 
 	/**
 	 * `html` or `json`.
@@ -56,9 +49,12 @@ class MdController {
 	/**
 	 * Classes added to the page wrapper.
 	 *
+	 * This is a namespace hook for addons, not a styling class, so it must not
+	 * share a name with anything the stylesheet targets.
+	 *
 	 * @var array
 	 */
-	protected $extra_css_classes = array( 'minidocs' );
+	protected $extra_css_classes = array( 'knowlio-app' );
 
 	/**
 	 * Actions reachable without the controller's capabilities.
@@ -87,14 +83,13 @@ class MdController {
 	 * Constructor.
 	 */
 	public function __construct() {
-		$this->params = MdParamsHelper::get_params();
-		$this->files  = MdParamsHelper::get_files();
+		$this->params = KnowlioParamsHelper::get_params();
 
-		$this->vars['page_header'] = MdSettingsHelper::get_brand_name();
+		$this->vars['page_header'] = KnowlioSettingsHelper::get_brand_name();
 		$this->vars['breadcrumbs'] = array(
 			array(
-				'label' => MdSettingsHelper::get_brand_name(),
-				'link'  => MdRouterHelper::build_link( array( 'dashboard', 'index' ) ),
+				'label' => KnowlioSettingsHelper::get_brand_name(),
+				'link'  => KnowlioRouterHelper::build_link( array( 'dashboard', 'index' ) ),
 			),
 		);
 	}
@@ -114,20 +109,20 @@ class MdController {
 		if ( in_array( $action, (array) $this->action_access['public'], true ) ) {
 			$can = true;
 		} else {
-			$can = MdRolesHelper::current_user_can( $this->get_capabilities_required_for_action( $action ) );
+			$can = KnowlioRolesHelper::current_user_can( $this->get_capabilities_required_for_action( $action ) );
 		}
 
 		/**
 		 * Filters the access decision for a controller action.
 		 *
 		 * @since 1.0.0
-		 * @hook minidocs_can_current_user_access_action
+		 * @hook knowlio_can_current_user_access_action
 		 *
 		 * @param bool         $can        Decision.
 		 * @param string       $action     Action name.
-		 * @param MdController $controller Controller instance.
+		 * @param KnowlioController $controller Controller instance.
 		 */
-		return (bool) apply_filters( 'minidocs_can_current_user_access_action', $can, $action, $this );
+		return (bool) apply_filters( 'knowlio_can_current_user_access_action', $can, $action, $this );
 	}
 
 	/**
@@ -138,7 +133,7 @@ class MdController {
 	 * @return array
 	 */
 	public function get_capabilities_required_for_action( string $action ): array {
-		return MdRolesHelper::get_capabilities_required_for_controller_action( get_class( $this ), $action );
+		return KnowlioRolesHelper::get_capabilities_required_for_controller_action( get_class( $this ), $action );
 	}
 
 	/**
@@ -157,7 +152,7 @@ class MdController {
 		if ( 'json' === $this->get_return_format() ) {
 			$this->send_json(
 				array(
-					'status'  => MINIDOCS_STATUS_ERROR,
+					'status'  => KNOWLIO_STATUS_ERROR,
 					'message' => __( 'Invalid request. Please reload the page and try again.', 'minidocs' ),
 				)
 			);
@@ -232,7 +227,7 @@ class MdController {
 	 * @param array        $json_return_vars Extra keys merged into the JSON envelope.
 	 */
 	public function format_render( $view_name, array $extra_vars = array(), array $json_return_vars = array() ) {
-		echo $this->format_render_return( $view_name, $extra_vars, $json_return_vars ); // phpcs:ignore WordPress.Security.EscapingOutput.OutputNotEscaped
+		echo $this->format_render_return( $view_name, $extra_vars, $json_return_vars ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -252,7 +247,7 @@ class MdController {
 			$this->send_json(
 				array_merge(
 					array(
-						'status'  => MINIDOCS_STATUS_SUCCESS,
+						'status'  => KNOWLIO_STATUS_SUCCESS,
 						'message' => $html,
 					),
 					$json_return_vars
@@ -282,9 +277,18 @@ class MdController {
 	public function render( string $view, string $layout = 'none', array $extra_vars = array() ): string {
 		$this->vars['route_name'] = $this->route_name;
 
+		// Held aside so that extract() below cannot reach them: these two decide
+		// which file is included, and a `view` or `layout` key arriving in the
+		// variable bag must not be able to redirect that.
+		$knowlio_view_path   = $view;
+		$knowlio_layout_name = $layout;
+
 		// Views address their data as plain local variables.
 		extract( $this->vars );  // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
 		extract( $extra_vars );  // phpcs:ignore WordPress.PHP.DontExtract.extract_extract
+
+		$view   = $knowlio_view_path;
+		$layout = $knowlio_layout_name;
 
 		ob_start();
 
@@ -294,7 +298,7 @@ class MdController {
 			if ( $layout_path ) {
 				include $layout_path;
 			} else {
-				echo '<div class="md-empty-state"><h2>' . esc_html__( 'Invalid layout', 'minidocs' ) . '</h2></div>';
+				echo '<div class="knowlio-empty-state"><h2>' . esc_html__( 'Invalid layout', 'minidocs' ) . '</h2></div>';
 			}
 		} elseif ( is_readable( $view ) ) {
 			include $view;
@@ -331,9 +335,9 @@ class MdController {
 			return false;
 		}
 
-		$full_path = MINIDOCS_VIEWS_LAYOUTS_ABSPATH . $layout . '.php';
+		$full_path = KNOWLIO_VIEWS_LAYOUTS_ABSPATH . $layout . '.php';
 		$real_path = realpath( $full_path );
-		$base_path = realpath( MINIDOCS_VIEWS_LAYOUTS_ABSPATH );
+		$base_path = realpath( KNOWLIO_VIEWS_LAYOUTS_ABSPATH );
 
 		if ( $real_path && $base_path && 0 === strpos( $real_path, $base_path ) ) {
 			return $real_path;
@@ -343,16 +347,16 @@ class MdController {
 	}
 
 	/**
-	 * Per-screen CSS class, e.g. `md-view-books-index`.
+	 * Per-screen CSS class, e.g. `knowlio-view-books-index`.
 	 *
 	 * @param string $view_name View name.
 	 *
 	 * @return string
 	 */
 	protected function generate_css_class( string $view_name ): string {
-		$controller = strtolower( preg_replace( '/^Mp(\w+)Controller$/', '$1', static::class ) );
+		$controller = strtolower( preg_replace( '/^Knowlio(\w+)Controller$/', '$1', static::class ) );
 
-		return sanitize_html_class( 'md-view-' . $controller . '-' . $view_name );
+		return sanitize_html_class( 'knowlio-view-' . $controller . '-' . $view_name );
 	}
 
 	/* --------------------------------------------------------------------- */
@@ -390,7 +394,7 @@ class MdController {
 	 * @return array
 	 */
 	protected function build_pagination( int $total_records ): array {
-		$per_page    = MdSettingsHelper::get_per_page();
+		$per_page    = KnowlioSettingsHelper::get_per_page();
 		$page_number = max( 1, (int) ( $this->params['page_number'] ?? 1 ) );
 		$total_pages = max( 1, (int) ceil( $total_records / $per_page ) );
 		$page_number = min( $page_number, $total_pages );

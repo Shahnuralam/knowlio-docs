@@ -2,7 +2,7 @@
 /**
  * Settings screen.
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class MdSettingsController
+ * Class KnowlioSettingsController
  */
-class MdSettingsController extends MdController {
+class KnowlioSettingsController extends KnowlioController {
 
 	/**
 	 * Settings persisted by this screen, with their sanitization rule.
@@ -22,13 +22,14 @@ class MdSettingsController extends MdController {
 	 * @var array
 	 */
 	private $known_settings = array(
-		'brand_name'         => 'text',
-		'kb_title'           => 'text',
-		'kb_subtitle'        => 'text',
-		'kb_page_id'         => 'absint',
-		'docs_layout'        => 'key',
-		'records_per_page'   => 'absint',
-		'disable_csv_export' => 'bool',
+		'brand_name'               => 'text',
+		'kb_title'                 => 'text',
+		'kb_subtitle'              => 'text',
+		'kb_page_id'               => 'absint',
+		'docs_layout'              => 'key',
+		'records_per_page'         => 'absint',
+		'disable_csv_export'       => 'bool',
+		'remove_data_on_uninstall' => 'bool',
 	);
 
 	/**
@@ -37,12 +38,12 @@ class MdSettingsController extends MdController {
 	public function __construct() {
 		parent::__construct();
 
-		$this->views_folder = MINIDOCS_VIEWS_ABSPATH . 'settings/';
+		$this->views_folder = KNOWLIO_VIEWS_ABSPATH . 'settings/';
 
 		$this->vars['page_header']   = __( 'Settings', 'minidocs' );
 		$this->vars['breadcrumbs'][] = array(
 			'label' => __( 'Settings', 'minidocs' ),
-			'link'  => MdRouterHelper::build_link( array( 'settings', 'index' ) ),
+			'link'  => KnowlioRouterHelper::build_link( array( 'settings', 'index' ) ),
 		);
 	}
 
@@ -51,20 +52,21 @@ class MdSettingsController extends MdController {
 	 */
 	public function index() {
 		$this->vars['settings'] = array(
-			'brand_name'         => MdSettingsHelper::get_brand_name(),
-			'kb_title'           => MdSettingsHelper::get_setting( 'kb_title', __( 'How can we help?', 'minidocs' ) ),
-			'kb_subtitle'        => MdSettingsHelper::get_setting( 'kb_subtitle', __( 'Search the documentation, or browse by topic below.', 'minidocs' ) ),
-			'kb_page_id'         => (int) MdSettingsHelper::get_setting( 'kb_page_id', 0 ),
-			'docs_layout'        => MdSettingsHelper::get_docs_layout(),
-			'records_per_page'   => MdSettingsHelper::get_per_page(),
-			'disable_csv_export' => MdSettingsHelper::is_on( 'disable_csv_export' ),
+			'brand_name'               => KnowlioSettingsHelper::get_brand_name(),
+			'kb_title'                 => KnowlioSettingsHelper::get_setting( 'kb_title', __( 'How can we help?', 'minidocs' ) ),
+			'kb_subtitle'              => KnowlioSettingsHelper::get_setting( 'kb_subtitle', __( 'Search the documentation, or browse by topic below.', 'minidocs' ) ),
+			'kb_page_id'               => (int) KnowlioSettingsHelper::get_setting( 'kb_page_id', 0 ),
+			'docs_layout'              => KnowlioSettingsHelper::get_docs_layout(),
+			'records_per_page'         => KnowlioSettingsHelper::get_per_page(),
+			'disable_csv_export'       => KnowlioSettingsHelper::is_on( 'disable_csv_export' ),
+			'remove_data_on_uninstall' => KnowlioSettingsHelper::is_on( 'remove_data_on_uninstall' ),
 		);
 
-		$this->vars['layouts']           = MdSettingsHelper::get_docs_layouts();
-		$this->vars['pages']             = MdSettingsHelper::get_pages_for_select();
-		$this->vars['roles']             = MdRolesHelper::get_wp_roles_list();
-		$this->vars['capability_groups'] = MdRolesHelper::get_all_capabilities();
-		$this->vars['role_map']          = MdRolesHelper::get_role_capability_map();
+		$this->vars['layouts']           = KnowlioSettingsHelper::get_docs_layouts();
+		$this->vars['pages']             = KnowlioSettingsHelper::get_pages_for_select();
+		$this->vars['roles']             = KnowlioRolesHelper::get_wp_roles_list();
+		$this->vars['capability_groups'] = KnowlioRolesHelper::get_all_capabilities();
+		$this->vars['role_map']          = KnowlioRolesHelper::get_role_capability_map();
 
 		$this->format_render( 'index' );
 	}
@@ -82,13 +84,13 @@ class MdSettingsController extends MdController {
 				continue;
 			}
 
-			$value = MdParamsHelper::sanitize_param( $submitted[ $name ], $rule );
+			$value = KnowlioParamsHelper::sanitize_param( $submitted[ $name ], $rule );
 
 			if ( 'bool' === $rule ) {
 				$value = $value ? 'on' : 'off';
 			}
 
-			MdSettingsHelper::save_setting( $name, $value );
+			KnowlioSettingsHelper::save_setting( $name, $value );
 		}
 
 		if ( isset( $this->params['role_capabilities'] ) ) {
@@ -98,19 +100,19 @@ class MdSettingsController extends MdController {
 				$role_map[ $role ] = array_filter( (array) $capabilities );
 			}
 
-			MdRolesHelper::save_role_capability_map( $role_map );
+			KnowlioRolesHelper::save_role_capability_map( $role_map );
 		}
 
 		/**
 		 * Fires after the settings form is saved.
 		 *
 		 * @since 1.0.0
-		 * @hook minidocs_settings_saved
+		 * @hook knowlio_settings_saved
 		 *
 		 * @param array $submitted Submitted settings.
 		 */
-		do_action( 'minidocs_settings_saved', $submitted );
+		do_action( 'knowlio_settings_saved', $submitted );
 
-		$this->respond( MINIDOCS_STATUS_SUCCESS, __( 'Settings saved', 'minidocs' ) );
+		$this->respond( KNOWLIO_STATUS_SUCCESS, __( 'Settings saved', 'minidocs' ) );
 	}
 }

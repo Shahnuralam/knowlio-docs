@@ -13,18 +13,25 @@
  * Every identifier that reaches SQL is validated against a strict pattern and
  * back-quoted; every value goes through `$wpdb->prepare()`.
  *
- * @package MiniDocs
+ * A note on the phpcs:ignore comments below. All queries in this file run
+ * against the plugin's own tables, which have no WordPress API to go through,
+ * so WordPress.DB.DirectDatabaseQuery is suppressed by design rather than by
+ * oversight. Table names are interpolated because MySQL cannot bind an
+ * identifier as a placeholder; they come from constants built in
+ * KnowlioDocs::define_constants() and never from a request.
+ *
+ * @package KnowlioDocs
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-#[AllowDynamicProperties]
 /**
- * Class MdModel
+ * Class KnowlioModel
  */
-class MdModel {
+#[AllowDynamicProperties]
+class KnowlioModel {
 
 	/**
 	 * WordPress database handle.
@@ -516,7 +523,7 @@ class MdModel {
 			return $query;
 		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.PreparedSQL
 		return $this->db->prepare( $query, $values );
 	}
 
@@ -544,11 +551,11 @@ class MdModel {
 		$query = $this->prepare( $sql, $where_values );
 
 		if ( false !== $this->limit ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			// phpcs:ignore WordPress.DB.PreparedSQL
 			$query .= $this->db->prepare( ' LIMIT %d', $this->limit );
 
 			if ( false !== $this->offset ) {
-				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				// phpcs:ignore WordPress.DB.PreparedSQL
 				$query .= $this->db->prepare( ' OFFSET %d', $this->offset );
 			}
 		}
@@ -571,7 +578,7 @@ class MdModel {
 		$query            = $this->build_select_query();
 		$this->last_query = $query;
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
 		$rows = $this->db->get_results( $query, $output_type );
 
 		return is_array( $rows ) ? $rows : array();
@@ -580,13 +587,17 @@ class MdModel {
 	/**
 	 * Run the pending query and hydrate rows into model instances.
 	 *
-	 * With `set_limit(1)` a single model (or null) is returned instead of a list.
+	 * Always returns a list unless `$single` is explicitly requested. Inferring
+	 * "single" from `set_limit(1)` would silently change the return type of any
+	 * caller that legitimately asks for one row of a list -- for example the
+	 * `[knowlio_articles limit="1"]` shortcode.
+	 *
+	 * @param bool $single Return the first model (or null) instead of a list.
 	 *
 	 * @return static|static[]|null
 	 */
-	public function get_results_as_models() {
-		$single = ( 1 === $this->limit );
-		$rows   = $this->get_results( ARRAY_A );
+	public function get_results_as_models( bool $single = false ) {
+		$rows = $this->get_results( ARRAY_A );
 
 		$this->reset_conditions();
 
@@ -600,11 +611,11 @@ class MdModel {
 			 * Filters each hydrated model. Returning a falsy value drops the row.
 			 *
 			 * @since 1.0.0
-			 * @hook minidocs_get_results_as_models
+			 * @hook knowlio_get_results_as_models
 			 *
-			 * @param MdModel $model Hydrated model.
+			 * @param KnowlioModel $model Hydrated model.
 			 */
-			$model = apply_filters( 'minidocs_get_results_as_models', $model );
+			$model = apply_filters( 'knowlio_get_results_as_models', $model );
 
 			if ( $model ) {
 				$models[] = $model;
@@ -616,6 +627,15 @@ class MdModel {
 		}
 
 		return $models;
+	}
+
+	/**
+	 * Run the pending query and return the first matching model.
+	 *
+	 * @return static|null
+	 */
+	public function get_first() {
+		return $this->set_limit( 1 )->get_results_as_models( true );
 	}
 
 	/**
@@ -631,7 +651,7 @@ class MdModel {
 		$query            = $this->prepare( $sql, $where_values );
 		$this->last_query = $query;
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
 		$count = (int) $this->db->get_var( $query );
 
 		$this->reset_conditions();
@@ -670,9 +690,9 @@ class MdModel {
 			return false;
 		}
 
-		$query = $this->db->prepare( 'SELECT * FROM ' . $this->table_name . ' WHERE id = %d LIMIT 1', $id ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$query = $this->db->prepare( 'SELECT * FROM ' . $this->table_name . ' WHERE id = %d LIMIT 1', $id ); // phpcs:ignore WordPress.DB.PreparedSQL
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
 		$row = $this->db->get_row( $query, ARRAY_A );
 
 		if ( ! $row ) {
@@ -685,11 +705,11 @@ class MdModel {
 		 * Filters a model right after it is loaded by id.
 		 *
 		 * @since 1.0.0
-		 * @hook minidocs_model_loaded_by_id
+		 * @hook knowlio_model_loaded_by_id
 		 *
-		 * @param MdModel $model Loaded model.
+		 * @param KnowlioModel $model Loaded model.
 		 */
-		return apply_filters( 'minidocs_model_loaded_by_id', $this );
+		return apply_filters( 'knowlio_model_loaded_by_id', $this );
 	}
 
 	/**
@@ -743,12 +763,12 @@ class MdModel {
 		 * Fires after data has been mass-assigned to a model.
 		 *
 		 * @since 1.0.0
-		 * @hook minidocs_model_set_data
+		 * @hook knowlio_model_set_data
 		 *
-		 * @param MdModel $model Model.
+		 * @param KnowlioModel $model Model.
 		 * @param array   $data  Assigned data.
 		 */
-		do_action( 'minidocs_model_set_data', $this, $data );
+		do_action( 'knowlio_model_set_data', $this, $data );
 
 		$this->after_data_was_set( $data );
 
@@ -790,21 +810,21 @@ class MdModel {
 			}
 
 			if ( property_exists( $this, 'updated_at' ) ) {
-				$this->updated_at = MdUtilHelper::now_db_datetime();
+				$this->updated_at = KnowlioUtilHelper::now_db_datetime();
 			}
 
 			if ( $this->is_new_record() ) {
 				$this->before_create();
 
 				if ( property_exists( $this, 'created_at' ) ) {
-					$this->created_at = MdUtilHelper::now_db_datetime();
+					$this->created_at = KnowlioUtilHelper::now_db_datetime();
 				}
 
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 				$result = $this->db->insert( $this->table_name, $this->get_params_to_save_with_values() );
 
 				if ( false === $result ) {
-					$this->add_error( 'insert_error', $this->db->last_error );
+					$this->add_database_error( 'insert_error' );
 
 					return false;
 				}
@@ -821,7 +841,7 @@ class MdModel {
 				);
 
 				if ( false === $result ) {
-					$this->add_error( 'update_error', $this->db->last_error );
+					$this->add_database_error( 'update_error' );
 
 					return false;
 				}
@@ -833,11 +853,11 @@ class MdModel {
 			 * Fires after a model is written to the database.
 			 *
 			 * @since 1.0.0
-			 * @hook minidocs_model_save
+			 * @hook knowlio_model_save
 			 *
-			 * @param MdModel $model Saved model.
+			 * @param KnowlioModel $model Saved model.
 			 */
-			do_action( 'minidocs_model_save', $this );
+			do_action( 'knowlio_model_save', $this );
 
 			return true;
 		} catch ( Exception $e ) {
@@ -877,7 +897,7 @@ class MdModel {
 		}
 
 		if ( property_exists( $this, 'updated_at' ) ) {
-			$this->updated_at         = MdUtilHelper::now_db_datetime();
+			$this->updated_at         = KnowlioUtilHelper::now_db_datetime();
 			$prepared['updated_at'] = $this->updated_at;
 		}
 
@@ -885,7 +905,7 @@ class MdModel {
 		$result = $this->db->update( $this->table_name, $prepared, array( 'id' => $this->id ), null, array( '%d' ) );
 
 		if ( false === $result ) {
-			$this->add_error( 'update_error', $this->db->last_error );
+			$this->add_database_error( 'update_error' );
 
 			return false;
 		}
@@ -918,12 +938,12 @@ class MdModel {
 		 * Fires after a model row is deleted.
 		 *
 		 * @since 1.0.0
-		 * @hook minidocs_model_deleted
+		 * @hook knowlio_model_deleted
 		 *
-		 * @param MdModel $model Model instance.
+		 * @param KnowlioModel $model Model instance.
 		 * @param int     $id    Deleted id.
 		 */
-		do_action( 'minidocs_model_deleted', $this, $id );
+		do_action( 'knowlio_model_deleted', $this, $id );
 
 		return true;
 	}
@@ -988,13 +1008,13 @@ class MdModel {
 		 * Filters the mass-assignment whitelist.
 		 *
 		 * @since 1.0.0
-		 * @hook minidocs_model_allowed_params
+		 * @hook knowlio_model_allowed_params
 		 *
 		 * @param array   $params Allowed param names.
-		 * @param MdModel $model  Model.
+		 * @param KnowlioModel $model  Model.
 		 * @param string  $role   Role.
 		 */
-		return (array) apply_filters( 'minidocs_model_allowed_params', $this->allowed_params( $role ), $this, $role );
+		return (array) apply_filters( 'knowlio_model_allowed_params', $this->allowed_params( $role ), $this, $role );
 	}
 
 	/**
@@ -1021,13 +1041,13 @@ class MdModel {
 		 * table append it here.
 		 *
 		 * @since 1.0.0
-		 * @hook minidocs_model_params_to_save
+		 * @hook knowlio_model_params_to_save
 		 *
 		 * @param array   $params Column names.
-		 * @param MdModel $model  Model.
+		 * @param KnowlioModel $model  Model.
 		 * @param string  $role   Role.
 		 */
-		return (array) apply_filters( 'minidocs_model_params_to_save', $this->params_to_save( $role ), $this, $role );
+		return (array) apply_filters( 'knowlio_model_params_to_save', $this->params_to_save( $role ), $this, $role );
 	}
 
 	/**
@@ -1051,7 +1071,7 @@ class MdModel {
 		$rules = $this->params_to_sanitize();
 
 		if ( isset( $rules[ $param_name ] ) ) {
-			return MdParamsHelper::sanitize_param( $value, $rules[ $param_name ] );
+			return KnowlioParamsHelper::sanitize_param( $value, $rules[ $param_name ] );
 		}
 
 		return is_string( $value ) ? sanitize_text_field( $value ) : $value;
@@ -1113,11 +1133,11 @@ class MdModel {
 		 * Fires during validation so addons can add their own rules.
 		 *
 		 * @since 1.0.0
-		 * @hook minidocs_model_validate
+		 * @hook knowlio_model_validate
 		 *
-		 * @param MdModel $model Model being validated.
+		 * @param KnowlioModel $model Model being validated.
 		 */
-		do_action( 'minidocs_model_validate', $this );
+		do_action( 'knowlio_model_validate', $this );
 
 		return ! $this->has_error();
 	}
@@ -1198,18 +1218,18 @@ class MdModel {
 
 		if ( $this->is_new_record() ) {
 			$query = $this->db->prepare(
-				'SELECT id FROM ' . $this->table_name . ' WHERE ' . $column . ' = %s LIMIT 1', // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				'SELECT id FROM ' . $this->table_name . ' WHERE ' . $column . ' = %s LIMIT 1', // phpcs:ignore WordPress.DB.PreparedSQL
 				$value
 			);
 		} else {
 			$query = $this->db->prepare(
-				'SELECT id FROM ' . $this->table_name . ' WHERE ' . $column . ' = %s AND id != %d LIMIT 1', // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				'SELECT id FROM ' . $this->table_name . ' WHERE ' . $column . ' = %s AND id != %d LIMIT 1', // phpcs:ignore WordPress.DB.PreparedSQL
 				$value,
 				$this->id
 			);
 		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
 		if ( $this->db->get_var( $query ) ) {
 			/* translators: %s: field name. */
 			return new WP_Error( $property, sprintf( __( '%s has to be unique', 'minidocs' ), $this->get_property_nice_name( $property ) ) );
@@ -1263,6 +1283,20 @@ class MdModel {
 	/* --------------------------------------------------------------------- */
 
 	/**
+	 * Record a failed write.
+	 *
+	 * The message from $wpdb is deliberately not used: it goes straight into a
+	 * response the browser sees, and it carries table and column names, so a
+	 * failed write would hand out a description of the schema. The real error
+	 * is left in $wpdb->last_error for a developer to read.
+	 *
+	 * @param string $code Error code.
+	 */
+	protected function add_database_error( string $code ) {
+		$this->add_error( $code, __( 'The record could not be saved. Please try again.', 'minidocs' ) );
+	}
+
+	/**
 	 * Record an error.
 	 *
 	 * @param string $code    Error code.
@@ -1314,7 +1348,7 @@ class MdModel {
 	 * @return string
 	 */
 	public function formatted_created_date( string $default = 'n/a' ): string {
-		return MdUtilHelper::format_datetime( $this->created_at ?? null, $default );
+		return KnowlioUtilHelper::format_datetime( $this->created_at ?? null, $default );
 	}
 
 	/**
@@ -1325,7 +1359,7 @@ class MdModel {
 	 * @return string
 	 */
 	public function formatted_updated_date( string $default = 'n/a' ): string {
-		return MdUtilHelper::format_datetime( $this->updated_at ?? null, $default );
+		return KnowlioUtilHelper::format_datetime( $this->updated_at ?? null, $default );
 	}
 
 	/**

@@ -3,10 +3,10 @@
  * String router.
  *
  * A route is a single string, `controller__action`, which maps to
- * `Mp{Controller}Controller::{action}()`. Three URL builders produce links for
+ * `Knowlio{Controller}Controller::{action}()`. Three URL builders produce links for
  * the three entry points (admin page, admin-post, frontend).
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,9 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class MdRouterHelper
+ * Class KnowlioRouterHelper
  */
-class MdRouterHelper {
+class KnowlioRouterHelper {
 
 	/**
 	 * Build a route name from its two parts.
@@ -46,7 +46,7 @@ class MdRouterHelper {
 	}
 
 	/**
-	 * Link to an admin screen rendered by the single MiniDocs menu page.
+	 * Link to an admin screen rendered by the single Knowlio Docs menu page.
 	 *
 	 * @param string|array $route  Route.
 	 * @param array        $params Extra query args.
@@ -56,7 +56,7 @@ class MdRouterHelper {
 	public static function build_link( $route, array $params = array() ): string {
 		$args = array_merge(
 			array(
-				'page'       => MINIDOCS_ADMIN_PAGE_SLUG,
+				'page'       => KNOWLIO_ADMIN_PAGE_SLUG,
 				'route_name' => self::normalize_route( $route ),
 			),
 			$params
@@ -76,33 +76,13 @@ class MdRouterHelper {
 	public static function build_admin_post_link( $route, array $params = array() ): string {
 		$args = array_merge(
 			array(
-				'action'     => MINIDOCS_ROUTE_ACTION,
+				'action'     => KNOWLIO_ROUTE_ACTION,
 				'route_name' => self::normalize_route( $route ),
 			),
 			$params
 		);
 
 		return add_query_arg( $args, admin_url( 'admin-post.php' ) );
-	}
-
-	/**
-	 * Frontend link handled through admin-ajax.
-	 *
-	 * @param string|array $route  Route.
-	 * @param array        $params Extra query args.
-	 *
-	 * @return string
-	 */
-	public static function build_front_link( $route, array $params = array() ): string {
-		$args = array_merge(
-			array(
-				'action'     => MINIDOCS_ROUTE_ACTION,
-				'route_name' => self::normalize_route( $route ),
-			),
-			$params
-		);
-
-		return add_query_arg( $args, admin_url( 'admin-ajax.php' ) );
 	}
 
 	/**
@@ -142,7 +122,7 @@ class MdRouterHelper {
 			return array();
 		}
 
-		$controller_class = 'Md' . str_replace( '_', '', ucwords( $controller_slug, '_' ) ) . 'Controller';
+		$controller_class = 'Knowlio' . str_replace( '_', '', ucwords( $controller_slug, '_' ) ) . 'Controller';
 
 		if ( ! class_exists( $controller_class ) ) {
 			return array();
@@ -183,12 +163,12 @@ class MdRouterHelper {
 			if ( 'json' === $return_format ) {
 				wp_send_json(
 					array(
-						'status'  => MINIDOCS_STATUS_ERROR,
+						'status'  => KNOWLIO_STATUS_ERROR,
 						'message' => __( 'Page Not Found', 'minidocs' ),
 					)
 				);
 			}
-			echo '<div class="md-empty-state"><h2>' . esc_html__( 'Page Not Found', 'minidocs' ) . '</h2></div>';
+			echo '<div class="knowlio-empty-state"><h2>' . esc_html__( 'Page Not Found', 'minidocs' ) . '</h2></div>';
 
 			return;
 		}
@@ -203,12 +183,12 @@ class MdRouterHelper {
 			if ( 'json' === $controller->get_return_format() ) {
 				$controller->send_json(
 					array(
-						'status'  => MINIDOCS_STATUS_ERROR,
+						'status'  => KNOWLIO_STATUS_ERROR,
 						'message' => __( 'Not Authorized', 'minidocs' ),
 					)
 				);
 			}
-			echo '<div class="md-empty-state"><h2>' . esc_html__( 'Not Authorized', 'minidocs' ) . '</h2></div>';
+			echo '<div class="knowlio-empty-state"><h2>' . esc_html__( 'Not Authorized', 'minidocs' ) . '</h2></div>';
 
 			return;
 		}

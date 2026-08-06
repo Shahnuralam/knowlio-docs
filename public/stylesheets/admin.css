@@ -1,104 +1,117 @@
 /**
- * MiniDocs admin styles.
+ * Knowlio Docs admin styles.
  *
- * Layout mirrors the LatePoint admin shell: fixed dark side menu, top bar,
- * page header with breadcrumbs, content area, and a right-hand side panel that
- * slides in for quick edit forms.
+ * A fixed dark side menu, a top bar, a page header with breadcrumbs, the
+ * content area, and a right-hand side panel that slides in for quick edits.
  */
 
-/* ------------------------------------------------------ Full-page takeover */
+/* -------------------------------------------------------- Full-width shell */
 
 /*
- * On our own screen the plugin runs as a full-screen app: the WordPress admin
- * menu, admin bar, footer and screen-meta are hidden, and #wpcontent loses the
+ * On our own screen the plugin takes the full width of the window: WordPress'
+ * admin menu, footer and screen-meta step aside, and #wpcontent drops the
  * offset it reserves for the menu. The body class is added in PHP by
- * MiniDocs::add_admin_body_class(), so these rules can never affect any other
+ * KnowlioDocs::add_admin_body_class(), so these rules can never affect any other
  * admin page even though the stylesheet targets WordPress' own ids.
+ *
+ * The admin bar deliberately stays put. It is the user's global navigation --
+ * their site, their profile, their way back out of this plugin -- and hiding it
+ * would mean taking over an interface that is not ours. Everything below simply
+ * starts underneath it, measured by --knowlio-wpbar.
  */
-html.wp-toolbar:has(body.minidocs-full-page) { padding-top: 0; }
+body.knowlio-full-page { --knowlio-wpbar: 32px; }
 
-body.minidocs-full-page #adminmenumain,
-body.minidocs-full-page #wpadminbar,
-body.minidocs-full-page #wpfooter,
-body.minidocs-full-page #screen-meta,
-body.minidocs-full-page #screen-meta-links,
-body.minidocs-full-page #wpbody-content > .notice,
-body.minidocs-full-page #wpbody-content > .error,
-body.minidocs-full-page #wpbody-content > .updated,
-body.minidocs-full-page #wpbody-content > .update-nag { display: none !important; }
+@media screen and (max-width: 782px) {
+	/*
+	 * Below 782px WordPress switches the admin bar to position: absolute, so it
+	 * scrolls away with the page and our sticky chrome must not reserve room.
+	 */
+	body.knowlio-full-page { --knowlio-wpbar: 0px; }
+}
 
-body.minidocs-full-page #wpcontent { margin-left: 0; padding-left: 0; }
-body.minidocs-full-page #wpbody { padding-top: 0; }
-body.minidocs-full-page #wpbody-content { padding-bottom: 0; float: none; }
-body.minidocs-full-page #wpwrap { background: #f6f8fa; }
-body.minidocs-full-page { overflow-x: hidden; }
+body.knowlio-full-page #adminmenumain,
+body.knowlio-full-page #wpfooter,
+body.knowlio-full-page #screen-meta,
+body.knowlio-full-page #screen-meta-links,
+body.knowlio-full-page #wpbody-content > .notice,
+body.knowlio-full-page #wpbody-content > .error,
+body.knowlio-full-page #wpbody-content > .updated,
+body.knowlio-full-page #wpbody-content > .update-nag { display: none !important; }
 
-/* Browsers without :has() keep the toolbar gap; neutralise it directly. */
-body.minidocs-full-page.wp-toolbar { padding-top: 0; }
+body.knowlio-full-page #wpcontent { margin-left: 0; padding-left: 0; }
+body.knowlio-full-page #wpbody { padding-top: 0; }
+body.knowlio-full-page #wpbody-content { padding-bottom: 0; float: none; }
+body.knowlio-full-page #wpwrap { background: #f6f8fa; }
+body.knowlio-full-page { overflow-x: hidden; }
 
-.minidocs-all-wrapper {
-	--md-primary: #1e7bff;
-	--md-primary-dark: #1361d6;
-	--md-primary-soft: #eaf2ff;
-	--md-ink: #1a1f36;
-	--md-ink-soft: #5a6478;
-	--md-ink-faded: #8a93a6;
-	--md-border: #eef0f1;
-	--md-border-strong: #dfe3e8;
-	--md-bg: #f6f8fa;
-	--md-surface: #fff;
-	--md-menu-bg: #181c2b;
-	--md-menu-ink: #9aa3b8;
-	--md-menu-ink-active: #fff;
-	--md-radius: 10px;
-	--md-radius-pill: 16px;
-	--md-shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .1);
-	--md-shadow-lg: 0 12px 40px rgba(16, 24, 40, .18);
-	--md-side-menu-w: 232px;
+.knowlio-all-wrapper {
+	--knowlio-primary: #1e7bff;
+	--knowlio-primary-dark: #1361d6;
+	--knowlio-primary-soft: #eaf2ff;
+	--knowlio-ink: #1a1f36;
+	--knowlio-ink-soft: #5a6478;
+	--knowlio-ink-faded: #8a93a6;
+	--knowlio-border: #eef0f1;
+	--knowlio-border-strong: #dfe3e8;
+	--knowlio-bg: #f6f8fa;
+	--knowlio-surface: #fff;
+	--knowlio-menu-bg: #181c2b;
+	--knowlio-menu-ink: #9aa3b8;
+	--knowlio-menu-ink-active: #fff;
+	--knowlio-radius: 10px;
+	--knowlio-radius-pill: 16px;
+	--knowlio-shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .1);
+	--knowlio-shadow-lg: 0 12px 40px rgba(16, 24, 40, .18);
+	--knowlio-side-menu-w: 232px;
 
 	position: relative;
 	margin: 0;
 	font-size: 14px;
 	line-height: 1.5;
-	color: var(--md-ink);
-	background: var(--md-bg);
+	color: var(--knowlio-ink);
+	background: var(--knowlio-bg);
 	-webkit-font-smoothing: antialiased;
 }
 
-.minidocs-all-wrapper *,
-.minidocs-all-wrapper *::before,
-.minidocs-all-wrapper *::after {
+.knowlio-all-wrapper *,
+.knowlio-all-wrapper *::before,
+.knowlio-all-wrapper *::after {
 	box-sizing: border-box;
 }
 
-.minidocs-content-and-menu-w {
+.knowlio-content-and-menu-w {
 	display: flex;
 	align-items: stretch;
-	min-height: 100vh;
+	min-height: calc(100vh - var(--knowlio-wpbar, 0px));
 }
 
-/* The side menu is the full-height rail of the app shell. */
-.minidocs-side-menu-w { position: sticky; top: 0; align-self: flex-start; height: 100vh; }
+/* The side menu is the full-height rail of the app shell, below the admin bar. */
+.knowlio-side-menu-w {
+	position: sticky;
+	top: var(--knowlio-wpbar, 0px);
+	align-self: flex-start;
+	height: calc(100vh - var(--knowlio-wpbar, 0px));
+}
 
 /* ---------------------------------------------------------------- Side menu */
 
-.minidocs-side-menu-w {
-	flex: 0 0 var(--md-side-menu-w);
-	width: var(--md-side-menu-w);
+.knowlio-side-menu-w {
+	flex: 0 0 var(--knowlio-side-menu-w);
+	width: var(--knowlio-side-menu-w);
 	display: flex;
 	flex-direction: column;
-	background: var(--md-menu-bg);
-	color: var(--md-menu-ink);
+	background: var(--knowlio-menu-bg);
+	color: var(--knowlio-menu-ink);
 }
 
-.md-side-menu-top {
+.knowlio-side-menu-top {
 	display: flex;
 	align-items: center;
 	gap: 10px;
 	padding: 18px 18px 14px;
 }
 
-.md-logo-w {
+.knowlio-logo-w {
 	display: flex;
 	align-items: center;
 	gap: 10px;
@@ -108,16 +121,16 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	min-width: 0;
 }
 
-.md-logo-w:focus { box-shadow: none; outline: none; }
+.knowlio-logo-w:focus { box-shadow: none; outline: none; }
 
-.md-logo-mark {
+.knowlio-logo-mark {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	width: 30px;
 	height: 30px;
 	border-radius: 8px;
-	background: var(--md-primary);
+	background: var(--knowlio-primary);
 	color: #fff;
 	font-size: 12px;
 	font-weight: 700;
@@ -125,7 +138,7 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	flex: 0 0 30px;
 }
 
-.md-logo-text {
+.knowlio-logo-text {
 	font-size: 15px;
 	font-weight: 600;
 	color: #fff;
@@ -134,59 +147,59 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	text-overflow: ellipsis;
 }
 
-.md-menu-fold-trigger {
+.knowlio-menu-fold-trigger {
 	background: none;
 	border: 0;
-	color: var(--md-menu-ink);
+	color: var(--knowlio-menu-ink);
 	cursor: pointer;
 	padding: 4px;
 	display: none;
 }
 
-.md-side-menu {
+.knowlio-side-menu {
 	list-style: none;
 	margin: 6px 0 0;
 	padding: 0 10px;
 	flex: 1;
 }
 
-.md-side-menu > li { position: relative; margin-bottom: 2px; }
+.knowlio-side-menu > li { position: relative; margin-bottom: 2px; }
 
-.md-side-menu > li > a {
+.knowlio-side-menu > li > a {
 	display: flex;
 	align-items: center;
 	gap: 10px;
 	padding: 9px 10px;
 	border-radius: 8px;
-	color: var(--md-menu-ink);
+	color: var(--knowlio-menu-ink);
 	text-decoration: none;
 	font-size: 13.5px;
 	font-weight: 500;
 	transition: background .15s, color .15s;
 }
 
-.md-side-menu > li > a:hover {
+.knowlio-side-menu > li > a:hover {
 	background: rgba(255, 255, 255, .06);
 	color: #fff;
 }
 
-.md-side-menu > li > a:focus { box-shadow: none; outline: none; }
+.knowlio-side-menu > li > a:focus { box-shadow: none; outline: none; }
 
-.md-side-menu > li > a .dashicons {
+.knowlio-side-menu > li > a .dashicons {
 	font-size: 17px;
 	width: 17px;
 	height: 17px;
 	opacity: .85;
 }
 
-.md-side-menu > li.md-menu-item-active > a {
-	background: var(--md-primary);
+.knowlio-side-menu > li.knowlio-menu-item-active > a {
+	background: var(--knowlio-primary);
 	color: #fff;
 }
 
-.md-side-menu > li.md-menu-item-active > a .dashicons { opacity: 1; }
+.knowlio-side-menu > li.knowlio-menu-item-active > a .dashicons { opacity: 1; }
 
-.md-menu-badge {
+.knowlio-menu-badge {
 	margin-left: auto;
 	font-style: normal;
 	font-size: 10px;
@@ -199,114 +212,117 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	color: #fff;
 }
 
-.md-menu-spacer {
+.knowlio-menu-spacer {
 	height: 1px;
 	margin: 10px 10px;
 	background: rgba(255, 255, 255, .08);
 }
 
-.md-side-sub-menu { display: none; }
+.knowlio-side-sub-menu { display: none; }
 
-.md-back-to-wp {
+.knowlio-back-to-wp {
 	display: flex;
 	align-items: center;
 	gap: 8px;
 	padding: 14px 20px;
-	color: var(--md-menu-ink);
+	color: var(--knowlio-menu-ink);
 	text-decoration: none;
 	font-size: 12.5px;
 	border-top: 1px solid rgba(255, 255, 255, .08);
 }
 
-.md-back-to-wp:hover { color: #fff; }
-.md-back-to-wp:focus { box-shadow: none; outline: none; }
-.md-back-to-wp .dashicons { font-size: 16px; width: 16px; height: 16px; }
+.knowlio-back-to-wp:hover { color: #fff; }
+.knowlio-back-to-wp:focus { box-shadow: none; outline: none; }
+.knowlio-back-to-wp .dashicons { font-size: 16px; width: 16px; height: 16px; }
 
 /* ------------------------------------------------------------------ Content */
 
-.minidocs-content-w {
+.knowlio-content-w {
 	flex: 1;
 	min-width: 0;
 	display: flex;
 	flex-direction: column;
 }
 
-.minidocs-top-bar-w {
+.knowlio-top-bar-w {
 	position: sticky;
-	top: 0;
+	top: var(--knowlio-wpbar, 0px);
 	z-index: 50;
 	display: flex;
 	align-items: center;
 	gap: 10px;
 	padding: 10px 22px;
-	background: var(--md-surface);
-	border-bottom: 1px solid var(--md-border);
+	background: var(--knowlio-surface);
+	border-bottom: 1px solid var(--knowlio-border);
 }
 
-.md-top-search-w {
+.knowlio-top-search-w {
 	position: relative;
 	flex: 0 1 320px;
+	/* Without min-width:0 a flex item refuses to shrink below its content, which
+	   is what pushed the whole top bar past the viewport on small screens. */
+	min-width: 0;
 	display: flex;
 	align-items: center;
 }
 
-.md-top-search-w .dashicons {
+.knowlio-top-search-w .dashicons {
 	position: absolute;
 	left: 10px;
 	font-size: 16px;
 	width: 16px;
 	height: 16px;
-	color: var(--md-ink-faded);
+	color: var(--knowlio-ink-faded);
 	pointer-events: none;
 }
 
-.md-top-search {
+.knowlio-top-search {
 	width: 100%;
 	height: 34px;
 	padding: 0 12px 0 32px;
-	border: 1px solid var(--md-border-strong);
-	border-radius: var(--md-radius-pill);
-	background: var(--md-bg);
+	border: 1px solid var(--knowlio-border-strong);
+	border-radius: var(--knowlio-radius-pill);
+	background: var(--knowlio-bg);
 	font-size: 13px;
-	color: var(--md-ink);
+	color: var(--knowlio-ink);
 }
 
-.md-top-search:focus {
+.knowlio-top-search:focus {
 	outline: none;
-	border-color: var(--md-primary);
+	border-color: var(--knowlio-primary);
 	background: #fff;
-	box-shadow: 0 0 0 3px var(--md-primary-soft);
+	box-shadow: 0 0 0 3px var(--knowlio-primary-soft);
 }
 
-.md-top-search-results {
+.knowlio-top-search-results {
 	position: absolute;
 	top: calc(100% + 6px);
 	left: 0;
 	right: 0;
 	background: #fff;
-	border: 1px solid var(--md-border-strong);
-	border-radius: var(--md-radius);
-	box-shadow: var(--md-shadow-lg);
+	border: 1px solid var(--knowlio-border-strong);
+	border-radius: var(--knowlio-radius);
+	box-shadow: var(--knowlio-shadow-lg);
 	max-height: 320px;
 	overflow-y: auto;
 	z-index: 60;
 	padding: 6px;
 }
 
-.md-top-search-results a {
+.knowlio-top-search-results a {
 	display: block;
 	padding: 8px 10px;
 	border-radius: 6px;
 	text-decoration: none;
-	color: var(--md-ink);
+	color: var(--knowlio-ink);
 	font-size: 13px;
 }
 
-.md-top-search-results a:hover { background: var(--md-primary-soft); }
-.md-top-search-results a small { display: block; color: var(--md-ink-faded); font-size: 11.5px; }
-.md-top-search-results .md-search-empty { padding: 10px; color: var(--md-ink-faded); font-size: 13px; }
+.knowlio-top-search-results a:hover { background: var(--knowlio-primary-soft); }
+.knowlio-top-search-results a small { display: block; color: var(--knowlio-ink-faded); font-size: 11.5px; }
+.knowlio-top-search-results .knowlio-search-empty { padding: 10px; color: var(--knowlio-ink-faded); font-size: 13px; }
 
-.md-top-iconed-link {
+.knowlio-top-iconed-link {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -315,21 +331,21 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	border: 0;
 	border-radius: 50%;
 	background: transparent;
-	color: var(--md-ink-soft);
+	color: var(--knowlio-ink-soft);
 	cursor: pointer;
 	text-decoration: none;
 }
 
-.md-top-iconed-link:hover { background: var(--md-bg); color: var(--md-ink); }
-.md-top-iconed-link .dashicons { font-size: 18px; width: 18px; height: 18px; }
+.knowlio-top-iconed-link:hover { background: var(--knowlio-bg); color: var(--knowlio-ink); }
+.knowlio-top-iconed-link .dashicons { font-size: 18px; width: 18px; height: 18px; }
 
-.md-unlock-link {
+.knowlio-unlock-link {
 	margin-left: auto;
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
 	padding: 6px 12px;
-	border-radius: var(--md-radius-pill);
+	border-radius: var(--knowlio-radius-pill);
 	background: linear-gradient(135deg, #ffb020, #ff7a45);
 	color: #fff;
 	font-size: 12.5px;
@@ -337,16 +353,16 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	text-decoration: none;
 }
 
-.md-unlock-link:hover { color: #fff; opacity: .92; }
-.md-unlock-link .dashicons { font-size: 15px; width: 15px; height: 15px; }
+.knowlio-unlock-link:hover { color: #fff; opacity: .92; }
+.knowlio-unlock-link .dashicons { font-size: 15px; width: 15px; height: 15px; }
 
-.md-top-user-w { display: flex; align-items: center; gap: 8px; padding-left: 6px; }
-.md-top-user-avatar img { border-radius: 50%; display: block; width: 28px; height: 28px; }
-.md-top-user-name { font-size: 13px; font-weight: 500; color: var(--md-ink-soft); }
+.knowlio-top-user-w { display: flex; align-items: center; gap: 8px; padding-left: 6px; }
+.knowlio-top-user-avatar img { border-radius: 50%; display: block; width: 28px; height: 28px; }
+.knowlio-top-user-name { font-size: 13px; font-weight: 500; color: var(--knowlio-ink-soft); }
 
 /* --------------------------------------------------------------- Page header */
 
-.md-page-header-w {
+.knowlio-page-header-w {
 	display: flex;
 	align-items: flex-end;
 	justify-content: space-between;
@@ -354,48 +370,48 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	padding: 22px 26px 0;
 }
 
-.md-page-title {
+.knowlio-page-title {
 	margin: 0;
 	padding: 0;
 	font-size: 22px;
 	font-weight: 650;
 	line-height: 1.25;
-	color: var(--md-ink);
+	color: var(--knowlio-ink);
 }
 
-.md-breadcrumbs { list-style: none; display: flex; gap: 6px; margin: 6px 0 0; padding: 0; }
-.md-breadcrumbs li { display: flex; gap: 6px; font-size: 12.5px; color: var(--md-ink-faded); }
-.md-breadcrumbs li:not(:last-child)::after { content: "/"; color: var(--md-border-strong); }
-.md-breadcrumbs a { color: var(--md-ink-faded); text-decoration: none; }
-.md-breadcrumbs a:hover { color: var(--md-primary); }
+.knowlio-breadcrumbs { list-style: none; display: flex; gap: 6px; margin: 6px 0 0; padding: 0; }
+.knowlio-breadcrumbs li { display: flex; gap: 6px; font-size: 12.5px; color: var(--knowlio-ink-faded); }
+.knowlio-breadcrumbs li:not(:last-child)::after { content: "/"; color: var(--knowlio-border-strong); }
+.knowlio-breadcrumbs a { color: var(--knowlio-ink-faded); text-decoration: none; }
+.knowlio-breadcrumbs a:hover { color: var(--knowlio-primary); }
 
-.md-page-tabs { list-style: none; display: flex; gap: 4px; margin: 0; padding: 0; }
+.knowlio-page-tabs { list-style: none; display: flex; gap: 4px; margin: 0; padding: 0; }
 
-.md-page-tabs a {
+.knowlio-page-tabs a {
 	display: block;
 	padding: 7px 14px;
-	border-radius: var(--md-radius-pill);
+	border-radius: var(--knowlio-radius-pill);
 	font-size: 13.5px;
 	font-weight: 500;
-	color: var(--md-ink-soft);
+	color: var(--knowlio-ink-soft);
 	text-decoration: none;
 }
 
-.md-page-tabs li.md-page-tab-active a { background: var(--md-ink); color: #fff; }
+.knowlio-page-tabs li.knowlio-page-tab-active a { background: var(--knowlio-ink); color: #fff; }
 
-.minidocs-content { padding: 20px 26px 40px; }
+.knowlio-content { padding: 20px 26px 40px; }
 
 /* ------------------------------------------------------------------ Buttons */
 
-.md-btn {
+.knowlio-btn {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	gap: 6px;
 	padding: 8px 14px;
-	border: 1px solid var(--md-primary);
-	border-radius: var(--md-radius-pill);
-	background: var(--md-primary);
+	border: 1px solid var(--knowlio-primary);
+	border-radius: var(--knowlio-radius-pill);
+	background: var(--knowlio-primary);
 	color: #fff;
 	font-size: 13.5px;
 	font-weight: 500;
@@ -406,256 +422,256 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	transition: background .15s, border-color .15s, opacity .15s;
 }
 
-.md-btn:hover { background: var(--md-primary-dark); border-color: var(--md-primary-dark); color: #fff; }
-.md-btn:focus { outline: none; box-shadow: 0 0 0 3px var(--md-primary-soft); }
-.md-btn[disabled] { opacity: .6; cursor: default; }
-.md-btn .dashicons { font-size: 15px; width: 15px; height: 15px; }
+.knowlio-btn:hover { background: var(--knowlio-primary-dark); border-color: var(--knowlio-primary-dark); color: #fff; }
+.knowlio-btn:focus { outline: none; box-shadow: 0 0 0 3px var(--knowlio-primary-soft); }
+.knowlio-btn[disabled] { opacity: .6; cursor: default; }
+.knowlio-btn .dashicons { font-size: 15px; width: 15px; height: 15px; }
 
-.md-btn-outline {
+.knowlio-btn-outline {
 	background: #fff;
-	border-color: var(--md-border-strong);
-	color: var(--md-ink-soft);
+	border-color: var(--knowlio-border-strong);
+	color: var(--knowlio-ink-soft);
 }
 
-.md-btn-outline:hover { background: var(--md-bg); border-color: var(--md-ink-faded); color: var(--md-ink); }
+.knowlio-btn-outline:hover { background: var(--knowlio-bg); border-color: var(--knowlio-ink-faded); color: var(--knowlio-ink); }
 
-.md-btn-danger { background: #e5484d; border-color: #e5484d; }
-.md-btn-danger:hover { background: #cc3b40; border-color: #cc3b40; }
+.knowlio-btn-danger { background: #e5484d; border-color: #e5484d; }
+.knowlio-btn-danger:hover { background: #cc3b40; border-color: #cc3b40; }
 
-.md-btn-sm { padding: 5px 10px; font-size: 12.5px; }
+.knowlio-btn-sm { padding: 5px 10px; font-size: 12.5px; }
 
 /* ------------------------------------------------------------------- Panels */
 
-.md-panel {
-	background: var(--md-surface);
-	border: 1px solid var(--md-border);
-	border-radius: var(--md-radius);
-	box-shadow: var(--md-shadow);
+.knowlio-panel {
+	background: var(--knowlio-surface);
+	border: 1px solid var(--knowlio-border);
+	border-radius: var(--knowlio-radius);
+	box-shadow: var(--knowlio-shadow);
 	margin-bottom: 20px;
 	overflow: hidden;
 }
 
-.md-panel-head {
+.knowlio-panel-head {
 	display: flex;
 	align-items: center;
 	gap: 10px;
 	padding: 14px 18px;
-	border-bottom: 1px solid var(--md-border);
+	border-bottom: 1px solid var(--knowlio-border);
 }
 
-.md-panel-head h2 { margin: 0; font-size: 14.5px; font-weight: 600; color: var(--md-ink); }
-.md-panel-note { font-size: 12px; color: var(--md-ink-faded); }
-.md-panel-link { margin-left: auto; font-size: 12.5px; color: var(--md-primary); text-decoration: none; }
-.md-panel-link:hover { text-decoration: underline; }
-.md-panel-body { padding: 18px; }
-.md-panel-body-flush { padding: 0; }
-.md-panel-intro { margin: 0 0 14px; color: var(--md-ink-soft); font-size: 13.5px; }
+.knowlio-panel-head h2 { margin: 0; font-size: 14.5px; font-weight: 600; color: var(--knowlio-ink); }
+.knowlio-panel-note { font-size: 12px; color: var(--knowlio-ink-faded); }
+.knowlio-panel-link { margin-left: auto; font-size: 12.5px; color: var(--knowlio-primary); text-decoration: none; }
+.knowlio-panel-link:hover { text-decoration: underline; }
+.knowlio-panel-body { padding: 18px; }
+.knowlio-panel-body-flush { padding: 0; }
+.knowlio-panel-intro { margin: 0 0 14px; color: var(--knowlio-ink-soft); font-size: 13.5px; }
 
 /* ---------------------------------------------------------------- Dashboard */
 
-.md-stat-row {
+.knowlio-stat-row {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
 	gap: 14px;
 	margin-bottom: 20px;
 }
 
-.md-stat {
-	background: var(--md-surface);
-	border: 1px solid var(--md-border);
-	border-radius: var(--md-radius);
-	box-shadow: var(--md-shadow);
+.knowlio-stat {
+	background: var(--knowlio-surface);
+	border: 1px solid var(--knowlio-border);
+	border-radius: var(--knowlio-radius);
+	box-shadow: var(--knowlio-shadow);
 	padding: 16px 18px;
 }
 
-.md-stat-label {
+.knowlio-stat-label {
 	font-size: 11.5px;
 	font-weight: 600;
 	letter-spacing: .05em;
 	text-transform: uppercase;
-	color: var(--md-ink-faded);
+	color: var(--knowlio-ink-faded);
 }
 
-.md-stat-value { font-size: 30px; font-weight: 650; line-height: 1.2; margin: 6px 0 2px; }
-.md-stat-foot { font-size: 12.5px; color: var(--md-ink-faded); }
+.knowlio-stat-value { font-size: 30px; font-weight: 650; line-height: 1.2; margin: 6px 0 2px; }
+.knowlio-stat-foot { font-size: 12.5px; color: var(--knowlio-ink-faded); }
 
-.md-dash-grid {
+.knowlio-dash-grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
 	gap: 20px;
 	align-items: start;
 }
 
-.md-dash-grid .md-panel { margin-bottom: 0; }
+.knowlio-dash-grid .knowlio-panel { margin-bottom: 0; }
 
-.md-record-list { list-style: none; margin: 0; padding: 0; }
+.knowlio-record-list { list-style: none; margin: 0; padding: 0; }
 
-.md-record-list li {
+.knowlio-record-list li {
 	display: flex;
 	align-items: center;
 	gap: 12px;
 	padding: 12px 18px;
-	border-bottom: 1px solid var(--md-border);
+	border-bottom: 1px solid var(--knowlio-border);
 	cursor: pointer;
 }
 
-.md-record-list li:last-child { border-bottom: 0; }
-.md-record-list li:hover { background: var(--md-bg); }
-.md-record-main { flex: 1; min-width: 0; }
-.md-record-title { display: block; font-weight: 550; font-size: 13.5px; }
-.md-record-sub { display: block; font-size: 12.5px; color: var(--md-ink-faded); }
+.knowlio-record-list li:last-child { border-bottom: 0; }
+.knowlio-record-list li:hover { background: var(--knowlio-bg); }
+.knowlio-record-main { flex: 1; min-width: 0; }
+.knowlio-record-title { display: block; font-weight: 550; font-size: 13.5px; }
+.knowlio-record-sub { display: block; font-size: 12.5px; color: var(--knowlio-ink-faded); }
 
-.md-chapter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.knowlio-chapter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
 
-.md-chapter-card {
+.knowlio-chapter-card {
 	display: block;
 	padding: 14px;
-	border: 1px solid var(--md-border);
-	border-radius: var(--md-radius);
+	border: 1px solid var(--knowlio-border);
+	border-radius: var(--knowlio-radius);
 	text-decoration: none;
-	color: var(--md-ink);
+	color: var(--knowlio-ink);
 	transition: border-color .15s, background .15s;
 }
 
-.md-chapter-card:hover { border-color: var(--md-primary); background: var(--md-primary-soft); color: var(--md-ink); }
-.md-chapter-card .dashicons { color: var(--md-primary); font-size: 20px; width: 20px; height: 20px; }
-.md-chapter-title { display: block; font-weight: 600; font-size: 13.5px; margin-top: 8px; }
-.md-chapter-count { display: block; font-size: 12px; color: var(--md-ink-faded); margin-top: 2px; }
+.knowlio-chapter-card:hover { border-color: var(--knowlio-primary); background: var(--knowlio-primary-soft); color: var(--knowlio-ink); }
+.knowlio-chapter-card .dashicons { color: var(--knowlio-primary); font-size: 20px; width: 20px; height: 20px; }
+.knowlio-chapter-title { display: block; font-weight: 600; font-size: 13.5px; margin-top: 8px; }
+.knowlio-chapter-count { display: block; font-size: 12px; color: var(--knowlio-ink-faded); margin-top: 2px; }
 
-.md-kv-list { list-style: none; margin: 0 0 14px; padding: 0; }
+.knowlio-kv-list { list-style: none; margin: 0 0 14px; padding: 0; }
 
-.md-kv-list li {
+.knowlio-kv-list li {
 	display: flex;
 	justify-content: space-between;
 	gap: 12px;
 	padding: 8px 0;
-	border-bottom: 1px dashed var(--md-border);
+	border-bottom: 1px dashed var(--knowlio-border);
 	font-size: 13.5px;
 }
 
-.md-kv-list li:last-child { border-bottom: 0; }
-.md-kv-list span { color: var(--md-ink-soft); }
+.knowlio-kv-list li:last-child { border-bottom: 0; }
+.knowlio-kv-list span { color: var(--knowlio-ink-soft); }
 
-.md-addon-row {
+.knowlio-addon-row {
 	display: flex;
 	justify-content: space-between;
 	padding: 9px 12px;
-	background: var(--md-bg);
+	background: var(--knowlio-bg);
 	border-radius: 8px;
 	margin-bottom: 6px;
 	font-size: 13px;
 }
 
-.md-addon-name { font-weight: 550; }
-.md-addon-version { color: var(--md-ink-faded); }
+.knowlio-addon-name { font-weight: 550; }
+.knowlio-addon-version { color: var(--knowlio-ink-faded); }
 
-.md-shortcode-row {
+.knowlio-shortcode-row {
 	display: flex;
 	align-items: center;
 	gap: 10px;
 	padding: 10px 12px;
-	background: var(--md-bg);
-	border: 1px solid var(--md-border);
+	background: var(--knowlio-bg);
+	border: 1px solid var(--knowlio-border);
 	border-radius: 8px;
 	margin-bottom: 8px;
 }
 
-.md-shortcode-row code {
+.knowlio-shortcode-row code {
 	flex: 1;
 	background: none;
 	padding: 0;
 	font-size: 12.5px;
-	color: var(--md-ink);
+	color: var(--knowlio-ink);
 	overflow-x: auto;
 }
 
 /* -------------------------------------------------------------- Pro upsell */
 
-.md-pro-block {
+.knowlio-pro-block {
 	display: flex;
 	align-items: center;
 	gap: 10px;
 	padding: 14px;
-	border: 1px dashed var(--md-border-strong);
-	border-radius: var(--md-radius);
-	background: var(--md-bg);
-	color: var(--md-ink-soft);
+	border: 1px dashed var(--knowlio-border-strong);
+	border-radius: var(--knowlio-radius);
+	background: var(--knowlio-bg);
+	color: var(--knowlio-ink-soft);
 	text-decoration: none;
 	font-size: 13px;
 	transition: border-color .15s, color .15s;
 }
 
-.md-pro-block:hover { border-color: var(--md-primary); color: var(--md-primary); }
+.knowlio-pro-block:hover { border-color: var(--knowlio-primary); color: var(--knowlio-primary); }
 
-.md-pro-block-icon {
+.knowlio-pro-block-icon {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	width: 24px;
 	height: 24px;
 	border-radius: 50%;
-	background: var(--md-border);
+	background: var(--knowlio-border);
 	font-weight: 700;
 	flex: 0 0 24px;
 }
 
 /* -------------------------------------------------------------------- Table */
 
-.md-table-w {
-	background: var(--md-surface);
-	border: 1px solid var(--md-border);
-	border-radius: var(--md-radius);
-	box-shadow: var(--md-shadow);
+.knowlio-table-w {
+	background: var(--knowlio-surface);
+	border: 1px solid var(--knowlio-border);
+	border-radius: var(--knowlio-radius);
+	box-shadow: var(--knowlio-shadow);
 	overflow: hidden;
 }
 
-.md-table-toolbar {
+.knowlio-table-toolbar {
 	display: flex;
 	align-items: center;
 	gap: 16px;
 	padding: 14px 18px;
-	border-bottom: 1px solid var(--md-border);
+	border-bottom: 1px solid var(--knowlio-border);
 	flex-wrap: wrap;
 }
 
-.md-table-heading { flex: 1; min-width: 180px; }
-.md-table-heading h2 { margin: 0; font-size: 15px; font-weight: 600; }
-.md-table-actions { display: flex; gap: 8px; }
-.md-pagination-info { font-size: 12.5px; color: var(--md-ink-faded); margin-top: 2px; }
+.knowlio-table-heading { flex: 1; min-width: 180px; }
+.knowlio-table-heading h2 { margin: 0; font-size: 15px; font-weight: 600; }
+.knowlio-table-actions { display: flex; gap: 8px; }
+.knowlio-pagination-info { font-size: 12.5px; color: var(--knowlio-ink-faded); margin-top: 2px; }
 
-.md-table-scroll { overflow-x: auto; }
+.knowlio-table-scroll { overflow-x: auto; }
 
-.md-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.knowlio-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 
-.md-table thead th {
+.knowlio-table thead th {
 	padding: 9px 12px;
 	text-align: center;
 	font-size: 11.5px;
 	font-weight: 600;
 	letter-spacing: .04em;
 	text-transform: uppercase;
-	color: var(--md-ink-faded);
-	background: var(--md-bg);
-	border-bottom: 1px solid var(--md-border);
+	color: var(--knowlio-ink-faded);
+	background: var(--knowlio-bg);
+	border-bottom: 1px solid var(--knowlio-border);
 	white-space: nowrap;
 }
 
-.md-table thead .md-filter-row th { padding: 8px 8px; background: #fff; }
-.md-table td { padding: 11px 12px; text-align: center; border-bottom: 1px solid var(--md-border); vertical-align: middle; }
-.md-table tbody tr:last-child td { border-bottom: 0; }
-.md-table .text-left { text-align: left; }
-.md-col-narrow { width: 1%; white-space: nowrap; }
-.md-col-faded { color: var(--md-ink-faded); font-size: 12.5px; }
-.md-cell-strong { display: block; font-weight: 550; }
-.md-cell-sub { display: block; font-size: 12px; color: var(--md-ink-faded); }
+.knowlio-table thead .knowlio-filter-row th { padding: 8px 8px; background: #fff; }
+.knowlio-table td { padding: 11px 12px; text-align: center; border-bottom: 1px solid var(--knowlio-border); vertical-align: middle; }
+.knowlio-table tbody tr:last-child td { border-bottom: 0; }
+.knowlio-table .text-left { text-align: left; }
+.knowlio-col-narrow { width: 1%; white-space: nowrap; }
+.knowlio-col-faded { color: var(--knowlio-ink-faded); font-size: 12.5px; }
+.knowlio-cell-strong { display: block; font-weight: 550; }
+.knowlio-cell-sub { display: block; font-size: 12px; color: var(--knowlio-ink-faded); }
 
-.md-clickable-row { cursor: pointer; transition: background .12s; }
-.md-clickable-row:hover { background: var(--md-primary-soft); }
+.knowlio-clickable-row { cursor: pointer; transition: background .12s; }
+.knowlio-clickable-row:hover { background: var(--knowlio-primary-soft); }
 
-.md-row-delete {
+.knowlio-row-delete {
 	border: 0;
 	background: none;
-	color: var(--md-ink-faded);
+	color: var(--knowlio-ink-faded);
 	cursor: pointer;
 	padding: 4px;
 	border-radius: 6px;
@@ -663,118 +679,159 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	transition: opacity .12s, color .12s, background .12s;
 }
 
-.md-clickable-row:hover .md-row-delete { opacity: 1; }
-.md-row-delete:hover { color: #e5484d; background: #fdecec; }
-.md-row-delete .dashicons { font-size: 16px; width: 16px; height: 16px; }
+.knowlio-clickable-row:hover .knowlio-row-delete { opacity: 1; }
+.knowlio-row-delete:hover { color: #e5484d; background: #fdecec; }
+.knowlio-row-delete .dashicons { font-size: 16px; width: 16px; height: 16px; }
 
-.md-filter-row .md-form-group { margin: 0; }
-.md-filter-dates { display: flex; gap: 6px; }
-.md-filter-dates .md-input { min-width: 130px; }
+.knowlio-filter-row .knowlio-form-group { margin: 0; }
+.knowlio-filter-dates { display: flex; gap: 6px; }
+.knowlio-filter-dates .knowlio-input { min-width: 130px; }
 
-.md-pagination-w {
+.knowlio-pagination-w {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 12px;
 	padding: 12px 18px;
-	border-top: 1px solid var(--md-border);
-	background: var(--md-bg);
+	border-top: 1px solid var(--knowlio-border);
+	background: var(--knowlio-bg);
 }
 
-.md-pagination-pages { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--md-ink-soft); }
-.md-pagination-pages .md-input { width: auto; min-width: 70px; }
+.knowlio-pagination-pages { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--knowlio-ink-soft); }
+.knowlio-pagination-pages .knowlio-input { width: auto; min-width: 70px; }
 
-.md-table-w.md-is-loading { opacity: .55; pointer-events: none; }
+.knowlio-table-w.knowlio-is-loading { opacity: .55; pointer-events: none; }
 
 /* ------------------------------------------------------------- Status pills */
 
-.md-status {
+.knowlio-status {
 	display: inline-block;
 	padding: 3px 10px;
 	border-radius: 20px;
 	font-size: 11.5px;
 	font-weight: 600;
 	letter-spacing: .02em;
-	background: var(--md-border);
-	color: var(--md-ink-soft);
+	background: var(--knowlio-border);
+	color: var(--knowlio-ink-soft);
 	white-space: nowrap;
 }
 
-.md-status-published { background: #e7f7ee; color: #1a7f4b; }
-.md-status-draft { background: #fff4e0; color: #99631a; }
-.md-status-archived { background: #f1f2f5; color: #6b7280; }
-.md-status-active { background: #e7f7ee; color: #1a7f4b; }
-.md-status-disabled { background: #f1f2f5; color: #6b7280; }
+.knowlio-status-published { background: #e7f7ee; color: #1a7f4b; }
+.knowlio-status-draft { background: #fff4e0; color: #99631a; }
+.knowlio-status-archived { background: #f1f2f5; color: #6b7280; }
+.knowlio-status-active { background: #e7f7ee; color: #1a7f4b; }
+.knowlio-status-disabled { background: #f1f2f5; color: #6b7280; }
 
 /* ------------------------------------------------------------- Empty states */
 
-.md-empty-state { padding: 44px 20px; text-align: center; color: var(--md-ink-faded); }
-.md-empty-state .dashicons { font-size: 34px; width: 34px; height: 34px; opacity: .45; }
-.md-empty-state h2 { margin: 10px 0 4px; font-size: 15px; font-weight: 600; color: var(--md-ink-soft); }
-.md-empty-state p { margin: 0; font-size: 13px; }
-.md-empty-state-sm { padding: 26px 16px; }
+.knowlio-empty-state { padding: 44px 20px; text-align: center; color: var(--knowlio-ink-faded); }
+.knowlio-empty-state .dashicons { font-size: 34px; width: 34px; height: 34px; opacity: .45; }
+.knowlio-empty-state h2 { margin: 10px 0 4px; font-size: 15px; font-weight: 600; color: var(--knowlio-ink-soft); }
+.knowlio-empty-state p { margin: 0; font-size: 13px; }
+.knowlio-empty-state-sm { padding: 26px 16px; }
 
 /* ------------------------------------------------------------------- Forms */
 
-.md-form-group { margin-bottom: 14px; }
+.knowlio-form-group { margin-bottom: 14px; }
 
-.md-form-group > label {
+.knowlio-form-group > label {
 	display: block;
 	margin-bottom: 5px;
 	font-size: 12.5px;
 	font-weight: 600;
-	color: var(--md-ink-soft);
+	color: var(--knowlio-ink-soft);
 }
 
-.md-input {
+.knowlio-input {
 	width: 100%;
 	min-height: 36px;
 	padding: 7px 11px;
-	border: 1px solid var(--md-border-strong);
+	border: 1px solid var(--knowlio-border-strong);
 	border-radius: 8px;
 	background: #fff;
 	font-size: 13.5px;
 	line-height: 1.4;
-	color: var(--md-ink);
+	color: var(--knowlio-ink);
 	box-shadow: none;
 }
 
-.md-input:focus {
+.knowlio-input:focus {
 	outline: none;
-	border-color: var(--md-primary);
-	box-shadow: 0 0 0 3px var(--md-primary-soft);
+	border-color: var(--knowlio-primary);
+	box-shadow: 0 0 0 3px var(--knowlio-primary-soft);
 }
 
-.md-textarea { min-height: 84px; resize: vertical; }
-.md-select { appearance: auto; }
-.md-multi-select { min-height: 96px; }
-.md-form-description { margin-top: 5px; font-size: 12px; color: var(--md-ink-faded); }
+.knowlio-textarea { min-height: 84px; resize: vertical; }
+.knowlio-select { appearance: auto; }
+.knowlio-multi-select { min-height: 96px; }
+.knowlio-form-description { margin-top: 5px; font-size: 12px; color: var(--knowlio-ink-faded); }
 
-.md-row { display: flex; gap: 12px; flex-wrap: wrap; }
-.md-col-6 { flex: 1 1 calc(50% - 6px); min-width: 160px; }
-.md-col-12 { flex: 1 1 100%; }
+.knowlio-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.knowlio-col-6 { flex: 1 1 calc(50% - 6px); min-width: 160px; }
+.knowlio-col-12 { flex: 1 1 100%; }
 
-.md-form-section { margin: 20px 0 12px; padding-top: 14px; border-top: 1px solid var(--md-border); }
-.md-form-section h3 { margin: 0; font-size: 13px; font-weight: 650; color: var(--md-ink); }
+.knowlio-form-section { margin: 20px 0 12px; padding-top: 14px; border-top: 1px solid var(--knowlio-border); }
+.knowlio-form-section h3 { margin: 0; font-size: 13px; font-weight: 650; color: var(--knowlio-ink); }
 
-.md-form-group-toggle { margin-bottom: 12px; }
-.md-toggle { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; }
-.md-toggle-input { position: absolute; opacity: 0; width: 0; height: 0; }
+/*
+ * Pill toggles.
+ *
+ * Every selector here is scoped to .knowlio-all-wrapper and the input is
+ * additionally qualified by [type="checkbox"]. That is not decoration: core's
+ * forms.css styles admin checkboxes through `input[type="checkbox"]`, which is
+ * one specificity point above a bare class, so `.knowlio-toggle-input` alone loses
+ * on width, height, min-width, border and background. The native 16px box then
+ * paints over the label and the pill collapses. Out-specifying core is the fix;
+ * !important is not needed once the selectors are qualified.
+ */
+.knowlio-all-wrapper .knowlio-form-group-toggle { margin-bottom: 12px; }
 
-.md-toggle-track {
+.knowlio-all-wrapper .knowlio-toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	cursor: pointer;
+}
+
+/* Visually hidden, but still focusable and still operable by the label. */
+.knowlio-all-wrapper input[type="checkbox"].knowlio-toggle-input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	min-width: 0;
+	min-height: 0;
+	margin: 0;
+	padding: 0 !important;
+	border: 0;
+	background: none;
+	box-shadow: none;
+	opacity: 0;
+	pointer-events: none;
+	clip-path: inset(50%);
+	overflow: hidden;
+}
+
+/* Core draws a dashicon checkmark on :checked; the pill is our indicator. */
+.knowlio-all-wrapper input[type="checkbox"].knowlio-toggle-input::before {
+	content: none;
+}
+
+.knowlio-all-wrapper .knowlio-toggle-track {
 	position: relative;
+	display: block;
 	width: 38px;
 	height: 22px;
 	border-radius: 20px;
-	background: var(--md-border-strong);
+	background: var(--knowlio-border-strong);
 	transition: background .18s;
 	flex: 0 0 38px;
 }
 
-.md-toggle-thumb {
+.knowlio-all-wrapper .knowlio-toggle-thumb {
 	position: absolute;
 	top: 3px;
 	left: 3px;
+	display: block;
 	width: 16px;
 	height: 16px;
 	border-radius: 50%;
@@ -783,43 +840,49 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	transition: transform .18s;
 }
 
-.md-toggle-input:checked + .md-toggle-track { background: var(--md-primary); }
-.md-toggle-input:checked + .md-toggle-track .md-toggle-thumb { transform: translateX(16px); }
-.md-toggle-input:focus-visible + .md-toggle-track { box-shadow: 0 0 0 3px var(--md-primary-soft); }
-.md-toggle-label { font-size: 13.5px; color: var(--md-ink); }
+.knowlio-all-wrapper .knowlio-toggle-input:checked + .knowlio-toggle-track { background: var(--knowlio-primary); }
+.knowlio-all-wrapper .knowlio-toggle-input:checked + .knowlio-toggle-track .knowlio-toggle-thumb { transform: translateX(16px); }
+.knowlio-all-wrapper .knowlio-toggle-input:focus-visible + .knowlio-toggle-track { box-shadow: 0 0 0 3px var(--knowlio-primary-soft); }
 
-.md-checkbox-grid { display: flex; flex-wrap: wrap; gap: 6px 14px; }
-.md-checkbox { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--md-ink-soft); cursor: pointer; }
+.knowlio-all-wrapper .knowlio-toggle-label { font-size: 13.5px; color: var(--knowlio-ink); }
 
-.md-form-actions-bar {
+@media (prefers-reduced-motion: reduce) {
+	.knowlio-all-wrapper .knowlio-toggle-track,
+	.knowlio-all-wrapper .knowlio-toggle-thumb { transition: none; }
+}
+
+.knowlio-checkbox-grid { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.knowlio-checkbox { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--knowlio-ink-soft); cursor: pointer; }
+
+.knowlio-form-actions-bar {
 	position: sticky;
 	bottom: 0;
 	display: flex;
 	justify-content: flex-end;
 	gap: 10px;
 	padding: 14px 18px;
-	background: var(--md-surface);
-	border: 1px solid var(--md-border);
-	border-radius: var(--md-radius);
-	box-shadow: var(--md-shadow);
+	background: var(--knowlio-surface);
+	border: 1px solid var(--knowlio-border);
+	border-radius: var(--knowlio-radius);
+	box-shadow: var(--knowlio-shadow);
 }
 
-.md-role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.knowlio-role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
 
-.md-role-card {
+.knowlio-role-card {
 	padding: 14px;
-	border: 1px solid var(--md-border);
-	border-radius: var(--md-radius);
-	background: var(--md-bg);
+	border: 1px solid var(--knowlio-border);
+	border-radius: var(--knowlio-radius);
+	background: var(--knowlio-bg);
 }
 
-.md-role-name { font-weight: 650; font-size: 13.5px; margin-bottom: 10px; }
-.md-role-card .md-form-group { margin-bottom: 10px; }
-.md-role-card .md-form-group > label { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.knowlio-role-name { font-weight: 650; font-size: 13.5px; margin-bottom: 10px; }
+.knowlio-role-card .knowlio-form-group { margin-bottom: 10px; }
+.knowlio-role-card .knowlio-form-group > label { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
 
 /* -------------------------------------------------------------- Side panel */
 
-.md-side-panel-w {
+.knowlio-side-panel-w {
 	position: fixed;
 	inset: 0;
 	z-index: 100000;
@@ -827,105 +890,105 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	justify-content: flex-end;
 }
 
-.md-side-panel-w[hidden] { display: none; }
-.md-side-panel-overlay { position: absolute; inset: 0; background: rgba(24, 28, 43, .35); }
+.knowlio-side-panel-w[hidden] { display: none; }
+.knowlio-side-panel-overlay { position: absolute; inset: 0; background: rgba(24, 28, 43, .35); }
 
-.md-side-panel {
+.knowlio-side-panel {
 	position: relative;
 	width: 520px;
 	max-width: 100%;
 	background: #fff;
-	box-shadow: var(--md-shadow-lg);
+	box-shadow: var(--knowlio-shadow-lg);
 	display: flex;
 	flex-direction: column;
-	animation: md-slide-in .22s ease;
+	animation: knowlio-slide-in .22s ease;
 }
 
-@keyframes md-slide-in { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes knowlio-slide-in { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
 
-.md-side-panel-body { flex: 1; display: flex; flex-direction: column; min-height: 0; }
-.md-form-w { display: flex; flex-direction: column; flex: 1; min-height: 0; }
-.md-form-w form { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.knowlio-side-panel-body { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.knowlio-form-w { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.knowlio-form-w form { display: flex; flex-direction: column; flex: 1; min-height: 0; }
 
-.md-form-header {
+.knowlio-form-header {
 	display: flex;
 	align-items: center;
 	gap: 12px;
 	padding: 16px 20px;
-	border-bottom: 1px solid var(--md-border);
+	border-bottom: 1px solid var(--knowlio-border);
 }
 
-.md-form-header h2 { margin: 0; font-size: 16px; font-weight: 600; }
+.knowlio-form-header h2 { margin: 0; font-size: 16px; font-weight: 600; }
 
-.md-side-panel-close {
+.knowlio-side-panel-close {
 	margin-left: auto;
 	border: 0;
 	background: none;
-	color: var(--md-ink-faded);
+	color: var(--knowlio-ink-faded);
 	cursor: pointer;
 	padding: 4px;
 	border-radius: 6px;
 }
 
-.md-side-panel-close:hover { background: var(--md-bg); color: var(--md-ink); }
-.md-form-content { flex: 1; overflow-y: auto; padding: 18px 20px; }
+.knowlio-side-panel-close:hover { background: var(--knowlio-bg); color: var(--knowlio-ink); }
+.knowlio-form-content { flex: 1; overflow-y: auto; padding: 18px 20px; }
 
-.md-form-footer {
+.knowlio-form-footer {
 	display: flex;
 	justify-content: flex-end;
 	gap: 10px;
 	padding: 14px 20px;
-	border-top: 1px solid var(--md-border);
-	background: var(--md-bg);
+	border-top: 1px solid var(--knowlio-border);
+	background: var(--knowlio-bg);
 }
 
-.md-record-meta {
+.knowlio-record-meta {
 	display: flex;
 	align-items: center;
 	gap: 6px;
 	flex-wrap: wrap;
 	padding: 9px 12px;
 	margin-bottom: 16px;
-	background: var(--md-bg);
+	background: var(--knowlio-bg);
 	border-radius: 8px;
 	font-size: 12.5px;
-	color: var(--md-ink-faded);
+	color: var(--knowlio-ink-faded);
 }
 
-.md-record-meta strong { color: var(--md-ink); }
-.md-record-meta-sep { opacity: .5; }
+.knowlio-record-meta strong { color: var(--knowlio-ink); }
+.knowlio-record-meta-sep { opacity: .5; }
 
-.md-form-message {
+.knowlio-form-message {
 	margin-bottom: 14px;
 	padding: 10px 12px;
 	border-radius: 8px;
 	font-size: 13px;
 }
 
-.md-form-message ul { margin: 0; padding-left: 18px; }
-.md-form-message-error { background: #fdecec; color: #a52a2a; }
-.md-form-message-success { background: #e7f7ee; color: #1a7f4b; }
+.knowlio-form-message ul { margin: 0; padding-left: 18px; }
+.knowlio-form-message-error { background: #fdecec; color: #a52a2a; }
+.knowlio-form-message-success { background: #e7f7ee; color: #1a7f4b; }
 
 /* ---------------------------------------------------------------- Lightbox */
 
-.md-lightbox-w { position: fixed; inset: 0; z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 4vh; }
-.md-lightbox-w[hidden] { display: none; }
-.md-lightbox-overlay { position: absolute; inset: 0; background: rgba(24, 28, 43, .4); }
+.knowlio-lightbox-w { position: fixed; inset: 0; z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 4vh; }
+.knowlio-lightbox-w[hidden] { display: none; }
+.knowlio-lightbox-overlay { position: absolute; inset: 0; background: rgba(24, 28, 43, .4); }
 
-.md-lightbox {
+.knowlio-lightbox {
 	position: relative;
 	width: 640px;
 	max-width: 100%;
 	max-height: 92vh;
 	overflow-y: auto;
 	background: #fff;
-	border-radius: var(--md-radius);
-	box-shadow: var(--md-shadow-lg);
+	border-radius: var(--knowlio-radius);
+	box-shadow: var(--knowlio-shadow-lg);
 }
 
 /* ----------------------------------------------------------- Notifications */
 
-.md-notifications-w {
+.knowlio-notifications-w {
 	position: fixed;
 	right: 22px;
 	bottom: 22px;
@@ -936,66 +999,59 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	max-width: 360px;
 }
 
-.md-notification {
+.knowlio-notification {
 	display: flex;
 	align-items: flex-start;
 	gap: 10px;
 	padding: 12px 14px;
-	border-radius: var(--md-radius);
-	background: var(--md-ink);
+	border-radius: var(--knowlio-radius);
+	background: var(--knowlio-ink);
 	color: #fff;
 	font-size: 13px;
-	box-shadow: var(--md-shadow-lg);
-	animation: md-slide-in .2s ease;
+	box-shadow: var(--knowlio-shadow-lg);
+	animation: knowlio-slide-in .2s ease;
 }
 
-.md-notification ul { margin: 0; padding-left: 16px; }
-.md-notification-success { background: #167a48; }
-.md-notification-error { background: #c23a3e; }
+.knowlio-notification ul { margin: 0; padding-left: 16px; }
+.knowlio-notification-success { background: #167a48; }
+.knowlio-notification-error { background: #c23a3e; }
 
 /* ------------------------------------------------------------------ Confirm */
 
-.md-confirm-w { position: fixed; inset: 0; z-index: 100002; display: flex; align-items: center; justify-content: center; }
-.md-confirm-w[hidden] { display: none; }
-.md-confirm-overlay { position: absolute; inset: 0; background: rgba(24, 28, 43, .4); }
+.knowlio-confirm-w { position: fixed; inset: 0; z-index: 100002; display: flex; align-items: center; justify-content: center; }
+.knowlio-confirm-w[hidden] { display: none; }
+.knowlio-confirm-overlay { position: absolute; inset: 0; background: rgba(24, 28, 43, .4); }
 
-.md-confirm {
+.knowlio-confirm {
 	position: relative;
 	width: 380px;
 	max-width: 92vw;
 	padding: 22px;
 	background: #fff;
-	border-radius: var(--md-radius);
-	box-shadow: var(--md-shadow-lg);
+	border-radius: var(--knowlio-radius);
+	box-shadow: var(--knowlio-shadow-lg);
 	text-align: center;
 }
 
-.md-confirm-title { font-size: 16px; font-weight: 650; margin-bottom: 6px; }
-.md-confirm-message { font-size: 13.5px; color: var(--md-ink-soft); margin-bottom: 18px; }
-.md-confirm-actions { display: flex; justify-content: center; gap: 10px; }
+.knowlio-confirm-title { font-size: 16px; font-weight: 650; margin-bottom: 6px; }
+.knowlio-confirm-message { font-size: 13.5px; color: var(--knowlio-ink-soft); margin-bottom: 18px; }
+.knowlio-confirm-actions { display: flex; justify-content: center; gap: 10px; }
 
 /* ----------------------------------------------------------- Docs (admin) */
 
-.md-docs {
-	display: grid;
-	grid-template-columns: 244px minmax(0, 1fr) 200px;
-	gap: 20px;
-	align-items: start;
-}
-
-.md-docs-nav {
+.knowlio-docs-nav {
 	position: sticky;
 	top: 70px;
-	background: var(--md-surface);
-	border: 1px solid var(--md-border);
-	border-radius: var(--md-radius);
-	box-shadow: var(--md-shadow);
+	background: var(--knowlio-surface);
+	border: 1px solid var(--knowlio-border);
+	border-radius: var(--knowlio-radius);
+	box-shadow: var(--knowlio-shadow);
 	overflow: hidden;
 }
 
-.md-docs-search-w { position: relative; padding: 12px; border-bottom: 1px solid var(--md-border); }
+.knowlio-docs-search-w { position: relative; padding: 12px; border-bottom: 1px solid var(--knowlio-border); }
 
-.md-docs-search-w .dashicons {
+.knowlio-docs-search-w .dashicons {
 	position: absolute;
 	left: 22px;
 	top: 50%;
@@ -1003,16 +1059,16 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	font-size: 15px;
 	width: 15px;
 	height: 15px;
-	color: var(--md-ink-faded);
+	color: var(--knowlio-ink-faded);
 	pointer-events: none;
 }
 
-.md-docs-search { padding-left: 30px; }
-.md-docs-nav-scroll { max-height: calc(100vh - 200px); overflow-y: auto; padding: 12px; }
-.md-docs-chapter { margin-bottom: 16px; }
-.md-docs-chapter:last-child { margin-bottom: 0; }
+.knowlio-docs-search { padding-left: 30px; }
+.knowlio-docs-nav-scroll { max-height: calc(100vh - 200px); overflow-y: auto; padding: 12px; }
+.knowlio-docs-chapter { margin-bottom: 16px; }
+.knowlio-docs-chapter:last-child { margin-bottom: 0; }
 
-.md-docs-chapter-title {
+.knowlio-docs-chapter-title {
 	display: flex;
 	align-items: center;
 	gap: 7px;
@@ -1021,146 +1077,146 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	font-weight: 700;
 	letter-spacing: .06em;
 	text-transform: uppercase;
-	color: var(--md-ink-faded);
+	color: var(--knowlio-ink-faded);
 }
 
-.md-docs-chapter-title .dashicons { font-size: 14px; width: 14px; height: 14px; }
+.knowlio-docs-chapter-title .dashicons { font-size: 14px; width: 14px; height: 14px; }
 
-.md-docs-chapter-badge {
+.knowlio-docs-chapter-badge {
 	margin-left: auto;
 	font-style: normal;
 	font-size: 9.5px;
 	padding: 1px 6px;
 	border-radius: 20px;
-	background: var(--md-primary-soft);
-	color: var(--md-primary);
+	background: var(--knowlio-primary-soft);
+	color: var(--knowlio-primary);
 	letter-spacing: .04em;
 }
 
-.md-docs-page-list { list-style: none; margin: 0; padding: 0; }
+.knowlio-docs-page-list { list-style: none; margin: 0; padding: 0; }
 
-.md-docs-page-list a {
+.knowlio-docs-page-list a {
 	display: block;
 	padding: 6px 9px;
 	border-radius: 7px;
 	font-size: 13px;
-	color: var(--md-ink-soft);
+	color: var(--knowlio-ink-soft);
 	text-decoration: none;
 	line-height: 1.35;
 }
 
-.md-docs-page-list a:hover { background: var(--md-bg); color: var(--md-ink); }
-.md-docs-page-list li.md-docs-page-active a { background: var(--md-primary-soft); color: var(--md-primary); font-weight: 600; }
-.md-docs-no-results { padding: 10px; font-size: 12.5px; color: var(--md-ink-faded); text-align: center; }
+.knowlio-docs-page-list a:hover { background: var(--knowlio-bg); color: var(--knowlio-ink); }
+.knowlio-docs-page-list li.knowlio-docs-page-active a { background: var(--knowlio-primary-soft); color: var(--knowlio-primary); font-weight: 600; }
+.knowlio-docs-no-results { padding: 10px; font-size: 12.5px; color: var(--knowlio-ink-faded); text-align: center; }
 
-.md-docs-article-w {
-	background: var(--md-surface);
-	border: 1px solid var(--md-border);
-	border-radius: var(--md-radius);
-	box-shadow: var(--md-shadow);
+.knowlio-docs-article-w {
+	background: var(--knowlio-surface);
+	border: 1px solid var(--knowlio-border);
+	border-radius: var(--knowlio-radius);
+	box-shadow: var(--knowlio-shadow);
 	padding: 30px 34px 26px;
 	min-width: 0;
 }
 
-.md-docs-toc { position: sticky; top: 70px; font-size: 12.5px; }
+.knowlio-docs-toc { position: sticky; top: 70px; font-size: 12.5px; }
 
-.md-docs-toc-title {
+.knowlio-docs-toc-title {
 	font-size: 10.5px;
 	font-weight: 700;
 	letter-spacing: .06em;
 	text-transform: uppercase;
-	color: var(--md-ink-faded);
+	color: var(--knowlio-ink-faded);
 	margin-bottom: 8px;
 }
 
-.md-docs-toc-list { list-style: none; margin: 0 0 20px; padding: 0 0 0 10px; border-left: 2px solid var(--md-border); }
-.md-docs-toc-list a { display: block; padding: 4px 0; color: var(--md-ink-soft); text-decoration: none; line-height: 1.35; }
-.md-docs-toc-list a:hover { color: var(--md-primary); }
-.md-docs-source-path { display: block; font-size: 11px; color: var(--md-ink-faded); word-break: break-all; background: none; padding: 0; }
+.knowlio-docs-toc-list { list-style: none; margin: 0 0 20px; padding: 0 0 0 10px; border-left: 2px solid var(--knowlio-border); }
+.knowlio-docs-toc-list a { display: block; padding: 4px 0; color: var(--knowlio-ink-soft); text-decoration: none; line-height: 1.35; }
+.knowlio-docs-toc-list a:hover { color: var(--knowlio-primary); }
+.knowlio-docs-source-path { display: block; font-size: 11px; color: var(--knowlio-ink-faded); word-break: break-all; background: none; padding: 0; }
 
 /* ----------------------------------------------------- Documentation body */
 
-.md-doc-eyebrow {
+.knowlio-doc-eyebrow {
 	font-size: 11px;
 	font-weight: 700;
 	letter-spacing: .07em;
 	text-transform: uppercase;
-	color: var(--md-primary);
+	color: var(--knowlio-primary);
 	margin-bottom: 8px;
 }
 
-.md-doc-title { margin: 0 0 10px; font-size: 27px; font-weight: 650; line-height: 1.2; color: var(--md-ink); }
-.md-doc-summary { margin: 0 0 26px; font-size: 15px; line-height: 1.6; color: var(--md-ink-soft); }
-.md-doc-body { font-size: 14px; line-height: 1.7; color: var(--md-ink); }
+.knowlio-doc-title { margin: 0 0 10px; font-size: 27px; font-weight: 650; line-height: 1.2; color: var(--knowlio-ink); }
+.knowlio-doc-summary { margin: 0 0 26px; font-size: 15px; line-height: 1.6; color: var(--knowlio-ink-soft); }
+.knowlio-doc-body { font-size: 14px; line-height: 1.7; color: var(--knowlio-ink); }
 
-.md-doc-h2 {
+.knowlio-doc-h2 {
 	position: relative;
 	margin: 34px 0 12px;
 	padding-top: 20px;
-	border-top: 1px solid var(--md-border);
+	border-top: 1px solid var(--knowlio-border);
 	font-size: 18px;
 	font-weight: 650;
-	color: var(--md-ink);
+	color: var(--knowlio-ink);
 	scroll-margin-top: 60px;
 }
 
-.md-doc-h3 { margin: 24px 0 8px; font-size: 14.5px; font-weight: 650; color: var(--md-ink); scroll-margin-top: 60px; }
+.knowlio-doc-h3 { margin: 24px 0 8px; font-size: 14.5px; font-weight: 650; color: var(--knowlio-ink); scroll-margin-top: 60px; }
 
-.md-doc-anchor {
+.knowlio-doc-anchor {
 	position: absolute;
 	left: -18px;
-	color: var(--md-border-strong);
+	color: var(--knowlio-border-strong);
 	text-decoration: none;
 	opacity: 0;
 	transition: opacity .12s;
 }
 
-.md-doc-h2:hover .md-doc-anchor { opacity: 1; }
-.md-doc-anchor:hover { color: var(--md-primary); }
+.knowlio-doc-h2:hover .knowlio-doc-anchor { opacity: 1; }
+.knowlio-doc-anchor:hover { color: var(--knowlio-primary); }
 
-.md-doc-text p { margin: 0 0 12px; }
-.md-doc-text p:last-child { margin-bottom: 0; }
-.md-doc-text code,
-.md-doc-table code,
-.md-doc-list code,
-.md-note code,
-.md-doc-steps code,
-.md-doc-card code,
-.md-flow code {
+.knowlio-doc-text p { margin: 0 0 12px; }
+.knowlio-doc-text p:last-child { margin-bottom: 0; }
+.knowlio-doc-text code,
+.knowlio-doc-table code,
+.knowlio-doc-list code,
+.knowlio-note code,
+.knowlio-doc-steps code,
+.knowlio-doc-card code,
+.knowlio-flow code {
 	padding: 1px 5px;
 	border-radius: 4px;
-	background: var(--md-primary-soft);
+	background: var(--knowlio-primary-soft);
 	color: #1655b5;
 	font-size: 12.5px;
 	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 	word-break: break-word;
 }
 
-.md-doc-list { margin: 0 0 14px; padding-left: 20px; }
-.md-doc-list li { margin-bottom: 6px; }
+.knowlio-doc-list { margin: 0 0 14px; padding-left: 20px; }
+.knowlio-doc-list li { margin-bottom: 6px; }
 
-.md-doc-steps { margin: 0 0 16px; padding-left: 0; list-style: none; counter-reset: md-step; }
+.knowlio-doc-steps { margin: 0 0 16px; padding-left: 0; list-style: none; counter-reset: knowlio-step; }
 
-.md-doc-steps li {
+.knowlio-doc-steps li {
 	position: relative;
 	padding: 0 0 14px 34px;
 	margin-bottom: 0;
-	border-left: 2px solid var(--md-border);
+	border-left: 2px solid var(--knowlio-border);
 	margin-left: 11px;
 }
 
-.md-doc-steps li:last-child { border-left-color: transparent; padding-bottom: 0; }
+.knowlio-doc-steps li:last-child { border-left-color: transparent; padding-bottom: 0; }
 
-.md-doc-steps li::before {
-	counter-increment: md-step;
-	content: counter(md-step);
+.knowlio-doc-steps li::before {
+	counter-increment: knowlio-step;
+	content: counter(knowlio-step);
 	position: absolute;
 	left: -12px;
 	top: -2px;
 	width: 22px;
 	height: 22px;
 	border-radius: 50%;
-	background: var(--md-primary);
+	background: var(--knowlio-primary);
 	color: #fff;
 	font-size: 11px;
 	font-weight: 700;
@@ -1169,70 +1225,70 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	justify-content: center;
 }
 
-.md-step-title { font-weight: 650; margin-bottom: 3px; }
-.md-step-body { color: var(--md-ink-soft); font-size: 13.5px; }
+.knowlio-step-title { font-weight: 650; margin-bottom: 3px; }
+.knowlio-step-body { color: var(--knowlio-ink-soft); font-size: 13.5px; }
 
-.md-doc-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.knowlio-doc-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 12px; margin-bottom: 16px; }
 
-.md-doc-card {
+.knowlio-doc-card {
 	padding: 14px;
-	border: 1px solid var(--md-border);
-	border-radius: var(--md-radius);
-	background: var(--md-bg);
+	border: 1px solid var(--knowlio-border);
+	border-radius: var(--knowlio-radius);
+	background: var(--knowlio-bg);
 }
 
-.md-doc-card-label {
+.knowlio-doc-card-label {
 	display: block;
 	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 	font-size: 10.5px;
-	color: var(--md-ink-faded);
+	color: var(--knowlio-ink-faded);
 	margin-bottom: 6px;
 	word-break: break-all;
 }
 
-.md-doc-card-title { font-weight: 650; font-size: 13.5px; margin-bottom: 4px; }
-.md-doc-card-body { font-size: 13px; color: var(--md-ink-soft); line-height: 1.55; }
+.knowlio-doc-card-title { font-weight: 650; font-size: 13.5px; margin-bottom: 4px; }
+.knowlio-doc-card-body { font-size: 13px; color: var(--knowlio-ink-soft); line-height: 1.55; }
 
-.md-flow { display: flex; align-items: stretch; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+.knowlio-flow { display: flex; align-items: stretch; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
 
-.md-flow-step {
+.knowlio-flow-step {
 	flex: 1 1 130px;
 	padding: 11px 12px;
-	border: 1px solid var(--md-border);
+	border: 1px solid var(--knowlio-border);
 	border-radius: 8px;
-	background: var(--md-surface);
+	background: var(--knowlio-surface);
 	min-width: 0;
 }
 
-.md-flow-step-title {
+.knowlio-flow-step-title {
 	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 	font-size: 11.5px;
 	font-weight: 600;
-	color: var(--md-primary);
+	color: var(--knowlio-primary);
 	word-break: break-word;
 	margin-bottom: 3px;
 }
 
-.md-flow-step-body { font-size: 12px; color: var(--md-ink-soft); line-height: 1.45; }
-.md-flow-arrow { display: flex; align-items: center; color: var(--md-border-strong); font-size: 16px; }
+.knowlio-flow-step-body { font-size: 12px; color: var(--knowlio-ink-soft); line-height: 1.45; }
+.knowlio-flow-arrow { display: flex; align-items: center; color: var(--knowlio-border-strong); font-size: 16px; }
 
-.md-note { margin: 0 0 16px; padding: 13px 15px; border-radius: var(--md-radius); border-left: 3px solid; font-size: 13.5px; }
-.md-note-title { font-weight: 700; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 5px; }
-.md-note-body p { margin: 0 0 8px; }
-.md-note-body p:last-child { margin-bottom: 0; }
-.md-note-info { background: #eef4ff; border-color: var(--md-primary); color: #1c3c73; }
-.md-note-info .md-note-title { color: var(--md-primary); }
-.md-note-warning { background: #fff8e8; border-color: #e9a23b; color: #6d4a12; }
-.md-note-warning .md-note-title { color: #b4771a; }
-.md-note-success { background: #ecf8f1; border-color: #2a9d63; color: #14532d; }
-.md-note-success .md-note-title { color: #1a7f4b; }
-.md-note-danger { background: #fdeded; border-color: #e5484d; color: #7f1d1d; }
-.md-note-danger .md-note-title { color: #c23a3e; }
-.md-note code { background: rgba(255, 255, 255, .75); color: inherit; }
+.knowlio-note { margin: 0 0 16px; padding: 13px 15px; border-radius: var(--knowlio-radius); border-left: 3px solid; font-size: 13.5px; }
+.knowlio-note-title { font-weight: 700; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 5px; }
+.knowlio-note-body p { margin: 0 0 8px; }
+.knowlio-note-body p:last-child { margin-bottom: 0; }
+.knowlio-note-info { background: #eef4ff; border-color: var(--knowlio-primary); color: #1c3c73; }
+.knowlio-note-info .knowlio-note-title { color: var(--knowlio-primary); }
+.knowlio-note-warning { background: #fff8e8; border-color: #e9a23b; color: #6d4a12; }
+.knowlio-note-warning .knowlio-note-title { color: #b4771a; }
+.knowlio-note-success { background: #ecf8f1; border-color: #2a9d63; color: #14532d; }
+.knowlio-note-success .knowlio-note-title { color: #1a7f4b; }
+.knowlio-note-danger { background: #fdeded; border-color: #e5484d; color: #7f1d1d; }
+.knowlio-note-danger .knowlio-note-title { color: #c23a3e; }
+.knowlio-note code { background: rgba(255, 255, 255, .75); color: inherit; }
 
-.md-code-block { margin: 0 0 18px; border-radius: var(--md-radius); overflow: hidden; border: 1px solid #232838; }
+.knowlio-code-block { margin: 0 0 18px; border-radius: var(--knowlio-radius); overflow: hidden; border: 1px solid #232838; }
 
-.md-code-head {
+.knowlio-code-head {
 	display: flex;
 	align-items: center;
 	gap: 10px;
@@ -1242,10 +1298,10 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	font-size: 11px;
 }
 
-.md-code-lang { font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: #7f8aa3; }
-.md-code-caption { flex: 1; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: #b9c2d6; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.knowlio-code-lang { font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: #7f8aa3; }
+.knowlio-code-caption { flex: 1; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: #b9c2d6; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.md-code-copy {
+.knowlio-code-copy {
 	margin-left: auto;
 	border: 1px solid #39415a;
 	background: transparent;
@@ -1257,9 +1313,9 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	transition: background .15s, color .15s;
 }
 
-.md-code-copy:hover { background: #39415a; color: #fff; }
+.knowlio-code-copy:hover { background: #39415a; color: #fff; }
 
-.md-code {
+.knowlio-code {
 	margin: 0;
 	padding: 14px 16px;
 	background: #1a1e2e;
@@ -1272,72 +1328,100 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	tab-size: 4;
 }
 
-.md-code code { background: none; padding: 0; color: inherit; font-size: inherit; }
+.knowlio-code code { background: none; padding: 0; color: inherit; font-size: inherit; }
 
-.md-doc-table { width: 100%; border-collapse: collapse; margin-bottom: 18px; font-size: 13px; }
+.knowlio-doc-table { width: 100%; border-collapse: collapse; margin-bottom: 18px; font-size: 13px; }
 
-.md-doc-table th {
+.knowlio-doc-table th {
 	padding: 8px 12px;
 	text-align: left;
-	background: var(--md-bg);
-	border: 1px solid var(--md-border);
+	background: var(--knowlio-bg);
+	border: 1px solid var(--knowlio-border);
 	font-size: 11px;
 	font-weight: 700;
 	letter-spacing: .05em;
 	text-transform: uppercase;
-	color: var(--md-ink-faded);
+	color: var(--knowlio-ink-faded);
 	white-space: nowrap;
 }
 
-.md-doc-table td { padding: 9px 12px; border: 1px solid var(--md-border); vertical-align: top; line-height: 1.55; }
-.md-doc-table tbody tr:nth-child(even) { background: #fbfcfd; }
+.knowlio-doc-table td { padding: 9px 12px; border: 1px solid var(--knowlio-border); vertical-align: top; line-height: 1.55; }
+.knowlio-doc-table tbody tr:nth-child(even) { background: #fbfcfd; }
 
-.md-doc-pager { display: flex; justify-content: space-between; gap: 14px; margin-top: 34px; padding-top: 20px; border-top: 1px solid var(--md-border); }
+.knowlio-doc-pager { display: flex; justify-content: space-between; gap: 14px; margin-top: 34px; padding-top: 20px; border-top: 1px solid var(--knowlio-border); }
 
-.md-doc-pager-link {
+.knowlio-doc-pager-link {
 	flex: 0 1 46%;
 	padding: 12px 15px;
-	border: 1px solid var(--md-border);
-	border-radius: var(--md-radius);
+	border: 1px solid var(--knowlio-border);
+	border-radius: var(--knowlio-radius);
 	text-decoration: none;
-	color: var(--md-ink);
+	color: var(--knowlio-ink);
 	transition: border-color .15s, background .15s;
 }
 
-.md-doc-pager-link:hover { border-color: var(--md-primary); background: var(--md-primary-soft); color: var(--md-ink); }
-.md-doc-pager-next { text-align: right; }
-.md-doc-pager-label { display: block; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--md-ink-faded); margin-bottom: 3px; }
-.md-doc-pager-title { display: block; font-weight: 600; font-size: 13.5px; }
+.knowlio-doc-pager-link:hover { border-color: var(--knowlio-primary); background: var(--knowlio-primary-soft); color: var(--knowlio-ink); }
+.knowlio-doc-pager-next { text-align: right; }
+.knowlio-doc-pager-label { display: block; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--knowlio-ink-faded); margin-bottom: 3px; }
+.knowlio-doc-pager-title { display: block; font-weight: 600; font-size: 13.5px; }
 
-.md-table-scroll { -webkit-overflow-scrolling: touch; }
+.knowlio-table-scroll { -webkit-overflow-scrolling: touch; }
 
 /* -------------------------------------------------------------- Responsive */
 
 @media screen and (max-width: 1280px) {
-	.md-docs { grid-template-columns: 220px minmax(0, 1fr); }
-	.md-docs-toc { display: none; }
+	.knowlio-docs-toc { display: none; }
 }
 
 @media screen and (max-width: 960px) {
-	.minidocs-side-menu-w { position: fixed; top: 0; bottom: 0; left: 0; height: 100%; z-index: 99999; transform: translateX(-100%); transition: transform .2s ease; }
-	.minidocs-all-wrapper.md-menu-open .minidocs-side-menu-w { transform: none; }
-	.md-menu-fold-trigger { display: block; }
-	.md-docs { grid-template-columns: minmax(0, 1fr); }
-	.md-docs-nav { position: static; }
-	.md-docs-nav-scroll { max-height: 260px; }
-	.md-docs-article-w { padding: 22px 18px; }
-	.md-doc-title { font-size: 22px; }
-	.md-top-user-name { display: none; }
-	.md-unlock-link span { display: none; }
+	.knowlio-side-menu-w { position: fixed; top: var(--knowlio-wpbar, 0px); bottom: 0; left: 0; height: auto; z-index: 99999; transform: translateX(-100%); transition: transform .2s ease; }
+	.knowlio-all-wrapper.knowlio-menu-open .knowlio-side-menu-w { transform: none; }
+	.knowlio-menu-fold-trigger { display: block; }
+	.knowlio-docs-nav { position: static; }
+	.knowlio-docs-nav-scroll { max-height: 260px; }
+	.knowlio-docs-article-w { padding: 22px 18px; }
+	.knowlio-doc-title { font-size: 22px; }
+	.knowlio-top-user-name { display: none; }
+	.knowlio-unlock-link span { display: none; }
 }
 
 @media screen and (max-width: 782px) {
-	.minidocs-content { padding: 14px; }
-	.md-page-header-w { padding: 16px 14px 0; }
-	.md-side-panel { width: 100%; }
-	.md-doc-pager { flex-direction: column; }
-	.md-doc-pager-link { flex: 1 1 auto; }
-	.md-notifications-w { left: 14px; right: 14px; max-width: none; }
+	.knowlio-content { padding: 14px; }
+	.knowlio-page-header-w { padding: 16px 14px 0; }
+	.knowlio-side-panel { width: 100%; }
+	.knowlio-doc-pager { flex-direction: column; }
+	.knowlio-doc-pager-link { flex: 1 1 auto; }
+	.knowlio-notifications-w { left: 14px; right: 14px; max-width: none; }
+
+	/*
+	 * The top bar is a single non-wrapping flex row, so on a phone the search
+	 * box was squeezed to 26px -- present but unusable -- and the row still ran
+	 * past the viewport. Let it wrap and give the search its own full-width
+	 * second line instead of shrinking it into nothing.
+	 */
+	.knowlio-top-bar-w { flex-wrap: wrap; padding: 10px 14px; gap: 8px; }
+	.knowlio-top-search-w { order: 10; flex: 1 1 100%; }
+
+	/* Icon-only actions; the labels return with the room to show them. */
+	.knowlio-view-site-link span,
+	.knowlio-setup-hint span { display: none; }
+
+	/* The WordPress admin bar already names the logged-in user. */
+	.knowlio-top-user-w { display: none; }
+
+	/* Comfortable tap targets -- 24-28px controls are hard to hit accurately. */
+	.knowlio-menu-fold-trigger,
+	.knowlio-mobile-menu-trigger,
+	.knowlio-side-panel-close { min-width: 40px; min-height: 40px; }
+
+	.knowlio-row-delete { min-width: 36px; min-height: 36px; opacity: 1; }
+
+	.knowlio-btn { min-height: 38px; }
+
+	/* The editor chrome inside our panel is WordPress', but the panel is ours,
+	   so the Visual/Code tabs and toolbar buttons get thumb-sized here too. */
+	.knowlio-side-panel .wp-switch-editor { min-height: 34px; padding: 8px 10px; }
+	.knowlio-side-panel .mce-btn button { min-height: 34px; min-width: 34px; }
 }
 
 /* ================================================================
@@ -1345,7 +1429,7 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
    ================================================================ */
 
 /* Labelled separator in the side menu. */
-.md-menu-spacer-labelled {
+.knowlio-menu-spacer-labelled {
 	height: auto;
 	margin: 16px 10px 6px;
 	background: none;
@@ -1353,7 +1437,7 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	padding-top: 12px;
 }
 
-.md-menu-spacer-labelled span {
+.knowlio-menu-spacer-labelled span {
 	font-size: 10px;
 	font-weight: 700;
 	letter-spacing: .09em;
@@ -1362,77 +1446,77 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 	padding-left: 10px;
 }
 
-.md-logo-mark .dashicons { font-size: 17px; width: 17px; height: 17px; }
+.knowlio-logo-mark .dashicons { font-size: 17px; width: 17px; height: 17px; }
 
 /* Top bar: link to the live knowledge base, or a nudge to configure it. */
-.md-view-site-link,
-.md-setup-hint {
+.knowlio-view-site-link,
+.knowlio-setup-hint {
 	margin-left: auto;
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
 	padding: 6px 13px;
-	border-radius: var(--md-radius-pill);
+	border-radius: var(--knowlio-radius-pill);
 	font-size: 12.5px;
 	font-weight: 600;
 	text-decoration: none;
 }
 
-.md-view-site-link { background: var(--md-primary-soft); color: var(--md-primary); }
-.md-view-site-link:hover { background: #dbe8ff; color: var(--md-primary-dark); }
-.md-setup-hint { background: #fff4e0; color: #99631a; }
-.md-setup-hint:hover { background: #ffeccb; color: #7d5015; }
-.md-view-site-link .dashicons,
-.md-setup-hint .dashicons { font-size: 15px; width: 15px; height: 15px; }
+.knowlio-view-site-link { background: var(--knowlio-primary-soft); color: var(--knowlio-primary); }
+.knowlio-view-site-link:hover { background: #dbe8ff; color: var(--knowlio-primary-dark); }
+.knowlio-setup-hint { background: #fff4e0; color: #99631a; }
+.knowlio-setup-hint:hover { background: #ffeccb; color: #7d5015; }
+.knowlio-view-site-link .dashicons,
+.knowlio-setup-hint .dashicons { font-size: 15px; width: 15px; height: 15px; }
 
 /* Table cells. */
-.md-featured-star { color: #e9a23b; font-size: 14px; width: 14px; height: 14px; vertical-align: -2px; }
-.md-cat-cell { display: inline-flex; align-items: flex-start; gap: 9px; }
-.md-cat-cell > .dashicons { color: var(--md-primary); font-size: 18px; width: 18px; height: 18px; margin-top: 1px; }
-.md-read-count { font-size: 13px; font-weight: 650; color: var(--md-ink-soft); font-variant-numeric: tabular-nums; }
+.knowlio-featured-star { color: #e9a23b; font-size: 14px; width: 14px; height: 14px; vertical-align: -2px; }
+.knowlio-cat-cell { display: inline-flex; align-items: flex-start; gap: 9px; }
+.knowlio-cat-cell > .dashicons { color: var(--knowlio-primary); font-size: 18px; width: 18px; height: 18px; margin-top: 1px; }
+.knowlio-read-count { font-size: 13px; font-weight: 650; color: var(--knowlio-ink-soft); font-variant-numeric: tabular-nums; }
 
 /* Dashboard category mini-grid. */
-.md-cat-mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.knowlio-cat-mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
 
-.md-cat-mini {
+.knowlio-cat-mini {
 	display: block;
 	padding: 13px;
-	border: 1px solid var(--md-border);
-	border-radius: var(--md-radius);
+	border: 1px solid var(--knowlio-border);
+	border-radius: var(--knowlio-radius);
 	text-decoration: none;
-	color: var(--md-ink);
+	color: var(--knowlio-ink);
 	transition: border-color .15s, background .15s;
 }
 
-.md-cat-mini:hover { border-color: var(--md-primary); background: var(--md-primary-soft); color: var(--md-ink); }
-.md-cat-mini .dashicons { color: var(--md-primary); font-size: 18px; width: 18px; height: 18px; }
-.md-cat-mini-name { display: block; font-weight: 650; font-size: 13.5px; margin-top: 6px; line-height: 1.35; }
-.md-cat-mini-count { display: block; font-size: 12px; color: var(--md-ink-faded); margin-top: 2px; }
+.knowlio-cat-mini:hover { border-color: var(--knowlio-primary); background: var(--knowlio-primary-soft); color: var(--knowlio-ink); }
+.knowlio-cat-mini .dashicons { color: var(--knowlio-primary); font-size: 18px; width: 18px; height: 18px; }
+.knowlio-cat-mini-name { display: block; font-weight: 650; font-size: 13.5px; margin-top: 6px; line-height: 1.35; }
+.knowlio-cat-mini-count { display: block; font-size: 12px; color: var(--knowlio-ink-faded); margin-top: 2px; }
 
-.md-panel-intro-tight { margin-top: 16px; margin-bottom: 8px; font-size: 12.5px; color: var(--md-ink-faded); }
+.knowlio-panel-intro-tight { margin-top: 16px; margin-bottom: 8px; font-size: 12.5px; color: var(--knowlio-ink-faded); }
 
 /* The article editor needs more room than a standard side panel. */
-.md-form-w-wide { width: 100%; }
-.md-side-panel:has(.md-form-w-wide) { width: 720px; }
+.knowlio-form-w-wide { width: 100%; }
+.knowlio-side-panel:has(.knowlio-form-w-wide) { width: 720px; }
 
-.md-record-meta-link {
+.knowlio-record-meta-link {
 	margin-left: auto;
 	display: inline-flex;
 	align-items: center;
 	gap: 4px;
-	color: var(--md-primary);
+	color: var(--knowlio-primary);
 	text-decoration: none;
 	font-weight: 600;
 }
 
-.md-record-meta-link:hover { text-decoration: underline; }
-.md-record-meta-link .dashicons { font-size: 14px; width: 14px; height: 14px; }
+.knowlio-record-meta-link:hover { text-decoration: underline; }
+.knowlio-record-meta-link .dashicons { font-size: 14px; width: 14px; height: 14px; }
 
 /* Article editor — the WordPress TinyMCE editor, built by JS into this group. */
-.md-editor-group { margin-bottom: 18px; }
+.knowlio-editor-group { margin-bottom: 18px; }
 
 /* Until wp.editor upgrades it, the bare textarea is the working fallback. */
-.md-wp-editor {
+.knowlio-wp-editor {
 	min-height: 320px;
 	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 	font-size: 13px;
@@ -1441,113 +1525,113 @@ body.minidocs-full-page.wp-toolbar { padding-top: 0; }
 }
 
 /* Once upgraded, keep the editor chrome inside the panel and on-brand. */
-.md-editor-group .wp-editor-wrap { border: 1px solid var(--md-border-strong); border-radius: 8px; overflow: hidden; }
-.md-editor-group .wp-editor-tools { background: var(--md-bg); padding: 6px 6px 0; border-bottom: 1px solid var(--md-border); }
-.md-editor-group .wp-editor-container { background: #fff; }
-.md-editor-group .mce-toolbar-grp,
-.md-editor-group .quicktags-toolbar { background: var(--md-bg); }
-.md-editor-group .wp-switch-editor { border-color: var(--md-border-strong); }
-.md-editor-group .mce-panel { border-color: var(--md-border) !important; }
-.md-editor-group textarea.wp-editor-area { border: 0 !important; }
-.md-editor-group .wp-media-buttons .button { border-radius: var(--md-radius-pill); }
+.knowlio-editor-group .wp-editor-wrap { border: 1px solid var(--knowlio-border-strong); border-radius: 8px; overflow: hidden; }
+.knowlio-editor-group .wp-editor-tools { background: var(--knowlio-bg); padding: 6px 6px 0; border-bottom: 1px solid var(--knowlio-border); }
+.knowlio-editor-group .wp-editor-container { background: #fff; }
+.knowlio-editor-group .mce-toolbar-grp,
+.knowlio-editor-group .quicktags-toolbar { background: var(--knowlio-bg); }
+.knowlio-editor-group .wp-switch-editor { border-color: var(--knowlio-border-strong); }
+.knowlio-editor-group .mce-panel { border-color: var(--knowlio-border) !important; }
+.knowlio-editor-group textarea.wp-editor-area { border: 0 !important; }
+.knowlio-editor-group .wp-media-buttons .button { border-radius: var(--knowlio-radius-pill); }
 
 /*
  * The media modal and any TinyMCE popovers are appended to <body>, which in our
  * full-screen takeover still needs to sit above the side panel (z-index 100000).
  */
-body.minidocs-full-page .media-modal,
-body.minidocs-full-page .media-modal-backdrop,
-body.minidocs-full-page .mce-container.mce-panel.mce-floatpanel { z-index: 100010 !important; }
-body.minidocs-full-page .media-modal-backdrop { z-index: 100009 !important; }
+body.knowlio-full-page .media-modal,
+body.knowlio-full-page .media-modal-backdrop,
+body.knowlio-full-page .mce-container.mce-panel.mce-floatpanel { z-index: 100010 !important; }
+body.knowlio-full-page .media-modal-backdrop { z-index: 100009 !important; }
 
 /* Icon picker. */
-.md-icon-picker { display: flex; flex-wrap: wrap; gap: 6px; }
-.md-icon-option { cursor: pointer; }
-.md-icon-option input { position: absolute; opacity: 0; width: 0; height: 0; }
+.knowlio-icon-picker { display: flex; flex-wrap: wrap; gap: 6px; }
+.knowlio-icon-option { cursor: pointer; }
+.knowlio-icon-option input { position: absolute; opacity: 0; width: 0; height: 0; }
 
-.md-icon-option i {
+.knowlio-icon-option i {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	width: 40px;
 	height: 40px;
-	border: 1px solid var(--md-border-strong);
+	border: 1px solid var(--knowlio-border-strong);
 	border-radius: 9px;
 	background: #fff;
-	color: var(--md-ink-soft);
+	color: var(--knowlio-ink-soft);
 	font-size: 19px;
 	transition: border-color .12s, background .12s, color .12s;
 }
 
-.md-icon-option:hover i { border-color: var(--md-primary); color: var(--md-primary); }
-.md-icon-option input:checked + i { border-color: var(--md-primary); background: var(--md-primary-soft); color: var(--md-primary); }
-.md-icon-option input:focus-visible + i { box-shadow: 0 0 0 3px var(--md-primary-soft); }
+.knowlio-icon-option:hover i { border-color: var(--knowlio-primary); color: var(--knowlio-primary); }
+.knowlio-icon-option input:checked + i { border-color: var(--knowlio-primary); background: var(--knowlio-primary-soft); color: var(--knowlio-primary); }
+.knowlio-icon-option input:focus-visible + i { box-shadow: 0 0 0 3px var(--knowlio-primary-soft); }
 
 /* Frontend layout picker (Settings). */
-.md-layout-picker { display: grid; grid-template-columns: repeat( auto-fit, minmax( 150px, 1fr ) ); gap: 10px; }
-.md-layout-option { cursor: pointer; display: block; }
-.md-layout-option input { position: absolute; opacity: 0; width: 0; height: 0; }
+.knowlio-layout-picker { display: grid; grid-template-columns: repeat( auto-fit, minmax( 150px, 1fr ) ); gap: 10px; }
+.knowlio-layout-option { cursor: pointer; display: block; }
+.knowlio-layout-option input { position: absolute; opacity: 0; width: 0; height: 0; }
 
-.md-layout-diagram {
+.knowlio-layout-diagram {
 	display: flex;
 	gap: 4px;
 	height: 62px;
 	padding: 8px;
-	border: 1px solid var(--md-border-strong);
+	border: 1px solid var(--knowlio-border-strong);
 	border-radius: 9px;
 	background: #fff;
 	transition: border-color .12s, box-shadow .12s;
 }
 
-.md-layout-option:hover .md-layout-diagram { border-color: var(--md-primary); }
+.knowlio-layout-option:hover .knowlio-layout-diagram { border-color: var(--knowlio-primary); }
 
-.md-layout-option input:checked + .md-layout-diagram {
-	border-color: var(--md-primary);
-	box-shadow: 0 0 0 3px var(--md-primary-soft);
+.knowlio-layout-option input:checked + .knowlio-layout-diagram {
+	border-color: var(--knowlio-primary);
+	box-shadow: 0 0 0 3px var(--knowlio-primary-soft);
 }
 
-.md-layout-option input:checked ~ .md-layout-option-name { color: var(--md-primary); font-weight: 650; }
+.knowlio-layout-option input:checked ~ .knowlio-layout-option-name { color: var(--knowlio-primary); font-weight: 650; }
 
 /* The little wireframe columns inside each option. */
-.md-ld { border-radius: 3px; background: var(--md-bg); border: 1px solid var(--md-border); }
-.md-ld-nav { flex: 0 0 20%; }
-.md-ld-toc { flex: 0 0 16%; }
-.md-ld-body { flex: 1; background: var(--md-primary-soft); border-color: var(--md-primary-soft); }
-.md-ld-bodyw { flex: 1.6; background: var(--md-primary-soft); border-color: var(--md-primary-soft); }
-.md-ld-boxbody { flex: 0 0 66%; margin: 0 auto; background: var(--md-primary-soft); border-color: var(--md-primary-soft); }
+.knowlio-ld { border-radius: 3px; background: var(--knowlio-bg); border: 1px solid var(--knowlio-border); }
+.knowlio-ld-nav { flex: 0 0 20%; }
+.knowlio-ld-toc { flex: 0 0 16%; }
+.knowlio-ld-body { flex: 1; background: var(--knowlio-primary-soft); border-color: var(--knowlio-primary-soft); }
+.knowlio-ld-bodyw { flex: 1.6; background: var(--knowlio-primary-soft); border-color: var(--knowlio-primary-soft); }
+.knowlio-ld-boxbody { flex: 0 0 66%; margin: 0 auto; background: var(--knowlio-primary-soft); border-color: var(--knowlio-primary-soft); }
 
-.md-layout-option-name { display: block; margin-top: 7px; font-size: 12.5px; color: var(--md-ink-soft); text-align: center; }
+.knowlio-layout-option-name { display: block; margin-top: 7px; font-size: 12.5px; color: var(--knowlio-ink-soft); text-align: center; }
 
 /* Article content-template picker (editor). */
-.md-tpl-row {
+.knowlio-tpl-row {
 	display: flex;
 	align-items: center;
 	gap: 10px;
 	flex-wrap: wrap;
 	margin-bottom: 6px;
 	padding: 10px 12px;
-	background: var(--md-bg);
-	border: 1px solid var(--md-border);
+	background: var(--knowlio-bg);
+	border: 1px solid var(--knowlio-border);
 	border-radius: 8px;
 }
 
-.md-tpl-row label { margin: 0; font-size: 12.5px; font-weight: 600; color: var(--md-ink-soft); }
-.md-tpl-row .md-form-group { margin: 0; flex: 1; min-width: 180px; }
-.md-tpl-hint { font-size: 12px; color: var(--md-ink-faded); }
+.knowlio-tpl-row label { margin: 0; font-size: 12.5px; font-weight: 600; color: var(--knowlio-ink-soft); }
+.knowlio-tpl-row .knowlio-form-group { margin: 0; flex: 1; min-width: 180px; }
+.knowlio-tpl-hint { font-size: 12px; color: var(--knowlio-ink-faded); }
 
 /* Inline informational note inside a form. */
-.md-note-inline {
+.knowlio-note-inline {
 	margin-top: 16px;
 	padding: 11px 13px;
-	border-left: 3px solid var(--md-primary);
+	border-left: 3px solid var(--knowlio-primary);
 	border-radius: 0 8px 8px 0;
-	background: var(--md-primary-soft);
+	background: var(--knowlio-primary-soft);
 	color: #1c3c73;
 	font-size: 12.5px;
 	line-height: 1.55;
 }
 
 @media screen and (max-width: 782px) {
-	.md-side-panel:has(.md-form-w-wide) { width: 100%; }
-	.md-wp-editor { min-height: 240px; }
+	.knowlio-side-panel:has(.knowlio-form-w-wide) { width: 100%; }
+	.knowlio-wp-editor { min-height: 240px; }
 }

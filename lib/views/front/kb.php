@@ -2,11 +2,11 @@
 /**
  * Knowledge base landing page.
  *
- * @package MiniDocs
+ * @package KnowlioDocs
  *
- * @var MdCategoryModel[] $categories
- * @var MdArticleModel[]  $featured
- * @var MdArticleModel[]  $popular
+ * @var KnowlioCategoryModel[] $categories
+ * @var KnowlioArticleModel[]  $featured
+ * @var KnowlioArticleModel[]  $popular
  * @var int               $columns
  */
 
@@ -14,38 +14,38 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
-<div class="md-front md-front-kb <?php echo esc_attr( $layout_class ?? '' ); ?>" id="minidocs">
-	<div class="md-front-inner" style="<?php echo esc_attr( $inner_style ?? '' ); ?>">
+<div class="knowlio-front knowlio-front-kb <?php echo esc_attr( $layout_class ?? '' ); ?>" id="knowlio-docs">
+	<div class="knowlio-front-inner" style="<?php echo esc_attr( $inner_style ?? '' ); ?>">
 
-	<?php include MINIDOCS_VIEWS_ABSPATH . 'front/_hero.php'; ?>
+	<?php include KNOWLIO_VIEWS_ABSPATH . 'front/_hero.php'; ?>
 
 	<?php if ( empty( $categories ) ) { ?>
-		<div class="md-front-notice">
+		<div class="knowlio-front-notice">
 			<?php esc_html_e( 'No published documentation yet.', 'minidocs' ); ?>
 		</div>
 	<?php } else { ?>
 
-		<section class="md-kb-section">
-			<h3 class="md-kb-section-title"><?php esc_html_e( 'Browse by topic', 'minidocs' ); ?></h3>
+		<section class="knowlio-kb-section">
+			<h3 class="knowlio-kb-section-title"><?php esc_html_e( 'Browse by topic', 'minidocs' ); ?></h3>
 
-			<div class="md-cat-grid md-cat-grid-<?php echo esc_attr( $columns ); ?>">
-				<?php foreach ( $categories as $md_category ) { ?>
-					<a class="md-cat-card" href="<?php echo esc_url( MdShortcodesHelper::category_url( $md_category->slug ) ); ?>">
-						<span class="md-cat-card-icon"><i class="dashicons <?php echo esc_attr( $md_category->get_icon_class() ); ?>"></i></span>
-						<span class="md-cat-card-name"><?php echo esc_html( $md_category->name ); ?></span>
+			<div class="knowlio-cat-grid knowlio-cat-grid-<?php echo esc_attr( $columns ); ?>">
+				<?php foreach ( $categories as $knowlio_category ) { ?>
+					<a class="knowlio-cat-card" href="<?php echo esc_url( KnowlioShortcodesHelper::category_url( $knowlio_category->slug ) ); ?>">
+						<span class="knowlio-cat-card-icon"><i class="dashicons <?php echo esc_attr( $knowlio_category->get_icon_class() ); ?>"></i></span>
+						<span class="knowlio-cat-card-name"><?php echo esc_html( $knowlio_category->name ); ?></span>
 
-						<?php if ( $md_category->description ) { ?>
-							<span class="md-cat-card-desc"><?php echo esc_html( $md_category->description ); ?></span>
+						<?php if ( $knowlio_category->description ) { ?>
+							<span class="knowlio-cat-card-desc"><?php echo esc_html( $knowlio_category->description ); ?></span>
 						<?php } ?>
 
-						<span class="md-cat-card-count">
+						<span class="knowlio-cat-card-count">
 							<?php
-							$md_count = $md_category->get_articles_count( true );
+							$knowlio_count = $knowlio_category->get_articles_count( true );
 
 							printf(
 								/* translators: %d: number of articles. */
-								esc_html( _n( '%d article', '%d articles', $md_count, 'minidocs' ) ),
-								(int) $md_count
+								esc_html( _n( '%d article', '%d articles', $knowlio_count, 'minidocs' ) ),
+								(int) $knowlio_count
 							);
 							?>
 						</span>
@@ -55,18 +55,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</section>
 
 		<?php if ( ! empty( $featured ) || ! empty( $popular ) ) { ?>
-			<div class="md-kb-columns">
+			<div class="knowlio-kb-columns">
 
 				<?php if ( ! empty( $featured ) ) { ?>
-					<section class="md-kb-section">
-						<h3 class="md-kb-section-title"><?php esc_html_e( 'Start here', 'minidocs' ); ?></h3>
-						<ul class="md-article-list">
-							<?php foreach ( $featured as $md_article ) { ?>
+					<section class="knowlio-kb-section">
+						<h3 class="knowlio-kb-section-title"><?php esc_html_e( 'Start here', 'minidocs' ); ?></h3>
+						<ul class="knowlio-article-list">
+							<?php foreach ( $featured as $knowlio_article ) { ?>
 								<li>
-									<a href="<?php echo esc_url( MdShortcodesHelper::article_url( $md_article->slug ) ); ?>">
-										<span class="md-article-list-title"><?php echo esc_html( $md_article->title ); ?></span>
-										<?php if ( $md_article->get_summary( 16 ) ) { ?>
-											<span class="md-article-list-desc"><?php echo esc_html( $md_article->get_summary( 16 ) ); ?></span>
+									<a href="<?php echo esc_url( KnowlioShortcodesHelper::article_url( $knowlio_article->slug ) ); ?>">
+										<span class="knowlio-article-list-title"><?php echo esc_html( $knowlio_article->title ); ?></span>
+										<?php if ( $knowlio_article->get_summary( 16 ) ) { ?>
+											<span class="knowlio-article-list-desc"><?php echo esc_html( $knowlio_article->get_summary( 16 ) ); ?></span>
 										<?php } ?>
 									</a>
 								</li>
@@ -76,19 +76,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php } ?>
 
 				<?php if ( ! empty( $popular ) ) { ?>
-					<section class="md-kb-section">
-						<h3 class="md-kb-section-title"><?php esc_html_e( 'Most read', 'minidocs' ); ?></h3>
-						<ul class="md-article-list md-article-list-compact">
-							<?php foreach ( $popular as $md_article ) { ?>
+					<section class="knowlio-kb-section">
+						<h3 class="knowlio-kb-section-title"><?php esc_html_e( 'Most read', 'minidocs' ); ?></h3>
+						<ul class="knowlio-article-list knowlio-article-list-compact">
+							<?php foreach ( $popular as $knowlio_article ) { ?>
 								<li>
-									<a href="<?php echo esc_url( MdShortcodesHelper::article_url( $md_article->slug ) ); ?>">
-										<span class="md-article-list-title"><?php echo esc_html( $md_article->title ); ?></span>
-										<span class="md-article-list-meta">
+									<a href="<?php echo esc_url( KnowlioShortcodesHelper::article_url( $knowlio_article->slug ) ); ?>">
+										<span class="knowlio-article-list-title"><?php echo esc_html( $knowlio_article->title ); ?></span>
+										<span class="knowlio-article-list-meta">
 											<?php
 											printf(
 												/* translators: %s: view count. */
 												esc_html__( '%s views', 'minidocs' ),
-												esc_html( number_format_i18n( (int) $md_article->views_count ) )
+												esc_html( number_format_i18n( (int) $knowlio_article->views_count ) )
 											);
 											?>
 										</span>

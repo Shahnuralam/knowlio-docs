@@ -1,5 +1,5 @@
 /**
- * MiniDocs frontend bundle.
+ * Knowlio Docs frontend bundle.
  *
  * Navigation is plain links, so the knowledge base works with JavaScript
  * disabled. This file only adds two conveniences on top.
@@ -7,10 +7,78 @@
 ( function () {
 	'use strict';
 
+	var helper = window.knowlio_helper || {};
+	var i18n   = helper.i18n || {};
+
+	/* ------------------------------------------------------ Grid / list view */
+
+	var VIEW_KEY = 'knowlio_article_view';
+
+	function readStoredView() {
+		try {
+			var stored = window.localStorage.getItem( VIEW_KEY );
+			return ( stored === 'list' || stored === 'grid' ) ? stored : null;
+		} catch ( error ) {
+			// Private mode, or storage disabled: fall back to the default.
+			return null;
+		}
+	}
+
+	function storeView( view ) {
+		try {
+			window.localStorage.setItem( VIEW_KEY, view );
+		} catch ( error ) {
+			// Preference simply will not persist; the page still works.
+		}
+	}
+
+	function applyView( view ) {
+		document.querySelectorAll( '[data-knowlio-article-list]' ).forEach( function ( list ) {
+			list.classList.toggle( 'knowlio-view-grid', view === 'grid' );
+			list.classList.toggle( 'knowlio-view-list', view === 'list' );
+		} );
+
+		document.querySelectorAll( '[data-knowlio-view]' ).forEach( function ( button ) {
+			var isActive = button.dataset.knowlioView === view;
+			button.classList.toggle( 'is-active', isActive );
+			button.setAttribute( 'aria-pressed', isActive ? 'true' : 'false' );
+		} );
+	}
+
+	document.addEventListener( 'DOMContentLoaded', function () {
+		var heads = document.querySelectorAll( '[data-knowlio-list-head]' );
+
+		if ( ! heads.length ) {
+			return;
+		}
+
+		// The switcher ships hidden so it is never a dead control without JS.
+		heads.forEach( function ( head ) {
+			head.hidden = false;
+		} );
+
+		applyView( readStoredView() || 'grid' );
+	} );
+
+	document.addEventListener( 'click', function ( event ) {
+		var button = event.target.closest( '[data-knowlio-view]' );
+
+		if ( ! button ) {
+			return;
+		}
+
+		event.preventDefault();
+
+		var view = button.dataset.knowlioView;
+
+		applyView( view );
+		storeView( view );
+	} );
+
 	/* ------------------------------------------------- Active TOC highlighting */
 
 	document.addEventListener( 'DOMContentLoaded', function () {
-		var links = document.querySelectorAll( '.md-doc-toc-list a' );
+		var links = document.querySelectorAll( '.knowlio-doc-toc-list a' );
 
 		if ( ! links.length || ! ( 'IntersectionObserver' in window ) ) {
 			return;
@@ -32,7 +100,7 @@
 					var link = byId[ entry.target.id ];
 
 					if ( link ) {
-						link.classList.toggle( 'md-toc-active', entry.isIntersecting );
+						link.classList.toggle( 'knowlio-toc-active', entry.isIntersecting );
 					}
 				} );
 			},
@@ -51,21 +119,25 @@
 	/* ------------------------------------------------------- Copy code blocks */
 
 	document.addEventListener( 'DOMContentLoaded', function () {
-		document.querySelectorAll( '.md-doc-body pre' ).forEach( function ( block ) {
+		var copyLabel = i18n.copy || 'Copy';
+		var copiedLabel = i18n.copied || 'Copied';
+
+		document.querySelectorAll( '.knowlio-doc-body pre' ).forEach( function ( block ) {
 			var button = document.createElement( 'button' );
 
 			button.type = 'button';
-			button.className = 'md-code-copy';
-			button.textContent = 'Copy';
+			button.className = 'knowlio-code-copy';
+			button.textContent = copyLabel;
+			button.setAttribute( 'aria-label', copyLabel );
 
 			button.addEventListener( 'click', function () {
 				var code = block.querySelector( 'code' );
 				var text = code ? code.textContent : block.textContent;
 
 				var done = function () {
-					button.textContent = 'Copied';
+					button.textContent = copiedLabel;
 					setTimeout( function () {
-						button.textContent = 'Copy';
+						button.textContent = copyLabel;
 					}, 1600 );
 				};
 
