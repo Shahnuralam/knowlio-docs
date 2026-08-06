@@ -3,7 +3,7 @@
  * Plugin Name:       Knowlio Docs
  * Plugin URI:        https://github.com/Shahnuralam/knowlio-docs
  * Description:       A self-contained knowledge base and documentation plugin. Manage documentation articles and categories in wp-admin with a full rich-text editor, then publish a fast, professional docs site on the front end via the [knowlio] shortcode.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Shahnur Alam
@@ -52,7 +52,7 @@ if ( ! class_exists( 'KnowlioDocs' ) ) :
 		 *
 		 * @var string
 		 */
-		public $version = '1.0.0';
+		public $version = '1.0.1';
 
 		/**
 		 * Schema version. Bumping this re-runs dbDelta on the next request.

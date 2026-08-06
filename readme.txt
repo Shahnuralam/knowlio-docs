@@ -4,7 +4,7 @@ Tags: documentation, knowledge base, docs, help center, faq
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -38,7 +38,7 @@ It is fully self-contained: no page builder, no external service, and no depende
 * All database access uses prepared statements against the plugin's own tables.
 * No anonymous request handlers: every route requires a logged-in user with the right capability.
 * Your WordPress admin bar stays exactly where it is, so you are never trapped inside the plugin.
-* Fully translatable (text domain `minidocs`), including right-to-left and non-Latin scripts.
+* Fully translatable, including right-to-left and non-Latin scripts.
 
 == Installation ==
 
@@ -87,6 +87,10 @@ No. Knowlio Docs is self-contained and works with any standard WordPress theme.
 
 == Changelog ==
 
+= 1.0.1 =
+* Fixed the text domain so it matches the assigned wordpress.org plugin slug, as required by the plugin directory review.
+* Regenerated the translation template.
+
 = 1.0.0 =
 * Initial release: articles and categories, rich-text editor with media upload and paste-from-Word support, `[knowlio]` shortcode front end, four layout presets, content starter templates, automatic table of contents, responsive images, search, reading time, and view counts.
 * Roles and permissions mapping Knowlio Docs capabilities onto WordPress roles.
@@ -94,6 +98,9 @@ No. Knowlio Docs is self-contained and works with any standard WordPress theme.
 * Multisite aware: per-site tables, per-site content, network-wide cleanup on uninstall.
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Internationalization fix for wordpress.org directory compliance; no functional changes.
 
 = 1.0.0 =
 Initial release.

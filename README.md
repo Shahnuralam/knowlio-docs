@@ -23,7 +23,7 @@ No page builder, no external service, and no dependency on any other plugin.
 **Standards**
 - Output escaped; input sanitised and unslashed; every write protected by a nonce and a capability check.
 - All database access uses prepared statements against the plugin's own tables.
-- Fully translatable (text domain `minidocs`; template in `languages/minidocs.pot`).
+- Fully translatable, including right-to-left and non-Latin scripts.
 
 ## Requirements
 
